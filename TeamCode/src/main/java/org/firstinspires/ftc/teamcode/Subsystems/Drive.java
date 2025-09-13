@@ -214,7 +214,6 @@ public class Drive extends Subsystem {
         Mouse.update();
 
         if (gamepad.options) {
-            gamepad.setLedColor(255,0,0, 1000);
             Mouse.configureOtos();
         }
 
@@ -419,16 +418,25 @@ public class Drive extends Subsystem {
 
         double botHeading = Math.toRadians(FinalPose.Yaw);
 
-        double rotX = - vx * Math.sin(botHeading) + vy * Math.cos(botHeading);
-        double rotY = vx * Math.cos(botHeading) + vy * Math.sin(botHeading);
+        double rotY = vx * Math.cos(-botHeading) - vy * Math.sin(-botHeading);
+        double rotX = vx * Math.sin(-botHeading) + vy * Math.cos(-botHeading);
+
+//        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+//        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
 //        rotX *= 1.1;
 
         double denominator = Math.max(0.3, Math.abs(rotY) + Math.abs(rotX) + Math.abs(rotationFactor));
-        double frontLeftPower = (-rotX + rotY - rotationFactor) / 4;
-        double frontRightPower = (-rotX - rotY + rotationFactor) / 2;
-        double backLeftPower = (rotX - rotY - rotationFactor) / 4;
-        double backRightPower = (-rotX + rotY + rotationFactor) / 2;
+        double frontLeftPower = (rotX - rotY + rotationFactor) / denominator;
+        double frontRightPower = (rotX - rotY - rotationFactor) / denominator;
+        double backLeftPower = (rotX - rotY + rotationFactor) / denominator;
+        double backRightPower = (-rotX + rotY + rotationFactor) / denominator;
+
+
+//        double frontLeftPower = (-rotY + rotX + rx);
+//        double frontRightPower = (-rotY - rotX - rx);
+//        double backLeftPower = (-rotY - rotX + rx);
+//        double backRightPower = (rotY - rotX + rx);
 
 /*
         double frontLeftPower = vx + vy + rotationFactor;
@@ -446,8 +454,10 @@ public class Drive extends Subsystem {
             backRightPower /= maxMagnitude;
         }
 */
-
-        drive(frontLeftPower, frontRightPower, -backLeftPower, -backRightPower);
+        frontRightMotor.setPower(-frontRightPower);
+        frontLeftMotor.setPower(-frontLeftPower);
+        backLeftMotor.setPower(-backLeftPower);
+        backRightMotor.setPower(-backRightPower);
     }
 
     public void sketchDrive(Gamepad gamepad1) {
