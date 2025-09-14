@@ -427,10 +427,10 @@ public class Drive extends Subsystem {
 //        rotX *= 1.1;
 
         double denominator = Math.max(0.3, Math.abs(rotY) + Math.abs(rotX) + Math.abs(rotationFactor));
-        double frontLeftPower = (rotX - rotY + rotationFactor) / denominator;
-        double frontRightPower = (rotX - rotY - rotationFactor) / denominator;
-        double backLeftPower = (rotX - rotY + rotationFactor) / denominator;
-        double backRightPower = (-rotX + rotY + rotationFactor) / denominator;
+        double frontLeftPower = -(-rotX + rotY + rotationFactor) / denominator;
+        double frontRightPower = -(-rotX - rotY - rotationFactor) / denominator;
+        double backLeftPower = -(-rotX - rotY + rotationFactor) / denominator;
+        double backRightPower = -(rotX - rotY + rotationFactor) / denominator;
 
 
 //        double frontLeftPower = (-rotY + rotX + rx);
@@ -454,10 +454,10 @@ public class Drive extends Subsystem {
             backRightPower /= maxMagnitude;
         }
 */
-        frontRightMotor.setPower(-frontRightPower);
-        frontLeftMotor.setPower(-frontLeftPower);
-        backLeftMotor.setPower(-backLeftPower);
-        backRightMotor.setPower(-backRightPower);
+        frontRightMotor.setPower(frontRightPower);
+        frontLeftMotor.setPower(frontLeftPower);
+        backLeftMotor.setPower(backLeftPower);
+        backRightMotor.setPower(backRightPower);
     }
 
     public void sketchDrive(Gamepad gamepad1) {
