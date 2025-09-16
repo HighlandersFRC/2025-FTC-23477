@@ -39,9 +39,9 @@ public class AutoRobot extends LinearOpMode {
         Mouse.configureOtos();
         NewRobot robot = new NewRobot(hardwareMap);
         Drive drive = new Drive("drive", hardwareMap);
-        drive.setPosition(1.442, 0.276, 0);
+        drive.setPosition(0, 0, 0);
 
-        PathLoading path1 = new PathLoading(hardwareMap.appContext, "DriveOneMeter.polarpath");
+        PathLoading path1 = new PathLoading(hardwareMap.appContext, "DriveForwardOneMeter.polarpath");
         CommandScheduler scheduler = new CommandScheduler();
         drive = new Drive("drive", hardwareMap);
         Peripherals peripherals = new Peripherals("peripherals");
@@ -80,7 +80,7 @@ public class AutoRobot extends LinearOpMode {
             telemetry.addData("X", -robotY);
             telemetry.addData("Y", -robotX);
             telemetry.addData("Theta", robotTheta);
-            telemetry.addData("Time", currentTime);
+            telemetry.addData( "Time", currentTime);
             telemetry.update();
         }
     }

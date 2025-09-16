@@ -41,7 +41,7 @@ public class Drive extends Subsystem {
     private double lastCenterPos = 0;
 
     private final PID xPID = new PID(1, 0, 0);
-    private final PID yPID = new PID(1, 0, 0.5);
+    private final PID yPID = new PID(0.5, 0, 0);
     private final PID thetaPID = new PID(5, 0, 1);
 
     private long lastUpdateTime = 0;
@@ -427,15 +427,16 @@ public class Drive extends Subsystem {
 //        rotX *= 1.1;
 
         double denominator = Math.max(0.3, Math.abs(rotY) + Math.abs(rotX) + Math.abs(rotationFactor));
-        double frontLeftPower = -(-rotX + rotY + rotationFactor) / denominator;
-        double frontRightPower = -(-rotX - rotY - rotationFactor) / denominator;
-        double backLeftPower = -(-rotX - rotY + rotationFactor) / denominator;
-        double backRightPower = -(rotX - rotY + rotationFactor) / denominator;
+
+        double frontLeftPower = (-rotY + rotX + rotationFactor) / denominator;
+        double frontRightPower = (-rotY - rotX - rotationFactor) / denominator;
+        double backLeftPower = (-rotY - rotX + rotationFactor) / denominator;
+        double backRightPower = (rotY - rotX + rotationFactor) / denominator;
 
 
 //        double frontLeftPower = (-rotY + rotX + rx);
-//        double frontRightPower = (-rotY - rotX - rx);
 //        double backLeftPower = (-rotY - rotX + rx);
+//        double frontRightPower = (-rotY - rotX - rx);
 //        double backRightPower = (rotY - rotX + rx);
 
 /*
