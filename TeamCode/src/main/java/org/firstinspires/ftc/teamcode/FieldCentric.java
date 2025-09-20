@@ -5,29 +5,22 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
 @TeleOp
-public class Robot extends LinearOpMode {
+public class FieldCentric extends LinearOpMode {
 
 
     @Override
     public void runOpMode() throws InterruptedException {
         FtcDashboard dashboard = FtcDashboard.getInstance();
         Drive driveSubsystem = new Drive("drive", hardwareMap);
-        DcMotor IntakeMotor = hardwareMap.get(DcMotor.class, "intakeMotor");
-        IntakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         waitForStart();
 
         while (opModeIsActive()) {
 
             driveSubsystem.FeildCentric(gamepad1);
-
-
-
-                IntakeMotor.setPower(-1);
 
             TelemetryPacket packet = new TelemetryPacket();
             packet.put("X", Mouse.getX());

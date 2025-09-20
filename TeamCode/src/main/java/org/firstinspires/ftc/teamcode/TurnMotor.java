@@ -18,7 +18,7 @@ public class TurnMotor extends LinearOpMode {
      while (opModeIsActive()) {
 
          if (gamepad1.a) {
-             motor1.setPower(1);
+             motor1.setPower(-1);
          } else {
              motor1.setPower(0);
          }

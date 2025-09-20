@@ -24,8 +24,8 @@ public class PolarPathFollower implements Command {
     private CommandScheduler scheduler;
     public double pathStartTime;
     private JSONArray points;
-    private PID xPID = new PID(3.6, 0, 1.9);
-    private PID yPID = new PID(3.6, 0, 1.9);
+    private PID xPID = new PID(1, 0, 0);
+    private PID yPID = new PID(1, 0, 0);
     private final PID yawPID = new PID(1, 0, 0);
     private HashMap<String, Supplier<Command>> commandMap;
     private HashMap<String, BooleanSupplier> conditionMap;

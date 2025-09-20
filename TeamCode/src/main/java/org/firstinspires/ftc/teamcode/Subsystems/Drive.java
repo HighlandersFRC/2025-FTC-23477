@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.Commands.DefaultCommands.DriveDefault;
 import org.firstinspires.ftc.teamcode.Tools.Constants;
 import org.firstinspires.ftc.teamcode.Tools.FinalPose;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
+import org.firstinspires.ftc.teamcode.Tools.NewVector;
 import org.firstinspires.ftc.teamcode.Tools.PID;
 import org.firstinspires.ftc.teamcode.Tools.Vector;
 
@@ -56,10 +57,7 @@ public class Drive extends Subsystem {
         super(name);
 
         // Initialize motors using the HardwareMap
-        frontLeftMotor = hardwareMap.get(DcMotorEx.class, "left_front");
-        backLeftMotor = hardwareMap.get(DcMotorEx.class, "left_back");
-        frontRightMotor = hardwareMap.get(DcMotorEx.class, "right_front");
-        backRightMotor = hardwareMap.get(DcMotorEx.class, "right_back");
+        initialize(hardwareMap);
         Mouse.init(hardwareMap);
 // Set motor directions (if needed)
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -460,7 +458,33 @@ public class Drive extends Subsystem {
         backLeftMotor.setPower(backLeftPower);
         backRightMotor.setPower(backRightPower);
     }
+    public void NewAutoDrive(NewVector vector) {
+        double x = vector.getX();    // field X input
+        double y = vector.getY();    // field Y input
+        double targetTheta = vector.getTheta();
 
+        Mouse.update();
+        double botHeading = -Math.toRadians(Mouse.getTheta());
+
+        double headingError = targetTheta - Math.toRadians(Mouse.getTheta());
+        headingError = Math.atan2(Math.sin(headingError), Math.cos(headingError)); // wrap to [-π, π]
+        double rotationFactor = headingError * 0.5;
+
+        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+
+        double denominator = Math.max(0.3, Math.abs(rotY) + Math.abs(rotX) + Math.abs(rotationFactor));
+
+        double frontLeftPower  = (-rotY + rotX + rotationFactor)  / denominator;
+        double frontRightPower = (-rotY - rotX - rotationFactor) / denominator;
+        double backLeftPower   = (-rotY - rotX + rotationFactor)/ denominator;
+        double backRightPower  = (rotY - rotX + rotationFactor)/ denominator;
+
+        frontLeftMotor.setPower(frontLeftPower);
+        backLeftMotor.setPower(backLeftPower);
+        frontRightMotor.setPower(frontRightPower);
+        backRightMotor.setPower(backRightPower);
+    }
     public void sketchDrive(Gamepad gamepad1) {
         if (gamepad1.dpad_up) {
             drive(1,  -1, 1, 1);
