@@ -408,18 +408,19 @@ public class Drive extends Subsystem {
         return frontRightMotor.getCurrentPosition();
     }
 
+
+
     public void autoDrive(Vector vector, double angle) {
         double vx = vector.getI();
         double vy = -vector.getJ();
-
-        double rotationFactor = -(angle);
+        double rotationFactor = -angle;
 
         double botHeading = Math.toRadians(FinalPose.Yaw);
 
-        double rotY = vx * Math.cos(-botHeading) - vy * Math.sin(-botHeading);
-        double rotX = vx * Math.sin(-botHeading) + vy * Math.cos(-botHeading);
+        double rotY = vx * Math.cos(botHeading) - vy * Math.sin(botHeading);
+        double rotX = vx * Math.sin(botHeading) + vy * Math.cos(botHeading);
 
-//        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+        //        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
 //        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
 //        rotX *= 1.1;
@@ -432,7 +433,7 @@ public class Drive extends Subsystem {
         double backRightPower = (rotY - rotX + rotationFactor) / denominator;
 
 
-//        double frontLeftPower = (-rotY + rotX + rx);
+        //        double frontLeftPower = (-rotY + rotX + rx);
 //        double backLeftPower = (-rotY - rotX + rx);
 //        double frontRightPower = (-rotY - rotX - rx);
 //        double backRightPower = (rotY - rotX + rx);
@@ -453,11 +454,13 @@ public class Drive extends Subsystem {
             backRightPower /= maxMagnitude;
         }
 */
+
         frontRightMotor.setPower(frontRightPower);
         frontLeftMotor.setPower(frontLeftPower);
         backLeftMotor.setPower(backLeftPower);
         backRightMotor.setPower(backRightPower);
     }
+
     public void NewAutoDrive(NewVector vector) {
         double x = vector.getX();    // field X input
         double y = vector.getY();    // field Y input
