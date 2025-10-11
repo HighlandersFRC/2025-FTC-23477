@@ -107,7 +107,7 @@ public class limeLightVision extends LinearOpMode {
                 //tracks the Apriltag in x
                 if (tx <= Math.abs (error)) {
                     sleep(0);
-                }else{
+                }else if (id == 20 && tx > Math.abs (error)){
                     //sets motor positions for x
                     leftFront.setTargetPosition((int) (avgmotorpos-(Math.abs(tx))));
                     rightFront.setTargetPosition(-(int) (avgmotorpos-(Math.abs(tx))));
@@ -118,33 +118,35 @@ public class limeLightVision extends LinearOpMode {
                     rightFront.setPower(-powerx);
                     leftBack.setPower(powerx);
                     rightBack.setPower(-powerx);
+                }else{
+                    sleep(0);
                 }
 
                 //tracks the Apriltag in y
                 if (ty <= Math.abs (error)) {
                     sleep(0);
-                }else{
-                    //sets motor positions for y
+                }else if (id == 20 && ty > Math.abs (error)){
+                    //sets motor positions for y if id is 20
                     leftFront.setTargetPosition((int) (avgmotorpos-(Math.abs(ty))));
                     rightFront.setTargetPosition(-(int) (avgmotorpos-(Math.abs(ty))));
                     leftBack.setTargetPosition((int) (avgmotorpos-(Math.abs(ty))));
                     rightBack.setTargetPosition(-(int) (avgmotorpos-(Math.abs(ty))));
-                    //sets motor power for y
+                    //sets motor power for y if id is 20
                     leftFront.setPower(powery);
                     rightFront.setPower(powery);
                     leftBack.setPower(-powery);
                     rightBack.setPower(-powery);
+                }else{
+                    sleep(0);
                 }
 
                 //shows telemetry on the driver station
-                telemetry.addData("tx", tx);
-                telemetry.addData("ty", ty);
-                telemetry.addData("ta", ta);
+                telemetry.addData("coordinates", "x: " + tx + " y: " + ty + " area: " + ta);
                 telemetry.addData("id", id);
                 telemetry.addData("family", family);
                 telemetry.addData("Current Position", curpos);
                 telemetry.addData("Target Position in comparison to the robot", robtarpos);
-                telemetry.addData("Current Motor Positions", avgmotorpos);
+                telemetry.addData("Current Motor Positions", "Right Front: " + motorposr1 + " Left Front: " + motorposl1 + " Right Back: " + motorposr2 + " Left Back: " + motorposl2);
                 telemetry.update();
             }
         }
