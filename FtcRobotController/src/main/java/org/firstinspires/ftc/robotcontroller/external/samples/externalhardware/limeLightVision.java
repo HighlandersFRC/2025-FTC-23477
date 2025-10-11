@@ -108,12 +108,12 @@ public class limeLightVision extends LinearOpMode {
                 if (tx <= Math.abs (error)) {
                     sleep(0);
                 }else if (id == 20 && tx > Math.abs (error)){
-                    //sets motor positions for x
+                    //sets motor positions for x if id is 20
                     leftFront.setTargetPosition((int) (avgmotorpos-(Math.abs(tx))));
                     rightFront.setTargetPosition(-(int) (avgmotorpos-(Math.abs(tx))));
                     leftBack.setTargetPosition((int) (avgmotorpos-(Math.abs(tx))));
                     rightBack.setTargetPosition(-(int) (avgmotorpos-(Math.abs(tx))));
-                    //sets motor power for x
+                    //sets motor power for x if id is 20
                     leftFront.setPower(powerx);
                     rightFront.setPower(-powerx);
                     leftBack.setPower(powerx);
