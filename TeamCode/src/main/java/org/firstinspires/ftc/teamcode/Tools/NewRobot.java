@@ -8,17 +8,20 @@ import org.firstinspires.ftc.teamcode.Subsystems.Drive;
 
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
+import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 
 
 public class NewRobot {
 
     // Instance variables for subsystems
     public Drive drive;
-
+    public ShooterState shooterStates;
+    public IntakeState intakeStates;
 
     public NewRobot(HardwareMap hardwareMap) {
-        this.drive = new Drive("drive", hardwareMap);
-
+        this.shooterStates = new ShooterState("shooter");
+        this.intakeStates = new IntakeState("intake");
     }
 
     public void run() {
@@ -27,8 +30,8 @@ public class NewRobot {
 
     // Initialize hardware for all subsystems
     public void initialize(HardwareMap hardwareMap, Telemetry telemetry) {
-        this.drive = new Drive("drive", hardwareMap);
-
+        shooterStates.init(hardwareMap);
+        intakeStates.init(hardwareMap);
     }
 
 }

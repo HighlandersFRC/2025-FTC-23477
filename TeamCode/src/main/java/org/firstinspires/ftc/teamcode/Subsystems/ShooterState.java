@@ -1,18 +1,21 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class ShooterState extends Subsystem {
 
     private SHOOTER_STATE wantedSuperState = SHOOTER_STATE.IDLE;
     private SHOOTER_STATE currentSuperState = SHOOTER_STATE.IDLE;
+    private DcMotor ShooterMotor;
 
     public ShooterState(String name) {
         super(name);
     }
 
     public void init(HardwareMap hardwareMap) {
-
+        ShooterMotor = hardwareMap.dcMotor.get("ShooterMotor");
+        ShooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void setWantedState(SHOOTER_STATE shooterState){
@@ -21,7 +24,8 @@ public class ShooterState extends Subsystem {
 
     public enum SHOOTER_STATE {
         DEFAULT,
-        IDLE
+        IDLE,
+        SHOOT
     }
 
     private SHOOTER_STATE handleStateTransitions() {
@@ -32,16 +36,22 @@ public class ShooterState extends Subsystem {
             case IDLE:
                 currentSuperState = SHOOTER_STATE.IDLE;
                 break;
+            case SHOOT:
+                currentSuperState = SHOOTER_STATE.SHOOT;
         }
         return currentSuperState;
     }
 
     private void handleDefaultState() {
-
+        ShooterMotor.setPower(0);
     }
 
     private void handleIdleState() {
 
+    }
+
+    private void handleShootingState() {
+        ShooterMotor.setPower(1);
     }
 
     @Override
@@ -53,6 +63,9 @@ public class ShooterState extends Subsystem {
                 break;
             case IDLE:
                 handleIdleState();
+                break;
+            case SHOOT:
+                handleShootingState();
                 break;
         }
     }

@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.Tools.Constants.DegreesToEncoderTicks;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.getDegrees;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.pivotPID;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -51,8 +47,7 @@ public class AutoRobot extends LinearOpMode {
         waitForStart();
         try {
             Test = new PolarPathFollower(drive, peripherals, path1.getJsonPathData(), Constants.commandMap, Constants.conditionMap, scheduler);
-            scheduler.schedule(new SequentialCommandGroup(scheduler,
-                    Test
+            scheduler.schedule(new SequentialCommandGroup(scheduler, Test
             ));
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -74,7 +69,6 @@ public class AutoRobot extends LinearOpMode {
             packet.put("Robot Theta", robotTheta);
             packet.put("Time", currentTime);
             packet.put("Target Angle", 150);
-            packet.put("Result", pivotPID.getResult());
             dashboard.sendTelemetryPacket(packet);
 
             telemetry.addData("X", -robotY);

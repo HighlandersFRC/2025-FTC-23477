@@ -6,35 +6,20 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Commands.CommandIntake;
-import org.firstinspires.ftc.teamcode.Commands.CommandOuttake;
-import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
-import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
-import org.firstinspires.ftc.teamcode.Commands.CommandStopIntakeOuttake;
-import org.firstinspires.ftc.teamcode.Commands.CommandStopShoot;
-import org.firstinspires.ftc.teamcode.Commands.SequentialCommandGroup;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
 import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
-import org.firstinspires.ftc.teamcode.Tools.NewRobot;
-
 @TeleOp
-public class Robot extends LinearOpMode {
+public class RobotSuperStructureOnly extends LinearOpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     ShooterState shooterStates = new ShooterState("shooter");
-    IntakeState intakeStates = new IntakeState("Intake");
-    CommandScheduler scheduler = new CommandScheduler();
+    IntakeState intakeStates = new IntakeState("intake");
 
     @Override
     public void runOpMode() throws InterruptedException {
         shooterStates.init(hardwareMap);
         intakeStates.init(hardwareMap);
-
-        NewRobot robot = new NewRobot(hardwareMap);
-        robot.shooterStates = shooterStates;
-        robot.intakeStates = intakeStates;
-        scheduler.setNewRobot(robot);
 
         waitForStart();
 
@@ -43,19 +28,21 @@ public class Robot extends LinearOpMode {
             intakeStates.periodic();
 
             if (gamepad1.right_trigger > 0) {
-                scheduler.schedule(new CommandShoot(robot.shooterStates));
+                shooterStates.setWantedState(ShooterState.SHOOTER_STATE.SHOOT);
             } else {
-                scheduler.schedule(new CommandStopShoot(robot.shooterStates));
+                shooterStates.setWantedState(ShooterState.SHOOTER_STATE.DEFAULT);
             }
-
 
             if (gamepad1.right_bumper) {
-                scheduler.schedule(new CommandOuttake(robot.intakeStates));
+                intakeStates.setWantedState(IntakeState.INTAKE_STATE.OUTTAKE);
             } else if (gamepad1.left_bumper) {
-                scheduler.schedule(new CommandIntake(robot.intakeStates));
+                intakeStates.setWantedState(IntakeState.INTAKE_STATE.INTAKE);
             } else {
-                scheduler.schedule(new CommandStopIntakeOuttake(robot.intakeStates));
+                intakeStates.setWantedState(IntakeState.INTAKE_STATE.DEFAULT);
             }
+
+
+
 
             TelemetryPacket packet = new TelemetryPacket();
             packet.put("X", Mouse.getX());
