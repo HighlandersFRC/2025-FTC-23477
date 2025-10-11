@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
-import org.firstinspires.ftc.teamcode.Tools.NewVector;
 import org.firstinspires.ftc.teamcode.Tools.Vector;
 
 @Autonomous
