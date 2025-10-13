@@ -2,22 +2,23 @@ package org.firstinspires.ftc.teamcode.Commands;
 
 import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
-
-public class CommandStopShoot implements Command{
+public class CommandJammed  implements Command {
     ShooterState shooterStates;
-
-    public CommandStopShoot(ShooterState shooterStates) {
+    long startTime;
+    long duration;
+    public CommandJammed(ShooterState shooterStates, long seconds) {
         this.shooterStates = shooterStates;
+        this.duration = seconds * 1000;
     }
 
     @Override
     public void start() {
-        shooterStates.setWantedState(ShooterState.SHOOTER_STATE.DEFAULT);
+        startTime = System.currentTimeMillis();
+        shooterStates.setWantedState(ShooterState.SHOOTER_STATE.JAMMED);
     }
 
     @Override
     public void execute() {
-
     }
 
     @Override
@@ -27,7 +28,7 @@ public class CommandStopShoot implements Command{
 
     @Override
     public boolean isFinished() {
-        return false;
+        return System.currentTimeMillis() - startTime >= duration;
     }
 
     @Override

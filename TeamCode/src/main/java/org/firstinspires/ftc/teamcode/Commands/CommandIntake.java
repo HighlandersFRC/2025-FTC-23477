@@ -28,7 +28,7 @@ public class CommandIntake implements Command{
 
     @Override
     public boolean isFinished() {
-        return System.currentTimeMillis() == 5000;
+            return false;
     }
 
     @Override

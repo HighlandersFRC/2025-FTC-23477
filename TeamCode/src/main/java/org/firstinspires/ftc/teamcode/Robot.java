@@ -7,33 +7,41 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Commands.CommandIntake;
-import org.firstinspires.ftc.teamcode.Commands.CommandOuttake;
+import org.firstinspires.ftc.teamcode.Commands.CommandJammed;
+import org.firstinspires.ftc.teamcode.Commands.CommandRangeTrack;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
 import org.firstinspires.ftc.teamcode.Commands.CommandStopIntakeOuttake;
 import org.firstinspires.ftc.teamcode.Commands.CommandStopShoot;
+import org.firstinspires.ftc.teamcode.Commands.ParallelCommandGroup;
 import org.firstinspires.ftc.teamcode.Commands.SequentialCommandGroup;
+import org.firstinspires.ftc.teamcode.Subsystems.AprilTagState;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
 import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
+import org.firstinspires.ftc.teamcode.Tools.Parameters;
 
 @TeleOp
 public class Robot extends LinearOpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     ShooterState shooterStates = new ShooterState("shooter");
     IntakeState intakeStates = new IntakeState("Intake");
+    AprilTagState aprilTagStates = new AprilTagState("aprilTagState");
+    Drive drive = new Drive("drive", hardwareMap);
     CommandScheduler scheduler = new CommandScheduler();
 
     @Override
     public void runOpMode() throws InterruptedException {
         shooterStates.init(hardwareMap);
         intakeStates.init(hardwareMap);
+        aprilTagStates.init(hardwareMap);
 
         NewRobot robot = new NewRobot(hardwareMap);
         robot.shooterStates = shooterStates;
         robot.intakeStates = intakeStates;
+        robot.aprilTagState = aprilTagStates;
         scheduler.setNewRobot(robot);
 
         waitForStart();
@@ -41,20 +49,17 @@ public class Robot extends LinearOpMode {
         while (opModeIsActive()) {
             shooterStates.periodic();
             intakeStates.periodic();
+            aprilTagStates.periodic();
 
-            if (gamepad1.right_trigger > 0) {
-                scheduler.schedule(new CommandShoot(robot.shooterStates));
-            } else {
-                scheduler.schedule(new CommandStopShoot(robot.shooterStates));
-            }
-
-
-            if (gamepad1.right_bumper) {
-                scheduler.schedule(new CommandOuttake(robot.intakeStates));
-            } else if (gamepad1.left_bumper) {
+            if (gamepad1.left_stick_button) {
+                scheduler.schedule(new SequentialCommandGroup(scheduler, new CommandRangeTrack(robot.aprilTagState), new CommandShoot(robot.shooterStates, 5)));
+            } else if (gamepad1.right_trigger > 0){
                 scheduler.schedule(new CommandIntake(robot.intakeStates));
+            } else if (gamepad1.left_trigger > 0) {
+                scheduler.schedule(new CommandJammed(robot.shooterStates, 10));
             } else {
-                scheduler.schedule(new CommandStopIntakeOuttake(robot.intakeStates));
+                scheduler.schedule(new ParallelCommandGroup(scheduler, Parameters.ALL, new CommandStopIntakeOuttake(robot.intakeStates), new CommandStopShoot(robot.shooterStates)));
+                drive.FeildCentric(gamepad1);
             }
 
             TelemetryPacket packet = new TelemetryPacket();

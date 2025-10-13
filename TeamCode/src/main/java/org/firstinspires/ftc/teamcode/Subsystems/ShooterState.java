@@ -25,7 +25,8 @@ public class ShooterState extends Subsystem {
     public enum SHOOTER_STATE {
         DEFAULT,
         IDLE,
-        SHOOT
+        SHOOT,
+        JAMMED
     }
 
     private SHOOTER_STATE handleStateTransitions() {
@@ -38,6 +39,10 @@ public class ShooterState extends Subsystem {
                 break;
             case SHOOT:
                 currentSuperState = SHOOTER_STATE.SHOOT;
+                break;
+            case JAMMED:
+                currentSuperState = SHOOTER_STATE.JAMMED;
+                break;
         }
         return currentSuperState;
     }
@@ -54,6 +59,10 @@ public class ShooterState extends Subsystem {
         ShooterMotor.setPower(1);
     }
 
+    private void handleJammedState() {
+        ShooterMotor.setPower(-0.267);
+    }
+
     @Override
     public void periodic() {
         handleStateTransitions();
@@ -66,6 +75,9 @@ public class ShooterState extends Subsystem {
                 break;
             case SHOOT:
                 handleShootingState();
+                break;
+            case JAMMED:
+                handleJammedState();
                 break;
         }
     }

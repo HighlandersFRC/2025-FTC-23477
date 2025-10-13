@@ -14,15 +14,14 @@ public class Mouse {
 
         mouse.setLinearUnit(SparkFunOTOS.LinearUnit.METERS);
         mouse.setAngularUnit(SparkFunOTOS.AngularUnit.DEGREES);
-        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(-0.15875, 0, -270);
+        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0.08255, 0.1016, -270);
         mouse.setOffset(offset);
         mouse.setLinearScalar(1.005809562240364);
         mouse.setAngularScalar(0.989932511851);
         mouse.calibrateImu();
         mouse.resetTracking();
-        System.out.println("configed");
+        System.out.println("configured");
         System.out.println("theta"+offset.h);
-
     }
     public static void setPosition(double x, double y, double theta){
         SparkFunOTOS.Pose2D currentPosition = new SparkFunOTOS.Pose2D(x, y, theta);

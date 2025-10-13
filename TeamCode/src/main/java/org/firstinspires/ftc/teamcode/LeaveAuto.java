@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.Tools.FinalPose;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
 
 @Autonomous
-public class AutoRobot extends LinearOpMode {
+public class LeaveAuto extends LinearOpMode {
 
     private FtcDashboard dashboard;
 
@@ -39,15 +39,15 @@ public class AutoRobot extends LinearOpMode {
         CommandScheduler scheduler = new CommandScheduler();
         drive = new Drive("drive", hardwareMap);
         Peripherals peripherals = new Peripherals("peripherals");
-        PolarPathFollower AutoRobot1;
+        PolarPathFollower DriveForward;
 
 
         waitForStart();
         try {
-            AutoRobot1 = new PolarPathFollower(drive, peripherals, path1.getJsonPathData(), Constants.commandMap, Constants.conditionMap, scheduler);
-            scheduler.schedule(new SequentialCommandGroup(scheduler,
-                    AutoRobot1
-            ));
+            DriveForward = new PolarPathFollower(drive, peripherals, path1.getJsonPathData(), Constants.commandMap, Constants.conditionMap, scheduler);
+            scheduler.schedule(
+                    DriveForward
+            );
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
