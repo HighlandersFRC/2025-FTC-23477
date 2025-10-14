@@ -1,6 +1,7 @@
 
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -25,8 +26,17 @@ public class Peripherals extends Subsystem {
         super(name);
     }
 
+
     public static void initialize(HardwareMap hardwareMap) {
         imu = hardwareMap.get(IMU.class, "imu");
+
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,   // adjust this line
+                RevHubOrientationOnRobot.UsbFacingDirection.DOWN        // adjust this line
+        ));
+
+        imu.initialize(parameters);
+
 
 //        limelight = hardwareMap.get(Limelight3A.class, "limelight");
 //        limelight.setPollRateHz(60);
