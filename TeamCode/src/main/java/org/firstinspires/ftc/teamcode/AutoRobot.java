@@ -27,9 +27,9 @@ import org.firstinspires.ftc.teamcode.Tools.Mouse;
 @Autonomous
 public class AutoRobot extends LinearOpMode {
     private FtcDashboard dashboard;
-    private AprilTagState aprilTagState = new AprilTagState("aprilStates");
-    private ShooterState shooterState = new ShooterState("shooterStates");
-    private IntakeState intakeState = new IntakeState("intakeStates");
+    AprilTagState aprilTagState = new AprilTagState("aprilStates");
+    ShooterState shooterState = new ShooterState("shooterStates");
+    IntakeState intakeState = new IntakeState("intakeStates");
     @Override
     public void runOpMode() throws InterruptedException {
 
