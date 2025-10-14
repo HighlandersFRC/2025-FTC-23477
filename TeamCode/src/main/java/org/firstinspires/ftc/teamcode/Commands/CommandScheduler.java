@@ -42,9 +42,7 @@ public class CommandScheduler {
             }
 
             // Cancel the currently active command if it's not a default command
-            if (activeCommand != null && !isDefaultCommand(activeCommand)) {
-                cancel(activeCommand);
-            }
+
 
             // Associate the new command with the subsystem
             activeSubsystemCommands.put(requiredSubsystem, command);
@@ -73,10 +71,6 @@ public class CommandScheduler {
                     activeSubsystemCommands.remove(subsystem);
 
                     // Only reschedule default command if no other commands are active for this subsystem
-                    Command defaultCommand = subsystem.getDefaultCommand();
-                    if (defaultCommand != null && !activeSubsystemCommands.containsKey(subsystem) && !isCommandScheduled(defaultCommand)) {
-                        schedule(defaultCommand);
-                    }
                 }
             } else {
                 command.execute();
@@ -86,14 +80,6 @@ public class CommandScheduler {
         scheduledCommands.removeAll(finishedCommands);
 
         // Ensure default commands are scheduled when needed
-        for (Subsystem subsystem : getAllSubsystems()) {
-            if (!activeSubsystemCommands.containsKey(subsystem)) {
-                Command defaultCommand = subsystem.getDefaultCommand();
-                if (defaultCommand != null && !isCommandScheduled(defaultCommand)) {
-                    schedule(defaultCommand);
-                }
-            }
-        }
     }
 
 
@@ -133,10 +119,7 @@ public class CommandScheduler {
         return subsystem != null && activeSubsystemCommands.get(subsystem) == command;
     }
 
-    private boolean isDefaultCommand(Command command) {
-        Subsystem subsystem = command.getRequiredSubsystem();
-        return subsystem != null && subsystem.getDefaultCommand() == command;
-    }
+
     public void removeDuplicateCommands() {
         List<Command> uniqueCommands = new ArrayList<>();
 

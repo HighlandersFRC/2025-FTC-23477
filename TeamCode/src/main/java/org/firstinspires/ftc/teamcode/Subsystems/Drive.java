@@ -519,13 +519,4 @@ public class Drive extends Subsystem {
         return backRightMotor.getCurrentPosition();
     }
 
-    @Override
-    public void setDefaultCommand(Command command) {
-        super.setDefaultCommand(command);
-    }
-
-    @Override
-    public Command getDefaultCommand() {
-        return new DriveDefault(this); // Retrieve the set default command
-    }
 }
