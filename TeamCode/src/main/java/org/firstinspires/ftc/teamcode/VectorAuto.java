@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
+
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
 import org.firstinspires.ftc.teamcode.Tools.Vector;
 
@@ -24,7 +25,7 @@ public class VectorAuto extends LinearOpMode {
         while (opModeIsActive()) {
             double dx = targetX - Mouse.getX();
             double dy = targetY - Mouse.getY();
-            drive.autoDrive(new Vector(dx, dy), targetTheta);
+            drive.VectorDrive(new Vector(dx, dy), targetTheta);
 
             telemetry.addData("Target", "(%.2f, %.2f)", targetX, targetY);
             telemetry.addData("Current", "(%.2f, %.2f, %.1f°)", Mouse.getX(), Mouse.getY(), Math.toDegrees(Mouse.getTheta()));

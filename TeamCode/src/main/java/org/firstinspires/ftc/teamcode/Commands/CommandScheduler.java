@@ -2,10 +2,11 @@
 package org.firstinspires.ftc.teamcode.Commands;
 
 import com.qualcomm.robotcore.util.RobotLog;
-import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
-import org.firstinspires.ftc.teamcode.Tools.NewRobot;
-
 import java.util.*;
+
+import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
+
+import org.firstinspires.ftc.teamcode.Tools.NewRobot;
 
 public class CommandScheduler {
     private static CommandScheduler instance;

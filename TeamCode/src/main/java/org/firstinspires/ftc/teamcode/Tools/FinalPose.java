@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Tools;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Drive;
-
 public class FinalPose extends Object{
     public static double x;
     public static double y;

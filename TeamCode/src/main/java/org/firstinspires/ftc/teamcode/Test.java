@@ -2,31 +2,31 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Commands.CommandRangeTrack;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
+import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
 
-import org.firstinspires.ftc.teamcode.Subsystems.AprilTagState;
+import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
 
-public class TestRangeTrackDetection extends LinearOpMode {
-    AprilTagState aprilTagStates = new AprilTagState("aprilTagState");
+public class Test extends LinearOpMode {
+    ShooterState shooterStates = new ShooterState("aprilTagState");
     CommandScheduler scheduler = new CommandScheduler();
     @Override
     public void runOpMode() throws InterruptedException {
-        aprilTagStates.init(hardwareMap);
+        shooterStates.init(hardwareMap);
 
         NewRobot robot = new NewRobot(hardwareMap);
-        robot.aprilTagState = aprilTagStates;
+        robot.shooterStates = shooterStates;
         scheduler.setNewRobot(robot);
         waitForStart();
         while (opModeIsActive()) {
-            aprilTagStates.periodic();
+            shooterStates.periodic();
 
             if (gamepad1.a) {
-                aprilTagStates.setWantedState(AprilTagState.APRIL_TAG_STATE.RANGE_TRACK);
+                shooterStates.setWantedState(ShooterState.SHOOTER_STATE.SHOOT);
             } else if (gamepad1.b) {
-                scheduler.schedule(new CommandRangeTrack(robot.aprilTagState));
+                scheduler.schedule(new CommandShoot(robot.shooterStates, 5));
             }
         }
     }

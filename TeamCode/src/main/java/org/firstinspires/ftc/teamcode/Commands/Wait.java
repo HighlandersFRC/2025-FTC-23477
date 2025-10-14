@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Commands;
 
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.teamcode.Commands.Command;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 public class Wait implements Command {
@@ -10,7 +9,6 @@ public class Wait implements Command {
     private long startTime;
     private boolean isStarted;
     private double elapsed;
-    private double setTime;
 
     public Wait(long waitTime) {
         this.waitTime = waitTime;

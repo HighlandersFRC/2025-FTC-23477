@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.Tools;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Mouse {
     private static double fieldX;
