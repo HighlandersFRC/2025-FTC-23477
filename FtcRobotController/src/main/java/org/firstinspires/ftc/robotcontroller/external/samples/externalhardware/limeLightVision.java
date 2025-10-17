@@ -43,7 +43,7 @@ public class limeLightVision extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
 //sets p, i, and d values for PID
-        PID pid = new PID(0.03, 0.0, 0.0);
+        PID pid = new PID(0.05, 0.0, 0.0);
 
         //initializes limelight
         Limelight3A limelight;
