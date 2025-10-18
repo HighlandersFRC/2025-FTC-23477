@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
 
 import org.firstinspires.ftc.teamcode.Commands.CommandStopIntakeOuttake;
 import org.firstinspires.ftc.teamcode.Commands.CommandStopShoot;
+import org.firstinspires.ftc.teamcode.Commands.ConditionalCommand;
 import org.firstinspires.ftc.teamcode.Commands.ParallelCommandGroup;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
@@ -44,7 +45,18 @@ public class Test extends LinearOpMode {
             if (gamepad1.right_trigger > 0) {
                 scheduler.schedule(new CommandIntake(robot.intakeStates, 150));
             } else if (gamepad1.right_bumper) {
-                scheduler.schedule( new CommandShoot(robot.shooterStates, 5000));
+                scheduler.schedule(
+                        new ConditionalCommand(
+                                new ParallelCommandGroup(
+                                        scheduler, Parameters.ALL,
+                                        new CommandShoot(robot.shooterStates, 5000, 10000, 2500, true),
+                                        new CommandIntake(robot.intakeStates, 2500)
+                                ),
+                                new CommandShoot(robot.shooterStates, 5000, 10000, 10000, true),
+                                () -> robot.shooterStates.isAtTargetVelocity()
+                        )
+                );
+
             } else if (gamepad1.left_trigger > 0){
                 scheduler.schedule(new CommandOuttake(robot.intakeStates, 1000));
             }

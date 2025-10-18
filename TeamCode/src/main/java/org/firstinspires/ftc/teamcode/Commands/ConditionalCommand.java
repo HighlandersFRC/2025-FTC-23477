@@ -1,68 +1,56 @@
 package org.firstinspires.ftc.teamcode.Commands;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
-
 import java.util.function.BooleanSupplier;
 
 public class ConditionalCommand implements Command {
-
-    private Command onTrue;
-    private Command onFalse;
-    private Command commandToRun;
-    private BooleanSupplier condition;
+    private final Command onTrue;
+    private final Command onFalse;
+    private final BooleanSupplier condition;
+    private Command activeCommand;
+    private boolean hasTriggered = false;
 
     public ConditionalCommand(Command onTrue, Command onFalse, BooleanSupplier condition) {
-        this.condition = condition;
         this.onTrue = onTrue;
         this.onFalse = onFalse;
-        if (condition.getAsBoolean()) {
-            commandToRun = onTrue;
-        } else {
-            commandToRun = onFalse;
-        }
+        this.condition = condition;
     }
 
     @Override
     public void start() {
         if (condition.getAsBoolean()) {
-            commandToRun = onTrue;
+            activeCommand = onTrue;
+            hasTriggered = true;
         } else {
-            commandToRun = onFalse;
+            activeCommand = onFalse;
         }
-
-        if (commandToRun != null) {
-            commandToRun.start();
-        }
+        if (activeCommand != null) activeCommand.start();
     }
 
     @Override
     public void execute() {
-        if (commandToRun != null) {
-            commandToRun.execute();
+        if (!hasTriggered && condition.getAsBoolean()) {
+            if (activeCommand != null) activeCommand.end();
+            activeCommand = onTrue;
+            activeCommand.start();
+            hasTriggered = true;
         }
+
+        if (activeCommand != null) activeCommand.execute();
     }
 
     @Override
     public void end() {
-        if (commandToRun != null) {
-            commandToRun.end();
-        }
+        if (activeCommand != null) activeCommand.end();
     }
 
     @Override
     public boolean isFinished() {
-        return commandToRun != null && commandToRun.isFinished();
+        return activeCommand != null && activeCommand.isFinished();
     }
 
     @Override
     public Subsystem getRequiredSubsystem() {
         return null;
-    }
-
-    public String getSubsystem() {
-        if (commandToRun != null) {
-            return "hi";
-        }
-        return "";
     }
 }

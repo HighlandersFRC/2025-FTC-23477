@@ -55,7 +55,7 @@ public class Robot extends LinearOpMode {
             aprilTagStates.periodic();
 
             if (gamepad1.left_stick_button) {
-                scheduler.schedule(new SequentialCommandGroup(scheduler, new CommandRangeTrack(robot.aprilTagState), new CommandShoot(robot.shooterStates, 5000)));
+                scheduler.schedule(new SequentialCommandGroup(scheduler, new CommandRangeTrack(robot.aprilTagState), new CommandShoot(robot.shooterStates, 3000, 2000, 3000, true)));
             } else if (gamepad1.right_trigger > 0){
                 scheduler.schedule(new CommandIntake(robot.intakeStates, 5000));
             }
