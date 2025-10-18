@@ -44,7 +44,7 @@ public class Test extends LinearOpMode {
             if (gamepad1.right_trigger > 0) {
                 scheduler.schedule(new CommandIntake(robot.intakeStates, 150));
             } else if (gamepad1.right_bumper) {
-                scheduler.schedule(new ParallelCommandGroup(scheduler, Parameters.ANY, new CommandIntake(robot.intakeStates, 5000), new CommandShoot(robot.shooterStates, 5000)));
+                scheduler.schedule( new CommandShoot(robot.shooterStates, 5000));
             } else if (gamepad1.left_trigger > 0){
                 scheduler.schedule(new CommandOuttake(robot.intakeStates, 1000));
             }
