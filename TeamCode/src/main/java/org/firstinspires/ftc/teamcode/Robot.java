@@ -55,14 +55,9 @@ public class Robot extends LinearOpMode {
             aprilTagStates.periodic();
 
             if (gamepad1.left_stick_button) {
-                scheduler.schedule(new SequentialCommandGroup(scheduler, new CommandRangeTrack(robot.aprilTagState), new CommandShoot(robot.shooterStates, 5)));
+                scheduler.schedule(new SequentialCommandGroup(scheduler, new CommandRangeTrack(robot.aprilTagState), new CommandShoot(robot.shooterStates, 5000)));
             } else if (gamepad1.right_trigger > 0){
-                scheduler.schedule(new CommandIntake(robot.intakeStates));
-            } else if (gamepad1.left_trigger > 0) {
-                scheduler.schedule(new CommandJammed(robot.shooterStates, 10));
-            } else {
-                scheduler.schedule(new ParallelCommandGroup(scheduler, Parameters.ALL, new CommandStopIntakeOuttake(robot.intakeStates), new CommandStopShoot(robot.shooterStates)));
-                drive.FeildCentric(gamepad1);
+                scheduler.schedule(new CommandIntake(robot.intakeStates, 5000));
             }
 
             TelemetryPacket packet = new TelemetryPacket();

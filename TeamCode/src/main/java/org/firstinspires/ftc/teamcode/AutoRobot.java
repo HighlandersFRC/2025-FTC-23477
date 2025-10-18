@@ -76,7 +76,7 @@ public class AutoRobot extends LinearOpMode {
 
             scheduler.schedule(new SequentialCommandGroup(scheduler,
                     AutoRobot1,
-                    new CommandIntake(robot.intakeStates),
+                    new CommandIntake(robot.intakeStates, 5000),
                     AutoRobot2,
                     new CommandShoot(robot.shooterStates, 5)
             ));

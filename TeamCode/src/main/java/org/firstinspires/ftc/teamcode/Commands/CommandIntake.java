@@ -6,14 +6,18 @@ import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 public class CommandIntake implements Command{
     IntakeState intakeStates;
+    long startTime;
+    long duration;
 
-    public CommandIntake(IntakeState intakeStates){
+    public CommandIntake(IntakeState intakeStates, long millis){
         this.intakeStates = intakeStates;
+        this.duration = millis;
     }
 
 
     @Override
     public void start() {
+        startTime = System.currentTimeMillis();
         intakeStates.setWantedState(IntakeState.INTAKE_STATE.INTAKE);
     }
 
@@ -29,7 +33,7 @@ public class CommandIntake implements Command{
 
     @Override
     public boolean isFinished() {
-            return false;
+        return System.currentTimeMillis() - startTime >= duration;
     }
 
     @Override

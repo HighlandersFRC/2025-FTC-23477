@@ -24,11 +24,11 @@ public class CommandRangeTrack implements Command{
     @Override
     public void end() {
         aprilTagState.setWantedState(AprilTagState.APRIL_TAG_STATE.RANGE_TRACK);
-    }
+    }   
 
     @Override
     public boolean isFinished() {
-        return false; // Fix this asap
+        return true; // Fix this asap
     }
 
     @Override

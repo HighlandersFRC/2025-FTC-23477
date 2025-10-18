@@ -8,9 +8,9 @@ public class CommandShoot implements Command {
     ShooterState shooterStates;
     long startTime;
     long duration;
-    public CommandShoot(ShooterState shooterStates, long seconds) {
+    public CommandShoot(ShooterState shooterStates, long millis) {
         this.shooterStates = shooterStates;
-        this.duration = seconds * 1000;
+        this.duration = millis;
     }
 
     @Override

@@ -56,7 +56,7 @@ public class ShooterState extends Subsystem {
     }
 
     private void handleShootingState() {
-        ShooterMotor.setPower(1);
+        ShooterMotor.setPower(0.70);
     }
 
     private void handleJammedState() {

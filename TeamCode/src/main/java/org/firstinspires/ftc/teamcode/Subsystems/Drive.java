@@ -75,7 +75,6 @@ public class Drive extends Subsystem {
     }
 
 
-
     private void initialize(HardwareMap hardwareMap) {
         frontLeftMotor = hardwareMap.get(DcMotorEx.class, "left_front");
         backLeftMotor = hardwareMap.get(DcMotorEx.class, "left_back");
@@ -151,10 +150,9 @@ public class Drive extends Subsystem {
     }
 
     public void teleopDrive(Gamepad gamepad1) {
-        double x = -gamepad1.left_stick_x*2;
+        double x = -gamepad1.left_stick_x * 2;
         double y = -gamepad1.left_stick_y;
         double rx = gamepad1.right_stick_x;
-
 
 
         double frontLeftPower = (-y + x + rx);
@@ -169,8 +167,8 @@ public class Drive extends Subsystem {
         backRightMotor.setPower(backRightPower);
     }
 
-    public  void stop() {
-        drive(0,0,0,0);
+    public void stop() {
+        drive(0, 0, 0, 0);
 
         backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -187,13 +185,10 @@ public class Drive extends Subsystem {
     }
 
 
-
     public void FeildCentric(Gamepad gamepad) {
 
 
-
-
-        double x = -gamepad.left_stick_x*2;
+        double x = -gamepad.left_stick_x * 2;
         double y = -gamepad.left_stick_y;
         double rx = -gamepad.right_stick_x;
 
@@ -206,24 +201,19 @@ public class Drive extends Subsystem {
         }
 
 
-
-
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
         double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
-        double frontLeftPower = (-rotY + rotX + rx);
-        double backLeftPower = (-rotY - rotX + rx);
+        double frontLeftPower = (-rotY - rotX + rx);
+        double backLeftPower = (rotY - rotX + rx);
         double frontRightPower = (-rotY - rotX - rx);
-        double backRightPower = (rotY - rotX + rx);
+        double backRightPower = (-rotY + rotX + rx);
 
 
-
-        frontLeftMotor.setPower(-frontLeftPower);
-        backLeftMotor.setPower(-backLeftPower);
-        frontRightMotor.setPower(-frontRightPower);
-        backRightMotor.setPower(-backRightPower);
-
-
+        frontLeftMotor.setPower(frontLeftPower);
+        backLeftMotor.setPower(backLeftPower);
+        frontRightMotor.setPower(frontRightPower);
+        backRightMotor.setPower(backRightPower);
 
 
     }
@@ -249,13 +239,12 @@ public class Drive extends Subsystem {
     }
 
 
-
     private boolean insideRadius(double deltaX, double deltaY, double deltaTheta, double radius) {
         return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2) + Math.pow(deltaTheta, 2)) < radius;
     }
 
 
-    public  void update() {
+    public void update() {
         double imuTheta = Peripherals.getYawDegrees();
 
         double currentLeftPos = getLeftEncoder();
@@ -292,10 +281,6 @@ public class Drive extends Subsystem {
     }
 
 
-
-
-
-
     public void setPosition(double fieldX, double fieldY, double fieldTheta) {
         x = fieldX;
         y = fieldY;
@@ -309,7 +294,8 @@ public class Drive extends Subsystem {
     public int getLeftEncoder() {
         return backRightMotor.getCurrentPosition();
     }
-    public  int getRightEncoder() {
+
+    public int getRightEncoder() {
         return frontLeftMotor.getCurrentPosition();
     }
 
@@ -336,10 +322,9 @@ public class Drive extends Subsystem {
         }
     }*/
 
-    public  int getCenterEncoder() {
+    public int getCenterEncoder() {
         return frontRightMotor.getCurrentPosition();
     }
-
 
 
     public void autoDrive(Vector vector, double angle) {
@@ -415,20 +400,4 @@ public class Drive extends Subsystem {
         backLeftMotor.setPower(backLeftPower);
         backRightMotor.setPower(backRightPower);
     }
-
-    public void sketchDrive(Gamepad gamepad1) {
-        if (gamepad1.dpad_up) {
-            drive(1,  -1, 1, 1);
-        }
-//        } else if (gamepad1.dpad_right) {
-//            drive(1,1,1,1);
-//        } else if (gamepad1.dpad_left) {
-//            drive(-1,-1,-1,-1);
-//        } else if (gamepad1.dpad_down) {
-//            drive(1,-1,1,-1);
-//        } else {
-        stop();
-        drive(0,0,0,0);
-    }
-
 }
