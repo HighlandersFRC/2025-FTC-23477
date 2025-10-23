@@ -17,9 +17,13 @@ public class limeLightTurner extends LinearOpMode {
 
 //sets p, i, and d values for each individual wheel
         PID pidrf = new PID(0.03, 0.0, 0.01);
+        pidrf.update(1);
         PID pidrb = new PID(0.03, 0.0, 0.01);
+        pidrb.update(1);
         PID pidlf = new PID(0.03, 0.0, 0.01);
+        pidlf.update(1);
         PID pidlb = new PID(0.03, 0.0, 0.01);
+        pidlb.update(1);
 
 
         //initializes limelight
