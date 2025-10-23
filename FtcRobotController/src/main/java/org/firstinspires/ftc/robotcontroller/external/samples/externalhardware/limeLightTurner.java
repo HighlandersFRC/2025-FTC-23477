@@ -15,11 +15,11 @@ public class limeLightTurner extends LinearOpMode {
 //method call
     public void runOpMode() throws InterruptedException {
 
-//sets p, i, and d values for PID
-        PID pidrf = new PID(0.05, 0.0, 0.0);
-        PID pidrb = new PID(0.05, 0.0, 0.0);
-        PID pidlf = new PID(0.05, 0.0, 0.0);
-        PID pidlb = new PID(0.05, 0.0, 0.0);
+//sets p, i, and d values for each individual wheel
+        PID pidrf = new PID(0.03, 0.0, 0.01);
+        PID pidrb = new PID(0.03, 0.0, 0.01);
+        PID pidlf = new PID(0.03, 0.0, 0.01);
+        PID pidlb = new PID(0.03, 0.0, 0.01);
 
 
         //initializes limelight
@@ -78,10 +78,10 @@ public class limeLightTurner extends LinearOpMode {
                 double rotxrf = pidlf.update(bx);
                 double rotxrb = pidlb.update(bx);
 
-                powerlf = Math.max(-0.4, Math.min(0.4, powerlf));
-                powerlb = Math.max(-0.4, Math.min(0.4, powerlb));
-                powerrf = Math.max(-0.4, Math.min(0.4, powerrf));
-                powerrb = Math.max(-0.4, Math.min(0.4, powerrb));
+                powerlf = Math.max(-0.25, Math.min(0.25, powerlf));
+                powerlb = Math.max(-0.25, Math.min(0.25, powerlb));
+                powerrf = Math.max(-0.25, Math.min(0.25, powerrf));
+                powerrb = Math.max(-0.25, Math.min(0.25, powerrb));
 
                 //initializes integers
                 int error = 1;
@@ -90,6 +90,7 @@ public class limeLightTurner extends LinearOpMode {
                 int motorposr2 = right_back.getCurrentPosition();
                 int motorposl2 = left_back.getCurrentPosition();
                 int id = result.getFiducialResults().get(0).getFiducialId();
+                int targetCount = result.getBotposeTagCount();
 
                 //initializes strings
                 String family = result.getFiducialResults().get(0).getFamily();
@@ -97,20 +98,22 @@ public class limeLightTurner extends LinearOpMode {
                 String robtarpos = String.valueOf(result.getFiducialResults().get(0).getRobotPoseTargetSpace());
 
                 if (tx < -error) {
-                    right_front.setPower((powerrf) + (rotxrf) + (rotyrf)/3 );
+                    right_front.setPower((-powerrf) + (-rotxrf) + (-rotyrf)/3 );
                     left_front.setPower((-powerlf) + (-rotylf) + (-rotxlf)/3);
-                    right_back.setPower((-powerrb) + (-rotyrb) + (-rotxrb)/3);
+                    right_back.setPower((powerrb) + (rotyrb) + (rotxrb)/3);
                     left_back.setPower((powerlb) + (rotxlb) + (rotylb)/3);
-                } else if (tx > error) {
-                    right_front.setPower((-powerrf) + (-rotxrf) + (-rotyrf)/3);
+                } else if (tx > -error) {
+                    right_front.setPower((powerrf) + (rotxrf) + (rotyrf)/3);
                     left_front.setPower((powerlf) + (rotxlf) + (rotylf)/3);
-                    right_back.setPower((powerrb) + (rotxrb) + (rotyrb)/3);
+                    right_back.setPower((-powerrb) + (-rotxrb) + (-rotyrb)/3);
                     left_back.setPower((-powerlb) + (-rotxlb) + (-rotylb)/3);
-                } else{
+                } else if (targetCount == 0){
                     right_front.setPower(0);
                     left_front.setPower(0);
                     right_back.setPower(0);
                     left_back.setPower(0);
+                } else {
+                    break;
                 }
 
                 //shows telemetry on the driver station
