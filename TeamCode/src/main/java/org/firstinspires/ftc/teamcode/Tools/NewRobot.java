@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Drive;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
+import org.firstinspires.ftc.teamcode.Subsystems.SequencerState;
 import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 
 
@@ -17,11 +18,12 @@ public class NewRobot {
     public ShooterState shooterStates;
     public IntakeState intakeStates;
     public AprilTagState aprilTagState;
-
+    public SequencerState sequencerState;
     public NewRobot(HardwareMap hardwareMap) {
         this.shooterStates = new ShooterState("shooter");
         this.intakeStates = new IntakeState("intake");
         this.aprilTagState = new AprilTagState("aprilTagState");
+        this.sequencerState = new SequencerState("sequencer");
     }
 
     public void run() {
@@ -33,6 +35,7 @@ public class NewRobot {
         shooterStates.init(hardwareMap);
         intakeStates.init(hardwareMap);
         aprilTagState.init(hardwareMap);
+        sequencerState.init(hardwareMap);
     }
 
 }

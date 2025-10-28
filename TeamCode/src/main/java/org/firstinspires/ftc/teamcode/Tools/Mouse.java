@@ -15,7 +15,7 @@ public class Mouse {
 
         mouse.setLinearUnit(SparkFunOTOS.LinearUnit.METERS);
         mouse.setAngularUnit(SparkFunOTOS.AngularUnit.DEGREES);
-        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0.08255, 0.1016, -270);
+        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0.08255, 0.1016, 0);
         mouse.setOffset(offset);
         mouse.setLinearScalar(1.005809562240364);
         mouse.setAngularScalar(0.989932511851);

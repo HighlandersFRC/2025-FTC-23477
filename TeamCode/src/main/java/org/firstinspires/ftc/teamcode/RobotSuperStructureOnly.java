@@ -17,20 +17,22 @@ public class RobotSuperStructureOnly extends LinearOpMode {
     FtcDashboard dashboard = FtcDashboard.getInstance();
     ShooterState shooterStates = new ShooterState("shooter");
     IntakeState intakeStates = new IntakeState("intake");
-    Drive drive = new Drive("Drive", hardwareMap);
 
     @Override
     public void runOpMode() throws InterruptedException {
         shooterStates.init(hardwareMap);
         intakeStates.init(hardwareMap);
-
+        Drive drive = new Drive("Drive", hardwareMap);
         waitForStart();
 
         while (opModeIsActive()) {
             shooterStates.periodic();
             intakeStates.periodic();
 
+
             if (gamepad1.right_trigger > 0) {
+                shooterStates.setTargetRPM(6000);
+                shooterStates.setTargetTicks(15000);
                 shooterStates.setWantedState(ShooterState.SHOOTER_STATE.SHOOT);
             } else if (gamepad1.left_trigger > 0) {
                 shooterStates.setWantedState(ShooterState.SHOOTER_STATE.JAMMED);

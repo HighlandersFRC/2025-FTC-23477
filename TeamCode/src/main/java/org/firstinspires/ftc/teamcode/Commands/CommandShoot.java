@@ -19,6 +19,7 @@ public class CommandShoot implements Command {
         this.targetTicks = targetTicks;
         this.duration = duration;
         this.useTickEnd = useTickEnd;
+
     }
 
     @Override
@@ -31,12 +32,9 @@ public class CommandShoot implements Command {
 
     @Override
     public void execute() {
-        if (shooterState.isAtTargetVelocity()) readyToFeed = true;
+        if (System.currentTimeMillis() - startTime >= duration) readyToFeed = true;
     }
 
-    public boolean readyToFeed() {
-        return readyToFeed;
-    }
 
     @Override
     public void end() {

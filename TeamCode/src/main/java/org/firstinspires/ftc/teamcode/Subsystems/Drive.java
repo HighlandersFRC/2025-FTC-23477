@@ -344,10 +344,10 @@ public class Drive extends Subsystem {
 
         double denominator = Math.max(0.3, Math.abs(rotY) + Math.abs(rotX) + Math.abs(rotationFactor));
 
-        double frontLeftPower = (-rotY + rotX + rotationFactor) / denominator;
-        double frontRightPower = (-rotY - rotX - rotationFactor) / denominator;
-        double backLeftPower = (-rotY - rotX + rotationFactor) / denominator;
-        double backRightPower = (rotY - rotX + rotationFactor) / denominator;
+        double frontLeftPower = (-rotY + rotX + rotationFactor) ;
+        double backLeftPower = (rotY + rotX - rotationFactor) ;
+        double frontRightPower = (-rotY - rotX - rotationFactor);
+        double backRightPower = (-rotY + rotX - rotationFactor);
 
 
         //        double frontLeftPower = (-rotY + rotX + rx);
@@ -372,12 +372,16 @@ public class Drive extends Subsystem {
         }
 */
 
-        frontRightMotor.setPower(frontRightPower);
-        frontLeftMotor.setPower(frontLeftPower);
-        backLeftMotor.setPower(backLeftPower);
-        backRightMotor.setPower(backRightPower);
+        frontRightMotor.setPower(-frontRightPower);
+        frontLeftMotor.setPower(-frontLeftPower);
+        backLeftMotor.setPower(-backLeftPower);
+        backRightMotor.setPower(-backRightPower);
     }
-
+    public void resetMouse(Gamepad gamepad){
+        if (gamepad.options){
+            Mouse.configureOtos();
+        }
+    }
     public void VectorDrive(Vector vector, double angle) {
         double vx = vector.getI();
         double vy = vector.getJ();
@@ -390,10 +394,10 @@ public class Drive extends Subsystem {
 
         double denominator = Math.max(0.3, Math.abs(rotY) + Math.abs(rotX) + Math.abs(rotationFactor));
 
-        double frontLeftPower = (-rotY + rotX + rotationFactor) / denominator;
-        double frontRightPower = (-rotY - rotX - rotationFactor) / denominator;
-        double backLeftPower = (-rotY - rotX + rotationFactor) / denominator;
-        double backRightPower = (rotY - rotX + rotationFactor) / denominator;
+        double frontLeftPower = (-rotY + rotX + rotationFactor) ;
+        double backLeftPower = (rotY + rotX -  rotationFactor) ;
+        double frontRightPower = (-rotY - rotX -  rotationFactor) / denominator;
+        double backRightPower = (-rotY + rotX -  rotationFactor) / denominator;
 
         frontRightMotor.setPower(frontRightPower);
         frontLeftMotor.setPower(frontLeftPower);

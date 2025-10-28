@@ -33,8 +33,8 @@ public class Peripherals extends Subsystem {
         imu = hardwareMap.get(IMU.class, "imu");
 
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,   // adjust this line
-                RevHubOrientationOnRobot.UsbFacingDirection.DOWN        // adjust this line
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,   // adjust this line
+                RevHubOrientationOnRobot.UsbFacingDirection.UP        // adjust this line
         ));
 
         imu.initialize(parameters);

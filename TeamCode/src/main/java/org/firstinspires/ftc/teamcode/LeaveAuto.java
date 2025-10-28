@@ -20,9 +20,9 @@ import org.firstinspires.ftc.teamcode.Tools.FinalPose;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
 
+
 @Autonomous
 public class LeaveAuto extends LinearOpMode {
-
     private FtcDashboard dashboard;
 
     @Override
@@ -35,9 +35,9 @@ public class LeaveAuto extends LinearOpMode {
         Drive drive = new Drive("drive", hardwareMap);
         drive.setPosition(0, 0, 0);
 
-        PathLoading path1 = new PathLoading(hardwareMap.appContext, "DriveForwardOneMeter.polarpath");
+        PathLoading path1 = new PathLoading(hardwareMap.appContext, "DriveForward.polarpath");
         CommandScheduler scheduler = new CommandScheduler();
-        drive = new Drive("drive", hardwareMap);
+        drive = new Drive("drive", hardwareMap) ;
         Peripherals peripherals = new Peripherals("peripherals");
         PolarPathFollower DriveForward;
 
