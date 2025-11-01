@@ -15,10 +15,10 @@ public class Mouse {
 
         mouse.setLinearUnit(SparkFunOTOS.LinearUnit.METERS);
         mouse.setAngularUnit(SparkFunOTOS.AngularUnit.DEGREES);
-        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0.08255, 0.1016, 0);
+        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0.0127, -0.0635, 180); // Recalibrate
         mouse.setOffset(offset);
-        mouse.setLinearScalar(1.005809562240364);
-        mouse.setAngularScalar(0.989932511851);
+        mouse.setLinearScalar(1.005809562240364); // Recalibrate
+        mouse.setAngularScalar(0.989932511851);  // Recalibrate
         mouse.calibrateImu();
         mouse.resetTracking();
         System.out.println("configured");

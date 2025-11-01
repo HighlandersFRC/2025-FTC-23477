@@ -23,7 +23,7 @@ public class CommandRangeTrack implements Command{
 
     @Override
     public void end() {
-        aprilTagState.setWantedState(AprilTagState.APRIL_TAG_STATE.RANGE_TRACK);
+        aprilTagState.setWantedState(AprilTagState.APRIL_TAG_STATE.DEFAULT);
     }   
 
     @Override

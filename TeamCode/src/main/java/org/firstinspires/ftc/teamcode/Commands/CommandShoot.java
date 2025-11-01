@@ -32,7 +32,8 @@ public class CommandShoot implements Command {
 
     @Override
     public void execute() {
-        if (System.currentTimeMillis() - startTime >= duration) readyToFeed = true;
+        if (isFinished()) readyToFeed = true;
+        // if (System.currentTimeMillis() - startTime >= duration) readyToFeed = true;
     }
 
 
