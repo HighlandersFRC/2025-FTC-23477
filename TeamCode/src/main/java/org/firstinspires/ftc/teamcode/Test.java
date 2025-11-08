@@ -4,13 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Commands.CommandIntake;
-import org.firstinspires.ftc.teamcode.Commands.CommandJammed;
 import org.firstinspires.ftc.teamcode.Commands.CommandOuttake;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
 
-import org.firstinspires.ftc.teamcode.Commands.CommandStopIntakeOuttake;
-import org.firstinspires.ftc.teamcode.Commands.CommandStopShoot;
 import org.firstinspires.ftc.teamcode.Commands.ConditionalCommand;
 import org.firstinspires.ftc.teamcode.Commands.ParallelCommandGroup;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
@@ -63,7 +60,7 @@ public class Test extends LinearOpMode {
 
             scheduler.run();
 
-            drive.FeildCentric(gamepad1);
+            drive.FieldCentric(gamepad1);
         }
     }
 

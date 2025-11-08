@@ -185,7 +185,7 @@ public class Drive extends Subsystem {
     }
 
 
-    public void FeildCentric(Gamepad gamepad) {
+    public void FieldCentric(Gamepad gamepad) {
 
 
         double x = -gamepad.left_stick_x * 2;
