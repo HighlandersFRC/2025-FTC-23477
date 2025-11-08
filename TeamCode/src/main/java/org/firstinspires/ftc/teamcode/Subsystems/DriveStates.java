@@ -9,11 +9,12 @@ public class DriveStates extends Subsystem {
     private DRIVE_STATE currentSuperState = DRIVE_STATE.IDLE;
     private Drive drive;
     private PID xPID = new PID(1, 0, 0);
-    private PID thetaPID = new PID(0.015, 0, 0.001);
-    private double DISTANCE_TOLERANCE = 0.2;
+    private PID thetaPID = new PID(0.01, 0, 0.001);
+    private double DISTANCE_TOLERANCE = 0.1;
     private double THETA_TOLERANCE = 2.0;
     private double distance;
     private double targetTheta;
+    private double forwardTargetTheta = 0;
 
     public DriveStates(String name) {
         super(name);
@@ -38,7 +39,8 @@ public class DriveStates extends Subsystem {
         DEFAULT,
         IDLE,
         DRIVE_FORWARD,
-        DRIVE_TURN
+        DRIVE_TURN_RIGHT,
+        DRIVE_TURN_LEFT
     }
 
     private DRIVE_STATE handleStateTransitions() {
@@ -46,7 +48,8 @@ public class DriveStates extends Subsystem {
             case DEFAULT: currentSuperState = DRIVE_STATE.DEFAULT; break;
             case IDLE: currentSuperState = DRIVE_STATE.IDLE; break;
             case DRIVE_FORWARD: currentSuperState = DRIVE_STATE.DRIVE_FORWARD; break;
-            case DRIVE_TURN: currentSuperState = DRIVE_STATE.DRIVE_TURN; break;
+            case DRIVE_TURN_RIGHT: currentSuperState = DRIVE_STATE.DRIVE_TURN_RIGHT; break;
+            case DRIVE_TURN_LEFT: currentSuperState = DRIVE_STATE.DRIVE_TURN_LEFT; break;
         }
         return currentSuperState;
     }
@@ -57,25 +60,53 @@ public class DriveStates extends Subsystem {
 
     private void handleIdleState() {}
 
-    public void driveForwardDriveDistanceX(double distance) {
-        this.distance = distance;
+    public void driveForwardDriveDistanceX(double distanceMeters) {
+        Mouse.configureOtos();      // reset odometry X to 0 before starting a new forward move
+        this.distance = distanceMeters;  // set target distance relative to current position
+        forwardTargetTheta = Mouse.getTheta();
     }
 
+
     private double driveForwardDistance() {
-        return distance + (Mouse.getX() / 100.0);
+        return distance; // instead of distance + Mouse.getX()/100
     }
 
     private void handleDriveForwardState() {
-        xPID.setSetPoint(driveForwardDistance());
+        // Forward control
+        xPID.setSetPoint(distance);
         xPID.updatePID(Mouse.getX());
-        drive.drive(xPID.getResult(), xPID.getResult(), -xPID.getResult(), -xPID.getResult());
+        double forward = xPID.getResult();
+
+        // Heading hold control
+        thetaPID.setSetPoint(forwardTargetTheta);
+        thetaPID.updatePID(Mouse.getTheta());
+        double turn = thetaPID.getResult();
+
+        // Mecanum drive correction:
+        // forward + turn on left, forward - turn on right
+        drive.drive(
+                forward + turn,
+                forward - turn,
+                -(forward + turn),
+                -(forward - turn)
+        );
     }
+
 
     public void driveTurnDriveDistanceTheta(double degrees) {
         targetTheta = normalizeAngle(Mouse.getTheta() + degrees);
     }
 
-    private void handleDriveTurnState() {
+    private void handleDriveTurnRightState() {
+        handleDriveTurn(true);  // true = turning right
+    }
+
+    private void handleDriveTurnLeftState() {
+        handleDriveTurn(false); // false = turning left
+    }
+
+    // Unified turning logic
+    private void handleDriveTurn (boolean turnRight) {
         double currentTheta = Mouse.getTheta();
         double error = angleError(targetTheta, currentTheta);
 
@@ -93,8 +124,11 @@ public class DriveStates extends Subsystem {
 
         power = clamp(power, -0.6, 0.6);
         if (Math.abs(power) < 0.1) power = Math.signum(power) * 0.1;
-
+    if (turnRight) {
         drive.drive(-power, power, -power, power);
+    } else {
+        drive.drive(power, -power, power, -power);
+    }
     }
 
     public boolean isFinishedX() {
@@ -114,7 +148,8 @@ public class DriveStates extends Subsystem {
             case DEFAULT: handleDefaultState(); break;
             case IDLE: handleIdleState(); break;
             case DRIVE_FORWARD: handleDriveForwardState(); break;
-            case DRIVE_TURN: handleDriveTurnState(); break;
+            case DRIVE_TURN_RIGHT: handleDriveTurnRightState(); break;
+            case DRIVE_TURN_LEFT: handleDriveTurnLeftState(); break;
         }
     }
 

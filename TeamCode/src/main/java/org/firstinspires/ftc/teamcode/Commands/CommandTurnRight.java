@@ -3,18 +3,18 @@ package org.firstinspires.ftc.teamcode.Commands;
 import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
-public class CommandDrive implements Command{
+public class CommandTurnRight implements Command{
     DriveStates drive;
-    double distance;
-    public CommandDrive (DriveStates drive, double distance) {
+    double degrees;
+    public CommandTurnRight(DriveStates drive, double degrees) {
         this.drive = drive;
-        this.distance = distance;
+        this.degrees = degrees;
     }
 
     @Override
     public void start() {
-        drive.driveForwardDriveDistanceX(distance);
-        drive.setWantedState(DriveStates.DRIVE_STATE.DRIVE_FORWARD);
+        drive.driveTurnDriveDistanceTheta(degrees);
+        drive.setWantedState(DriveStates.DRIVE_STATE.DRIVE_TURN_RIGHT);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class CommandDrive implements Command{
 
     @Override
     public boolean isFinished() {
-        return drive.isFinishedX();
+        return drive.isFinishedTheta();
     }
 
     @Override

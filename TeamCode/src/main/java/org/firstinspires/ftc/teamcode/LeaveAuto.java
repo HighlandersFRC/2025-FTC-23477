@@ -1,79 +1,74 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
-
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.PathingTool.PathLoading;
-
+import org.firstinspires.ftc.teamcode.Commands.CommandDrive;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
-import org.firstinspires.ftc.teamcode.PathingTool.PolarPathFollower;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Drive;
-import org.firstinspires.ftc.teamcode.Subsystems.Peripherals;
+import org.firstinspires.ftc.teamcode.Subsystems.AprilTagState;
+import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
+import org.firstinspires.ftc.teamcode.Subsystems.SequencerState;
+import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 
-import org.firstinspires.ftc.teamcode.Tools.Constants;
-import org.firstinspires.ftc.teamcode.Tools.FieldOfMerit;
-import org.firstinspires.ftc.teamcode.Tools.FinalPose;
-import org.firstinspires.ftc.teamcode.Tools.Mouse;
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
-
+import org.firstinspires.ftc.teamcode.Tools.Mouse;
 
 @Autonomous
 public class LeaveAuto extends LinearOpMode {
-    private FtcDashboard dashboard;
+
+    DriveStates drive = new DriveStates("drive");
+    ShooterState shooterState = new ShooterState("shooterStates");
+    SequencerState sequencerState = new SequencerState("sequncer");
+    IntakeState intakeState = new IntakeState("intake");
+    AprilTagState aprilTagState = new AprilTagState("aprilTag");
 
     @Override
     public void runOpMode() throws InterruptedException {
-        dashboard = FtcDashboard.getInstance();
-        FieldOfMerit.initialize(hardwareMap);
-        Mouse.init(hardwareMap);
-        Mouse.configureOtos();
-        NewRobot robot = new NewRobot(hardwareMap);
-        Drive drive = new Drive("drive", hardwareMap);
-        drive.setPosition(0, 0, 0);
 
-        PathLoading path1 = new PathLoading(hardwareMap.appContext, "DriveForward.polarpath");
         CommandScheduler scheduler = new CommandScheduler();
-        drive = new Drive("drive", hardwareMap) ;
-        Peripherals peripherals = new Peripherals("peripherals");
-        PolarPathFollower DriveForward;
 
+        NewRobot robot = new NewRobot(hardwareMap);
+        robot.driveStates = drive;
+        robot.shooterStates = shooterState;
+        robot.sequencerState = sequencerState;
+        robot.intakeStates = intakeState;
+        robot.aprilTagState = aprilTagState;
+        scheduler.setNewRobot(robot);
+
+        shooterState.setCameraConfig(
+                14.0,
+                30.0,
+                0.0
+        );
+
+        shooterState.enableAprilTagAdjustment(true);
+
+        robot.initialize(hardwareMap);
+
+        Mouse.configureOtos();
 
         waitForStart();
-        try {
-            DriveForward = new PolarPathFollower(drive, peripherals, path1.getJsonPathData(), Constants.commandMap, Constants.conditionMap, scheduler);
-            scheduler.schedule(
-                    DriveForward
-            );
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+
+
+        scheduler.schedule(
+                new CommandDrive(robot.driveStates, 1)
+        );
+
+
         while (opModeIsActive()) {
-            FinalPose.poseUpdate();
+            Mouse.update();
 
             scheduler.run();
 
+            drive.periodic();
+            intakeState.periodic();
+            sequencerState.periodic();
+            shooterState.periodic();
 
-            double robotX = FinalPose.x;
-            double robotY = FinalPose.y;
-            double robotTheta = FinalPose.Yaw;
-            double currentTime = System.currentTimeMillis();
-
-            TelemetryPacket packet = new TelemetryPacket();
-            packet.put("Robot X", -robotY);
-            packet.put("Robot Y", -robotX);
-            packet.put("Robot Theta", robotTheta);
-            packet.put("Time", currentTime);
-            packet.put("Target Angle", 150);
-            dashboard.sendTelemetryPacket(packet);
-
-            telemetry.addData("X", -robotY);
-            telemetry.addData("Y", -robotX);
-            telemetry.addData("Theta", robotTheta);
-            telemetry.addData( "Time", currentTime);
+            telemetry.addData("MOuseX", Mouse.getX());
+            telemetry.addData("MOuseTheta", Mouse.getTheta());
             telemetry.update();
         }
     }

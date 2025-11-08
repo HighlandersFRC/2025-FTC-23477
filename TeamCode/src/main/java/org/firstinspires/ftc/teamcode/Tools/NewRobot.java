@@ -34,7 +34,7 @@ public class NewRobot {
     }
 
     // Initialize hardware for all subsystems
-    public void initialize(HardwareMap hardwareMap, Telemetry telemetry) {
+    public void initialize(HardwareMap hardwareMap) {
         shooterStates.init(hardwareMap);
         intakeStates.init(hardwareMap);
         aprilTagState.init(hardwareMap);

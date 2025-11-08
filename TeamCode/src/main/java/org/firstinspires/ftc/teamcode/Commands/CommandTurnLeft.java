@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.Commands;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
-public class CommandTurn implements Command{
+public class CommandTurnLeft implements Command{
     DriveStates drive;
     double degrees;
-    public CommandTurn (DriveStates drive, double degrees) {
+    public CommandTurnLeft(DriveStates drive, double degrees) {
         this.drive = drive;
         this.degrees = degrees;
     }
@@ -15,7 +14,7 @@ public class CommandTurn implements Command{
     @Override
     public void start() {
         drive.driveTurnDriveDistanceTheta(degrees);
-        drive.setWantedState(DriveStates.DRIVE_STATE.DRIVE_TURN);
+        drive.setWantedState(DriveStates.DRIVE_STATE.DRIVE_TURN_LEFT);
     }
 
     @Override
@@ -35,6 +34,6 @@ public class CommandTurn implements Command{
 
     @Override
     public Subsystem getRequiredSubsystem() {
-        return null;
+        return drive;
     }
 }
