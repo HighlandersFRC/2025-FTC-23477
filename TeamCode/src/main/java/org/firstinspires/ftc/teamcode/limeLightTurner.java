@@ -99,7 +99,7 @@ public class limeLightTurner extends LinearOpMode {
                     left_front.setPower(-power);
                     right_back.setPower(power);
                     left_back.setPower(power);
-                } else if (tx > -error && id == 24) {
+                } else if (tx > error && id == 24) {
                     right_front.setPower(power);
                     left_front.setPower(power);
                     right_back.setPower(-power);
