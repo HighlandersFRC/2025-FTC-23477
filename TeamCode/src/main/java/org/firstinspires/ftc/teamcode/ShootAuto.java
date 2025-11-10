@@ -26,8 +26,7 @@ import org.firstinspires.ftc.teamcode.Tools.Mouse;
 import org.firstinspires.ftc.teamcode.Tools.Parameters;
 
 @Autonomous
-public class AutoRobot extends LinearOpMode {
-
+public class ShootAuto extends LinearOpMode {
     DriveStates drive = new DriveStates("drive");
     ShooterState shooterState = new ShooterState("shooterStates");
     SequencerState sequencerState = new SequencerState("sequncer");
@@ -52,16 +51,19 @@ public class AutoRobot extends LinearOpMode {
                 30.0,
                 0.0
         );
+
         shooterState.enableAprilTagAdjustment(true);
 
         robot.initialize(hardwareMap);
+
         Mouse.configureOtos();
 
         waitForStart();
 
-        // --- Schedule autonomous sequence ---
+
         scheduler.schedule(
-                new SequentialCommandGroup(scheduler,
+                new SequentialCommandGroup(
+                        scheduler,
                         new ConditionalCommand(
                                 new ParallelCommandGroup(
                                         scheduler, Parameters.ALL,
@@ -71,47 +73,46 @@ public class AutoRobot extends LinearOpMode {
                                 new CommandShoot(robot.shooterStates, 5500, 15000, 5500, true),
                                 () -> robot.shooterStates.isAtTargetVelocity()
                         ),
-                        new Wait(0),
-                        new CommandTurnLeft(robot.driveStates, -135),   // positive 90
+                        new CommandTurnLeft(robot.driveStates, -45),
                         new Wait(0),
                         new ParallelCommandGroup(
                                 scheduler,
                                 Parameters.ALL,
-                                    new CommandDrive(robot.driveStates, 0.4), // forward 1 meter, Mouse.X reset internally
-                                    new CommandIntake(robot.intakeStates, 1000)
+                                new CommandDrive(robot.driveStates, 0.6), // forward 1 meter, Mouse.X reset internally
+                                new CommandIntake(robot.intakeStates, 1000)
                         ),
                         new Wait(0),
-                        new CommandDrive(robot.driveStates, -0.4),
+                        new CommandDrive(robot.driveStates, -0.6),
                         new Wait(0),
-                        new CommandTurnRight(robot.driveStates, 135),
-                        new SequentialCommandGroup(scheduler,
-                                new ConditionalCommand(
-                                        new ParallelCommandGroup(
-                                                scheduler, Parameters.ALL,
-                                                new CommandShoot(robot.shooterStates, 5500, 15000, 5500, true),
-                                                new CommandSpinRight(robot.sequencerState, 5500)
-                                        ),
+                        new CommandTurnRight(robot.driveStates, 40),
+                        new ConditionalCommand(
+                                new ParallelCommandGroup(
+                                        scheduler, Parameters.ALL,
                                         new CommandShoot(robot.shooterStates, 5500, 15000, 5500, true),
-                                        () -> robot.shooterStates.isAtTargetVelocity()
+                                        new CommandSpinRight(robot.sequencerState, 5500)
                                 ),
-                                new CommandTurnLeft(robot.driveStates, -135),   // positive 90
-                                new Wait(0),
-                                new CommandDrive(robot.driveStates, 1)
+                                new CommandShoot(robot.shooterStates, 5500, 15000, 5500, true),
+                                () -> robot.shooterStates.isAtTargetVelocity()
+                        ),
+                        new CommandTurnLeft(robot.driveStates, -45),
+                        new Wait(0),
+                        new CommandDrive(robot.driveStates, 0.6)
                 )
-        ));
+        );
 
 
-        // --- Main loop ---
         while (opModeIsActive()) {
             Mouse.update();
+
             scheduler.run();
+
             drive.periodic();
             intakeState.periodic();
             sequencerState.periodic();
             shooterState.periodic();
 
-            telemetry.addData("MouseX", Mouse.getX());
-            telemetry.addData("MouseTheta", Mouse.getTheta());
+            telemetry.addData("MOuseX", Mouse.getX());
+            telemetry.addData("MOuseTheta", Mouse.getTheta());
             telemetry.update();
         }
     }

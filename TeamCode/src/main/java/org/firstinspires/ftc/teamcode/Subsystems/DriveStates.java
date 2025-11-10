@@ -72,26 +72,10 @@ public class DriveStates extends Subsystem {
     }
 
     private void handleDriveForwardState() {
-        // Forward control
-        xPID.setSetPoint(distance);
+        xPID.setSetPoint(driveForwardDistance());
         xPID.updatePID(Mouse.getX());
-        double forward = xPID.getResult();
-
-        // Heading hold control
-        thetaPID.setSetPoint(forwardTargetTheta);
-        thetaPID.updatePID(Mouse.getTheta());
-        double turn = thetaPID.getResult();
-
-        // Mecanum drive correction:
-        // forward + turn on left, forward - turn on right
-        drive.drive(
-                forward + turn,
-                forward - turn,
-                -(forward + turn),
-                -(forward - turn)
-        );
+        drive.drive(xPID.getResult(), xPID.getResult(), -xPID.getResult(), -xPID.getResult());
     }
-
 
     public void driveTurnDriveDistanceTheta(double degrees) {
         targetTheta = normalizeAngle(Mouse.getTheta() + degrees);
