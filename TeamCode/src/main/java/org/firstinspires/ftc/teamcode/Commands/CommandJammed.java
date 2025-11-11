@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Commands;
 
 import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 public class CommandJammed  implements Command {
     ShooterState shooterStates;
     long startTime;
@@ -19,7 +18,8 @@ public class CommandJammed  implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
+        return false;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class CommandJammed  implements Command {
     }
 
     @Override
-    public Subsystem getRequiredSubsystem() {
+    public boolean getRequiredSubsystem() {
         return shooterStates;
     }
 }

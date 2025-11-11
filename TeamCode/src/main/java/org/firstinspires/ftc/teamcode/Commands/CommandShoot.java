@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Commands;
 
 import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
-import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 public class CommandShoot implements Command {
 
@@ -30,8 +29,9 @@ public class CommandShoot implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         if (shooterState.isAtTargetVelocity()) readyToFeed = true;
+        return false;
     }
 
     public boolean readyToFeed() {
@@ -50,7 +50,7 @@ public class CommandShoot implements Command {
     }
 
     @Override
-    public Subsystem getRequiredSubsystem() {
+    public boolean getRequiredSubsystem() {
         return shooterState;
     }
 }

@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.Commands;
 
 import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
-
 public class CommandStopShoot implements Command{
     ShooterState shooterStates;
 
@@ -17,8 +15,9 @@ public class CommandStopShoot implements Command{
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
 
+        return false;
     }
 
     @Override
@@ -32,7 +31,7 @@ public class CommandStopShoot implements Command{
     }
 
     @Override
-    public Subsystem getRequiredSubsystem() {
+    public boolean getRequiredSubsystem() {
         return shooterStates;
     }
 }

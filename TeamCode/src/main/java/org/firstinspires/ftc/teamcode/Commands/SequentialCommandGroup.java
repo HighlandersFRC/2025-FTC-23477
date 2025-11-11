@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode.Commands;
 
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -36,7 +34,7 @@ public class SequentialCommandGroup implements Command {
     }
 
     @Override
-    public void execute()  {
+    public boolean execute()  {
         if (currentCommand != null && currentCommand.isFinished()) {
             currentCommand.end();
             currentCommandIndex++;
@@ -57,6 +55,7 @@ public class SequentialCommandGroup implements Command {
         } else {
             // currentExecutionCount++;
         }
+        return false;
     }
 
     @Override
@@ -75,7 +74,7 @@ public class SequentialCommandGroup implements Command {
     }
 
     @Override
-    public Subsystem getRequiredSubsystem() {
+    public boolean getRequiredSubsystem() {
         return null;
     }
 }

@@ -4,7 +4,6 @@ import org.firstinspires.ftc.teamcode.Commands.*;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.Peripherals;
-import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 import org.firstinspires.ftc.teamcode.Tools.FinalPose;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
@@ -66,7 +65,7 @@ public class PolarPathFollower implements Command {
         yawPID.setMaxOutput(2);
         yawPID.setMinOutput(-2);
     }
-    public void execute() {
+    public boolean execute() {
         FinalPose.poseUpdate();
         double elapsedTime = getPathTime() - pathStartTime;
         int index = (int) ((elapsedTime + 0.05) / 0.01);
@@ -106,6 +105,7 @@ public class PolarPathFollower implements Command {
         } catch (JSONException e) {
             throw new RuntimeException("Error reading point data from JSON", e);
         }
+        return false;
     }
     private Command parseCommand(JSONObject commandJSON) throws JSONException {
         if (commandJSON.has("command")) {
@@ -161,7 +161,7 @@ public class PolarPathFollower implements Command {
         return getCurrentTime() >= points.length() * 0.01;
     }
     @Override
-    public Subsystem getRequiredSubsystem() {
+    public boolean getRequiredSubsystem() {
         return null;
     }
 }

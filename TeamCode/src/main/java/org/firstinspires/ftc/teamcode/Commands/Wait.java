@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.Commands;
 
 import com.qualcomm.robotcore.util.RobotLog;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
-
 public class Wait implements Command {
     private final long waitTime;
     private long startTime;
@@ -22,11 +20,12 @@ public class Wait implements Command {
     }
 
     @Override
-    public void execute() {
+    public boolean execute() {
         if (isStarted) {
             elapsed = System.currentTimeMillis() - startTime;
             RobotLog.d("Wait Command Executing: WaitTime=" + waitTime + "ms, Elapsed=" + elapsed + "ms");
         }
+        return false;
     }
 
     @Override
@@ -41,7 +40,7 @@ public class Wait implements Command {
     }
 
     @Override
-    public Subsystem getRequiredSubsystem() {
+    public boolean getRequiredSubsystem() {
         return null;
     }
 }
