@@ -1,4 +1,7 @@
+
 package org.firstinspires.ftc.teamcode.Commands;
+
+import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 import org.firstinspires.ftc.teamcode.Tools.Parameters;
 
@@ -37,11 +40,10 @@ public class ParallelCommandGroup implements Command {
     }
 
     @Override
-    public boolean execute() {
+    public void execute() {
         for (Command command : commands) {
             command.execute();
         }
-        return false;
     }
 
     @Override
@@ -79,7 +81,7 @@ public class ParallelCommandGroup implements Command {
     }
 
     @Override
-    public boolean getRequiredSubsystem() {
+    public Subsystem getRequiredSubsystem() {
         return null;
     }
 }

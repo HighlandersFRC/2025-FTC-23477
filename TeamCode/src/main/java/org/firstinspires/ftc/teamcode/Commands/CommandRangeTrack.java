@@ -1,7 +1,9 @@
+
 package org.firstinspires.ftc.teamcode.Commands;
 
 import org.firstinspires.ftc.teamcode.Subsystems.AprilTagState;
 
+import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 public class CommandRangeTrack implements Command{
     AprilTagState aprilTagState;
 
@@ -16,15 +18,14 @@ public class CommandRangeTrack implements Command{
     }
 
     @Override
-    public boolean execute() {
+    public void execute() {
 
-        return false;
     }
 
     @Override
     public void end() {
-        aprilTagState.setWantedState(AprilTagState.APRIL_TAG_STATE.RANGE_TRACK);
-    }   
+        aprilTagState.setWantedState(AprilTagState.APRIL_TAG_STATE.DEFAULT);
+    }
 
     @Override
     public boolean isFinished() {
@@ -32,7 +33,7 @@ public class CommandRangeTrack implements Command{
     }
 
     @Override
-    public boolean getRequiredSubsystem() {
+    public Subsystem getRequiredSubsystem() {
         return aprilTagState;
     }
 }

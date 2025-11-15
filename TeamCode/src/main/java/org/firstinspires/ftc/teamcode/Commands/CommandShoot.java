@@ -1,6 +1,8 @@
+
 package org.firstinspires.ftc.teamcode.Commands;
 
 import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
+import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 public class CommandShoot implements Command {
 
@@ -18,6 +20,7 @@ public class CommandShoot implements Command {
         this.targetTicks = targetTicks;
         this.duration = duration;
         this.useTickEnd = useTickEnd;
+
     }
 
     @Override
@@ -29,14 +32,10 @@ public class CommandShoot implements Command {
     }
 
     @Override
-    public boolean execute() {
-        if (shooterState.isAtTargetVelocity()) readyToFeed = true;
-        return false;
+    public void execute() {
+        if (System.currentTimeMillis() - startTime >= (1000 - duration)) readyToFeed = true;
     }
 
-    public boolean readyToFeed() {
-        return readyToFeed;
-    }
 
     @Override
     public void end() {
@@ -50,7 +49,7 @@ public class CommandShoot implements Command {
     }
 
     @Override
-    public boolean getRequiredSubsystem() {
+    public Subsystem getRequiredSubsystem() {
         return shooterState;
     }
 }

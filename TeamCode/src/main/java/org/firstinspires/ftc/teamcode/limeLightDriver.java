@@ -86,7 +86,7 @@ public class limeLightDriver extends LinearOpMode {
                     int targetCount = fiducials.size();
 
                     tx = result.getTx();
-                    id = targetCount > 0 ? fiducials.get(0).getFiducialId() : -1;
+                    id = result.getFiducialResults().get(0).getFiducialId();
                     int error = 1;
                     PID theta = new PID(1.0, 0.0, 0.02);
 
@@ -98,13 +98,13 @@ public class limeLightDriver extends LinearOpMode {
                     double by = result.getBotpose().getPosition().y;
 
                     if (id == 24 && gamepad1.a) {
-                        if (tx < -error) {
+                        if (tx <= error) {
                             // turn left
                             right_front.setPower(power);
                             left_front.setPower(power);
                             right_back.setPower(-power);
                             left_back.setPower(-power);
-                        } else if (tx > error) {
+                        } else if (tx >= error) {
                             // turn right
                             right_front.setPower(-power);
                             left_front.setPower(-power);
@@ -158,4 +158,3 @@ public class limeLightDriver extends LinearOpMode {
         }
     }
 }
-

@@ -1,5 +1,7 @@
+
 package org.firstinspires.ftc.teamcode.Commands;
 
+import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 import java.util.function.BooleanSupplier;
 
 public class ConditionalCommand implements Command {
@@ -27,7 +29,7 @@ public class ConditionalCommand implements Command {
     }
 
     @Override
-    public boolean execute() {
+    public void execute() {
         if (!hasTriggered && condition.getAsBoolean()) {
             if (activeCommand != null) activeCommand.end();
             activeCommand = onTrue;
@@ -36,7 +38,6 @@ public class ConditionalCommand implements Command {
         }
 
         if (activeCommand != null) activeCommand.execute();
-        return false;
     }
 
     @Override
@@ -50,7 +51,7 @@ public class ConditionalCommand implements Command {
     }
 
     @Override
-    public boolean getRequiredSubsystem() {
+    public Subsystem getRequiredSubsystem() {
         return null;
     }
 }

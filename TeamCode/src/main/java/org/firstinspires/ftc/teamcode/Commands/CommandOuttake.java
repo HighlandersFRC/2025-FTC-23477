@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.Commands;
 
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
 
+import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
+
 public class CommandOuttake implements Command{
     IntakeState intakeStates;
     long startTime;
@@ -20,9 +22,8 @@ public class CommandOuttake implements Command{
     }
 
     @Override
-    public boolean execute() {
+    public void execute() {
 
-        return false;
     }
 
     @Override
@@ -36,7 +37,7 @@ public class CommandOuttake implements Command{
     }
 
     @Override
-    public boolean getRequiredSubsystem() {
+    public Subsystem getRequiredSubsystem() {
         return intakeStates;
     }
 }
