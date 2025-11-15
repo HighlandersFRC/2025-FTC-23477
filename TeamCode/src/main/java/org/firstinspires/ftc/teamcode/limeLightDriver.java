@@ -73,59 +73,40 @@ public class limeLightDriver extends LinearOpMode {
         // Vision control toggle
         waitForStart();
         while (opModeIsActive()) {
-            intakeStates.periodic();
-            shooterState.periodic();
 
-            // ------ VISION-ASSISTED DRIVE ------
             {
                 LLResult result = limelight.getLatestResult();
-                double tx = 0;
-                int id = 0;
                 if (result != null && result.isValid()) {
                     List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
                     int targetCount = fiducials.size();
 
-                    tx = result.getTx();
-                    id = result.getFiducialResults().get(0).getFiducialId();
+                    double tx = result.getTx();
+                    int id = result.getFiducialResults().get(0).getFiducialId();
                     int error = 1;
                     PID theta = new PID(1.0, 0.0, 0.02);
 
-                    double rotxfactor = (tx / 99.9 / 1440);
-                    double mouserot = mouse.getAngularScalar();
-                    double motorpowerdivid = (theta.updatePID(rotxfactor + mouserot) / 2);
-                    double power = motorpowerdivid / 2;
+                    double power = (theta.updatePID(tx));
                     double bx = result.getBotpose().getPosition().x;
                     double by = result.getBotpose().getPosition().y;
 
                     if (id == 24 && gamepad1.a) {
-                        if (tx <= error) {
+
                             // turn left
                             right_front.setPower(power);
                             left_front.setPower(power);
                             right_back.setPower(-power);
                             left_back.setPower(-power);
-                        } else if (tx >= error) {
-                            // turn right
-                            right_front.setPower(-power);
-                            left_front.setPower(-power);
-                            right_back.setPower(power);
-                            left_back.setPower(power);
-                        } else {
-                            // localized
+                            if (targetCount == 0 || tx == 0) {
                             right_front.setPower(0);
                             left_front.setPower(0);
                             right_back.setPower(0);
                             left_back.setPower(0);
-                            telemetry.addData("status", "localized");
-                        }
-                    } else if (targetCount == 0) {
-                        // No AprilTag - stop motors
-                        right_front.setPower(0);
-                        left_front.setPower(0);
-                        right_back.setPower(0);
-                        left_back.setPower(0);
-                        telemetry.addData("status", "no tag");
+                            }
                     }
+
+                    telemetry.addData("tx", tx);
+                    telemetry.addData("id", id);
+                    telemetry.update();
                 } else {
                     sleep(0);
                 }
@@ -151,10 +132,9 @@ public class limeLightDriver extends LinearOpMode {
                 scheduler.run();
                 drive.FieldCentric(gamepad1);
 
-                telemetry.addData("tx", tx);
-                telemetry.addData("id", id);
-                telemetry.update();
             }
         }
     }
 }
+
+
