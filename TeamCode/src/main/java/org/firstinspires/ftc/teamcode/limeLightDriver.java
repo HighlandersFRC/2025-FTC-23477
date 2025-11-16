@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
 import org.firstinspires.ftc.teamcode.Tools.PID;
 import org.firstinspires.ftc.teamcode.Tools.SparkFunOTOS;
 
@@ -21,6 +22,8 @@ import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
 import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
 import org.firstinspires.ftc.teamcode.Tools.Parameters;
+import org.firstinspires.ftc.teamcode.Commands.CommandTurnLeft;
+import org.firstinspires.ftc.teamcode.Commands.CommandTurnRight;
 
 import java.util.List;
 
@@ -29,6 +32,7 @@ public class limeLightDriver extends LinearOpMode {
 
     IntakeState intakeStates = new IntakeState("aashrithStates");
     ShooterState shooterState = new ShooterState("shooterState");
+    DriveStates driveStates = new DriveStates("drive");
     CommandScheduler scheduler = new CommandScheduler();
 
     @Override
@@ -62,6 +66,7 @@ public class limeLightDriver extends LinearOpMode {
         // Command and subsystem robot structure
         intakeStates.init(hardwareMap);
         shooterState.init(hardwareMap);
+        driveStates.init(hardwareMap);
 
         NewRobot robot = new NewRobot(hardwareMap);
         robot.intakeStates = intakeStates;
@@ -70,7 +75,6 @@ public class limeLightDriver extends LinearOpMode {
 
         Drive drive = new Drive("drive", hardwareMap);
 
-        // Vision control toggle
         waitForStart();
         while (opModeIsActive()) {
 
@@ -91,11 +95,12 @@ public class limeLightDriver extends LinearOpMode {
 
                     if (id == 24 && gamepad1.a) {
 
-                            // turn left
-                            right_front.setPower(power);
-                            left_front.setPower(power);
-                            right_back.setPower(-power);
-                            left_back.setPower(-power);
+                            if (tx > error) {
+                                scheduler.schedule(new CommandTurnLeft(driveStates, tx));
+                                scheduler.run();
+                            } else if (tx < -error) {
+                                scheduler.schedule(new CommandTurnRight(driveStates, tx));
+                            }
                             if (targetCount == 0 || tx == 0) {
                             right_front.setPower(0);
                             left_front.setPower(0);
@@ -106,6 +111,7 @@ public class limeLightDriver extends LinearOpMode {
 
                     telemetry.addData("tx", tx);
                     telemetry.addData("id", id);
+                    telemetry.addData("coordinates", "x", bx, "y" , by);
                     telemetry.update();
                 } else {
                     sleep(0);
