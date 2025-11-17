@@ -47,13 +47,6 @@ public class AutoRobot extends LinearOpMode {
         robot.aprilTagState = aprilTagState;
         scheduler.setNewRobot(robot);
 
-        shooterState.setCameraConfig(
-                14.0,
-                30.0,
-                0.0
-        );
-        shooterState.enableAprilTagAdjustment(true);
-
         robot.initialize(hardwareMap);
         Mouse.configureOtos();
 
@@ -65,10 +58,10 @@ public class AutoRobot extends LinearOpMode {
                         new ConditionalCommand(
                                 new ParallelCommandGroup(
                                         scheduler, Parameters.ALL,
-                                        new CommandShoot(robot.shooterStates, 5500, 15000, 5500, true),
+                                        new CommandShoot(robot.shooterStates, 5500, 15000),
                                         new CommandSpinRight(robot.sequencerState, 5500)
                                 ),
-                                new CommandShoot(robot.shooterStates, 5500, 15000, 5500, true),
+                                new CommandShoot(robot.shooterStates, 5500, 15000),
                                 () -> robot.shooterStates.isAtTargetVelocity()
                         ),
                         new Wait(0),
@@ -88,10 +81,10 @@ public class AutoRobot extends LinearOpMode {
                                 new ConditionalCommand(
                                         new ParallelCommandGroup(
                                                 scheduler, Parameters.ALL,
-                                                new CommandShoot(robot.shooterStates, 5500, 15000, 5500, true),
+                                                new CommandShoot(robot.shooterStates, 5500, 15000),
                                                 new CommandSpinRight(robot.sequencerState, 5500)
                                         ),
-                                        new CommandShoot(robot.shooterStates, 5500, 15000, 5500, true),
+                                        new CommandShoot(robot.shooterStates, 5500, 15000),
                                         () -> robot.shooterStates.isAtTargetVelocity()
                                 ),
                                 new CommandTurnLeft(robot.driveStates, -135),   // positive 90

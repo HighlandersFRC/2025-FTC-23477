@@ -40,14 +40,6 @@ public class AutoTest extends LinearOpMode {
         robot.aprilTagState = aprilTagState;
         scheduler.setNewRobot(robot);
 
-        shooterState.setCameraConfig(
-                14.0,
-                30.0,
-                0.0
-        );
-
-        shooterState.enableAprilTagAdjustment(true);
-
         robot.initialize(hardwareMap);
 
         Mouse.configureOtos();

@@ -1,40 +1,41 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import org.firstinspires.ftc.teamcode.Tools.PID;
+import org.firstinspires.ftc.teamcode.Tools.PIDF;
 
-import java.util.List;
+import java.util.Arrays;
 
 public class ShooterState extends Subsystem {
 
     private SHOOTER_STATE wantedSuperState = SHOOTER_STATE.IDLE;
     private SHOOTER_STATE currentSuperState = SHOOTER_STATE.IDLE;
+    private SHOOTER_STATE previousSuperState = SHOOTER_STATE.IDLE;
     private DcMotor ShooterMotor;
 
-    private PID velocityPID;
+    private PIDF velocityPID;
     private double targetRPM = 0;
-    private double targetTicks = 0;
-    private boolean reachedTarget = false;
 
     private int ticksPerRev = 28;
 
     private int lastEncoderPos = 0;
     private long lastTime = 0;
-    private double currentTicksPerSecond = 0;
 
-    // Limelight integration
+    // Simplified velocity measurement - less filtering
+    private double filteredRPM = 0;
+    private final double ALPHA = 0.5; // Less aggressive filtering
+
+    private static final int VELOCITY_SAMPLES = 3; // Fewer samples for faster response
+    private double[] velocitySamples = new double[VELOCITY_SAMPLES];
+    private int sampleIndex = 0;
+
     private Limelight3A limelight;
     private boolean useAprilTagAdjustment = false;
     private boolean aprilTagDetected = false;
 
-    // Camera configuration for distance calculation
-    private double cameraHeightInches = 12.0;  // ADJUST: Your camera height from ground
-    private double targetHeightInches = 18.0;  // ADJUST: AprilTag height from ground
-    private double cameraAngleDegrees = 15.0;  // ADJUST: Camera upward tilt angle
+    private double feedForward = (double) 1 / 6000;
 
     public ShooterState(String name) {
         super(name);
@@ -46,24 +47,17 @@ public class ShooterState extends Subsystem {
         ShooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         ShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        velocityPID = new PID(0.0005, 0.00001, 0.0001);
+        // PURE FEEDFORWARD + TINY P correction only
+        // No I or D to prevent oscillation
+        velocityPID = new PIDF(0.005, 0, 0, feedForward);
         velocityPID.setMinOutput(-1);
         velocityPID.setMaxOutput(1);
 
         lastTime = System.nanoTime();
         lastEncoderPos = ShooterMotor.getCurrentPosition();
+        filteredRPM = 0;
 
-        // Initialize Limelight
-        try {
-            limelight = hardwareMap.get(Limelight3A.class, "limelight");
-            limelight.pipelineSwitch(0); // Switch to AprilTag pipeline
-            limelight.start();
-            System.out.println("SHOOTER: Limelight initialized successfully");
-        } catch (Exception e) {
-            // Limelight not found, continue without it
-            limelight = null;
-            System.out.println("SHOOTER: Limelight not found - " + e.getMessage());
-        }
+        Arrays.fill(velocitySamples, 0);
     }
 
     public void setTargetRPM(double rpm) {
@@ -72,122 +66,51 @@ public class ShooterState extends Subsystem {
         System.out.println("SHOOTER: Target RPM set to " + rpm);
     }
 
-    public void setTargetTicks(double ticks) {
-        targetTicks = ticks;
-        reachedTarget = false;
-        ShooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        ShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        lastEncoderPos = 0;
-        lastTime = System.nanoTime();
-        System.out.println("SHOOTER: Target ticks set to " + ticks);
-    }
-
-    public void enableAprilTagAdjustment(boolean enable) {
-        useAprilTagAdjustment = enable;
-        System.out.println("SHOOTER: AprilTag adjustment " + (enable ? "ENABLED" : "DISABLED"));
-    }
-
-    public void setCameraConfig(double cameraHeight, double targetHeight, double cameraAngle) {
-        this.cameraHeightInches = cameraHeight;
-        this.targetHeightInches = targetHeight;
-        this.cameraAngleDegrees = cameraAngle;
-        System.out.println("SHOOTER: Camera config set - Height: " + cameraHeight +
-                ", Target Height: " + targetHeight + ", Angle: " + cameraAngle);
-    }
-
-    public boolean hasReachedTargetTicks() {
-        return reachedTarget;
-    }
-
     public boolean isAprilTagDetected() {
         return aprilTagDetected;
     }
 
-    private double getCurrentRPM() {
+    public double getCurrentRPM() {
         int currentPos = ShooterMotor.getCurrentPosition();
         long currentTime = System.nanoTime();
         double dt = (currentTime - lastTime) / 1e9;
         int deltaTicks = currentPos - lastEncoderPos;
 
-        if (dt > 0) currentTicksPerSecond = deltaTicks / dt;
+        if (dt > 0.015) { // 15ms threshold
+            double ticksPerSecond = deltaTicks / dt;
+            lastEncoderPos = currentPos;
+            lastTime = currentTime;
 
-        lastEncoderPos = currentPos;
-        lastTime = currentTime;
+            double rawRPM = (ticksPerSecond / ticksPerRev) * 60.0;
 
-        return (currentTicksPerSecond / ticksPerRev) * 60.0;
-    }
+            velocitySamples[sampleIndex] = rawRPM;
+            sampleIndex = (sampleIndex + 1) % VELOCITY_SAMPLES;
 
-    private void updateTargetFromAprilTag() {
-        aprilTagDetected = false;
+            double avgRPM = 0;
+            for (double sample : velocitySamples) {
+                avgRPM += sample;
+            }
+            avgRPM /= VELOCITY_SAMPLES;
 
-        if (limelight == null) {
-            System.out.println("SHOOTER: Limelight is null");
-            return;
+            filteredRPM = ALPHA * avgRPM + (1 - ALPHA) * filteredRPM;
         }
 
-        if (!useAprilTagAdjustment) {
-            return;
-        }
-
-        LLResult result = limelight.getLatestResult();
-        if (result == null || !result.isValid()) {
-            System.out.println("SHOOTER: No valid Limelight result");
-            return;
-        }
-
-        // Get AprilTag results
-        List<LLResultTypes.FiducialResult> fiducials = result.getFiducialResults();
-        if (fiducials.isEmpty()) {
-            System.out.println("SHOOTER: No AprilTags detected");
-            return;
-        }
-
-        // Use the closest/most visible tag
-        LLResultTypes.FiducialResult bestTag = fiducials.get(0);
-        int tagId = bestTag.getFiducialId();
-        aprilTagDetected = true;
-        System.out.println("SHOOTER: Detected AprilTag ID: " + tagId);
-
-        // Get horizontal and vertical angles to target
-        double targetXDegrees = bestTag.getTargetXDegrees();
-        double targetYDegrees = bestTag.getTargetYDegrees();
-
-        // Calculate distance based on vertical angle
-        double angleToTarget = cameraAngleDegrees + targetYDegrees;
-        double heightDiff = targetHeightInches - cameraHeightInches;
-        double distance = Math.abs(heightDiff / Math.tan(Math.toRadians(angleToTarget)));
-
-        // Calculate RPM based on distance using the formula
-        double calculatedRPM = calculateRPMFromDistance(distance);
-        System.out.println("SHOOTER: Tag " + tagId + " at " + distance + " inches -> " + calculatedRPM + " RPM");
-        setTargetRPM(calculatedRPM);
-    }
-
-    private double calculateRPMFromDistance(double distance) {
-
-        double a = 1;
-        double b = 30.0;
-        double c = 2000.0;
-
-        double calculatedRPM = a * distance * distance + b * distance + c;
-
-        double minRPM = 0000.0;
-        double maxRPM = 6000.0;
-
-        double clampedRPM = Math.max(minRPM, Math.min(maxRPM, calculatedRPM));
-
-        System.out.println("SHOOTER: Raw calculated RPM: " + calculatedRPM + ", Clamped: " + clampedRPM);
-
-        return clampedRPM;
+        return filteredRPM;
     }
 
     private void runVelocityPID() {
         double currentRPM = getCurrentRPM();
-        double output = velocityPID.updatePID(currentRPM);
-        ShooterMotor.setPower(output);
+        velocityPID.updatePID(currentRPM);
+        ShooterMotor.setPower(velocityPID.getResult());
+        System.out.println("Current RPM : " + currentRPM + "RPM");
     }
 
     private SHOOTER_STATE handleStateTransitions() {
+        if (wantedSuperState != previousSuperState) {
+            velocityPID.reset();
+            previousSuperState = wantedSuperState;
+        }
+
         switch (wantedSuperState) {
             case DEFAULT:
                 currentSuperState = SHOOTER_STATE.DEFAULT;
@@ -210,34 +133,34 @@ public class ShooterState extends Subsystem {
     }
 
     private void handleDefaultState() {
-        ShooterMotor.setPower(0);
+        velocityPID.setSetPoint(2900);
+        runVelocityPID();
+
+//        ShooterMotor.setPower(0);
     }
 
     private void handleIdleState() {
         ShooterMotor.setPower(0);
+        filteredRPM = 0;
+        velocityPID.reset();
+        for (int i = 0; i < VELOCITY_SAMPLES; i++) {
+            velocitySamples[i] = 0;
+        }
+        sampleIndex = 0;
     }
 
     private void handleShootingState() {
-        // Update target RPM based on AprilTag if enabled (only adjusts RPM, doesn't stop shooter)
-        updateTargetFromAprilTag();
-
-        // Always run velocity PID - just like the original code
         runVelocityPID();
-
-        if (Math.abs(ShooterMotor.getCurrentPosition()) >= targetTicks) {
-            System.out.println("SHOOTER: Reached target ticks, stopping");
-            ShooterMotor.setPower(0);
-            reachedTarget = true;
-        }
     }
 
     private void handleJammedState() {
-        ShooterMotor.setPower(-0.267);
+        velocityPID.setSetPoint(-500);
+        runVelocityPID();
     }
 
     public boolean isAtTargetVelocity() {
         double currentRPM = getCurrentRPM();
-        return Math.abs(targetRPM - currentRPM) < 100; // within 100 RPM tolerance
+        return Math.abs(targetRPM - currentRPM) < 200;
     }
 
     public LLResult getLimelightResult() {

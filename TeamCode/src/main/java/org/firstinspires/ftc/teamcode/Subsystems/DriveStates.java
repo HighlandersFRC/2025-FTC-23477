@@ -9,7 +9,7 @@ public class DriveStates extends Subsystem {
     private DRIVE_STATE currentSuperState = DRIVE_STATE.IDLE;
     private Drive drive;
     private PID xPID = new PID(1, 0, 0);
-    private PID thetaPID = new PID(0.01, 0, 0.001);
+    private PID thetaPID = new PID(1, 0, 0.001);
     private double DISTANCE_TOLERANCE = 0.1;
     private double THETA_TOLERANCE = 2.0;
     private double distance;
@@ -74,7 +74,7 @@ public class DriveStates extends Subsystem {
     private void handleDriveForwardState() {
         xPID.setSetPoint(driveForwardDistance());
         xPID.updatePID(Mouse.getX());
-        drive.drive(xPID.getResult(), xPID.getResult(), -xPID.getResult(), -xPID.getResult());
+        drive.drive(xPID.getResult(), xPID.getResult(), xPID.getResult(), xPID.getResult());
     }
 
     public void driveTurnDriveDistanceTheta(double degrees) {

@@ -7,34 +7,31 @@ public class CommandShoot implements Command {
 
     private final ShooterState shooterState;
     private final double targetRPM;
-    private final double targetTicks;
-    private final long duration;
+    private final long shootDuration; // Total time to keep shooting
     private long startTime;
-    private final boolean useTickEnd;
-    private boolean readyToFeed = false;
 
-    public CommandShoot(ShooterState shooterState, double targetRPM, double targetTicks, long duration, boolean useTickEnd) {
+    /**
+     * @param shooterState The shooter subsystem
+     * @param targetRPM Target velocity for the shooter
+     * @param shootDuration Total duration to keep the shooter running (milliseconds)
+     */
+    public CommandShoot(ShooterState shooterState, double targetRPM, long shootDuration) {
         this.shooterState = shooterState;
         this.targetRPM = targetRPM;
-        this.targetTicks = targetTicks;
-        this.duration = duration;
-        this.useTickEnd = useTickEnd;
-
+        this.shootDuration = shootDuration;
     }
 
     @Override
     public void start() {
         startTime = System.currentTimeMillis();
         shooterState.setTargetRPM(targetRPM);
-        shooterState.setTargetTicks(targetTicks);
         shooterState.setWantedState(ShooterState.SHOOTER_STATE.SHOOT);
     }
 
     @Override
     public void execute() {
-        if (System.currentTimeMillis() - startTime >= (1000 - duration)) readyToFeed = true;
+        // Nothing needed here - just maintain shooter state
     }
-
 
     @Override
     public void end() {
@@ -43,12 +40,15 @@ public class CommandShoot implements Command {
 
     @Override
     public boolean isFinished() {
-        if (useTickEnd && shooterState.hasReachedTargetTicks()) return true;
-        return System.currentTimeMillis() - startTime >= duration;
+        return System.currentTimeMillis() - startTime >= shootDuration;
     }
 
     @Override
     public Subsystem getRequiredSubsystem() {
         return shooterState;
+    }
+
+    public boolean isAtTargetVelocity() {
+        return shooterState.isAtTargetVelocity();
     }
 }

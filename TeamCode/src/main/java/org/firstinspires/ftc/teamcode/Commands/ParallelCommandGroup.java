@@ -41,9 +41,12 @@ public class ParallelCommandGroup implements Command {
     @Override
     public void execute() {
         for (Command command : commands) {
-            command.execute();
+            if (!command.isFinished()) {
+                command.execute();
+            }
         }
     }
+
 
     @Override
     public void end() {
