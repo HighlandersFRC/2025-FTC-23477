@@ -46,54 +46,45 @@ public class ShootAuto extends LinearOpMode {
         robot.aprilTagState = aprilTagState;
         scheduler.setNewRobot(robot);
 
-        shooterState.setCameraConfig(
-                14.0,
-                30.0,
-                0.0
-        );
-
-        shooterState.enableAprilTagAdjustment(true);
-
         robot.initialize(hardwareMap);
 
         Mouse.configureOtos();
 
         waitForStart();
 
+        double RPM = 5500; long duration = 15000;
+        ConditionalCommand SHOOT = new ConditionalCommand(
+                new ParallelCommandGroup(
+                        scheduler, Parameters.ALL,
+                        new CommandShoot(robot.shooterStates, RPM, duration),
+                        new CommandSpinRight(robot.sequencerState, duration)
+                ),
+                new CommandShoot(robot.shooterStates, RPM, duration),
+                () -> robot.shooterStates.isAtTargetVelocity()
+        );
 
+        double distance = 0.6;
+        ParallelCommandGroup INTAKE = new ParallelCommandGroup(
+                scheduler,
+                Parameters.ALL,
+                new CommandDrive(robot.driveStates, distance), // forward 1 meter, Mouse.X reset internally
+                new SequentialCommandGroup(scheduler,
+                new Wait(1000),
+                new CommandIntake(robot.intakeStates, 1000)
+                )
+        );
         scheduler.schedule(
                 new SequentialCommandGroup(
                         scheduler,
-                        new ConditionalCommand(
-                                new ParallelCommandGroup(
-                                        scheduler, Parameters.ALL,
-                                        new CommandShoot(robot.shooterStates, 5500, 15000, 5500, true),
-                                        new CommandSpinRight(robot.sequencerState, 5500)
-                                ),
-                                new CommandShoot(robot.shooterStates, 5500, 15000, 5500, true),
-                                () -> robot.shooterStates.isAtTargetVelocity()
-                        ),
+                        SHOOT,
                         new CommandTurnLeft(robot.driveStates, -45),
                         new Wait(0),
-                        new ParallelCommandGroup(
-                                scheduler,
-                                Parameters.ALL,
-                                new CommandDrive(robot.driveStates, 0.6), // forward 1 meter, Mouse.X reset internally
-                                new CommandIntake(robot.intakeStates, 1000)
-                        ),
+                        INTAKE,
                         new Wait(0),
                         new CommandDrive(robot.driveStates, -0.6),
                         new Wait(0),
                         new CommandTurnRight(robot.driveStates, 40),
-                        new ConditionalCommand(
-                                new ParallelCommandGroup(
-                                        scheduler, Parameters.ALL,
-                                        new CommandShoot(robot.shooterStates, 5500, 15000, 5500, true),
-                                        new CommandSpinRight(robot.sequencerState, 5500)
-                                ),
-                                new CommandShoot(robot.shooterStates, 5500, 15000, 5500, true),
-                                () -> robot.shooterStates.isAtTargetVelocity()
-                        ),
+                        SHOOT,
                         new CommandTurnLeft(robot.driveStates, -45),
                         new Wait(0),
                         new CommandDrive(robot.driveStates, 0.6)

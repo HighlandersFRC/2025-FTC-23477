@@ -7,18 +7,12 @@ public class CommandShoot implements Command {
 
     private final ShooterState shooterState;
     private final double targetRPM;
-    private final double targetTicks;
     private final long duration;
     private long startTime;
-    private final boolean useTickEnd;
-    private boolean readyToFeed = false;
-
-    public CommandShoot(ShooterState shooterState, double targetRPM, double targetTicks, long duration, boolean useTickEnd) {
+    public CommandShoot(ShooterState shooterState, double targetRPM, long duration) {
         this.shooterState = shooterState;
         this.targetRPM = targetRPM;
-        this.targetTicks = targetTicks;
         this.duration = duration;
-        this.useTickEnd = useTickEnd;
 
     }
 
@@ -26,13 +20,12 @@ public class CommandShoot implements Command {
     public void start() {
         startTime = System.currentTimeMillis();
         shooterState.setTargetRPM(targetRPM);
-        shooterState.setTargetTicks(targetTicks);
         shooterState.setWantedState(ShooterState.SHOOTER_STATE.SHOOT);
     }
 
     @Override
     public void execute() {
-        if (System.currentTimeMillis() - startTime >= (1000 - duration)) readyToFeed = true;
+
     }
 
 
@@ -43,7 +36,6 @@ public class CommandShoot implements Command {
 
     @Override
     public boolean isFinished() {
-        if (useTickEnd && shooterState.hasReachedTargetTicks()) return true;
         return System.currentTimeMillis() - startTime >= duration;
     }
 

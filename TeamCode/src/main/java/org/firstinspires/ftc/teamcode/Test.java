@@ -37,17 +37,6 @@ public class Test extends LinearOpMode {
         shooterState.init(hardwareMap);
         sequencerState.init(hardwareMap);
 
-        // Configure camera and target heights for distance calculation
-        shooterState.setCameraConfig(
-                14.0,  // Camera height in inches - ADJUST THIS
-                30.0,  // AprilTag 24 height in inches - ADJUST THIS
-                0.0   // Camera upward tilt angle in degrees - ADJUST THIS
-        );
-
-        // Enable AprilTag-based shooter adjustment
-        // The shooter will automatically CALCULATE RPM based on distance to AprilTag 24
-        shooterState.enableAprilTagAdjustment(true);
-
         NewRobot robot = new NewRobot(hardwareMap);
         robot.intakeStates = intakeStates;
         robot.shooterStates = shooterState;
@@ -78,10 +67,10 @@ public class Test extends LinearOpMode {
                         new ConditionalCommand(
                                 new ParallelCommandGroup(
                                         scheduler, Parameters.ALL,
-                                        new CommandShoot(robot.shooterStates, 5500, 15000, 5500, true),
+                                        new CommandShoot(robot.shooterStates, 5500, 15000),
                                         new CommandSpinRight(robot.sequencerState, 5500)
                                 ),
-                                new CommandShoot(robot.shooterStates, 5500, 15000, 5500, true),
+                                new CommandShoot(robot.shooterStates, 5500, 15000),
                                 () -> robot.shooterStates.isAtTargetVelocity()
                         )
                 );
@@ -89,13 +78,6 @@ public class Test extends LinearOpMode {
             // Outtake control
             else if (gamepad1.left_trigger > 0) {
                 scheduler.schedule(new CommandOuttake(robot.intakeStates, 1000));
-            }
-
-            // Toggle AprilTag adjustment with D-pad up/down
-            if (gamepad1.dpad_up) {
-                shooterState.enableAprilTagAdjustment(true);
-            } else if (gamepad1.dpad_down) {
-                shooterState.enableAprilTagAdjustment(false);
             }
 
             // Run command scheduler
@@ -108,7 +90,6 @@ public class Test extends LinearOpMode {
             telemetry.addData("Position", "(%.2f, %.2f, %.1f°)",
                     Mouse.getX(), Mouse.getY(), Math.toDegrees(Mouse.getTheta()));
             telemetry.addData("Shooter Target RPM", "%.0f", shooterState.getCurrentTargetRPM());
-            telemetry.addData("AprilTag 24 Detected", shooterState.isAprilTagDetected() ? "YES" : "NO");
             telemetry.addData("Controls", "D-pad Up=Enable Auto, D-pad Down=Manual");
             telemetry.update();
         }
