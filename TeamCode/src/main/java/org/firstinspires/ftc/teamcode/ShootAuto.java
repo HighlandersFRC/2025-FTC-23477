@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.Tools.Parameters;
 
 @Autonomous
 public class ShootAuto extends LinearOpMode {
-    DriveStates drive = new DriveStates("drive");
+    DriveStates drive = new DriveStates("driver");
     ShooterState shooterState = new ShooterState("shooterStates");
     SequencerState sequencerState = new SequencerState("sequncer");
     IntakeState intakeState = new IntakeState("intake");
