@@ -4,8 +4,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Commands.CommandDrive;
+import org.firstinspires.ftc.teamcode.Commands.CommandIntake;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
+import org.firstinspires.ftc.teamcode.Commands.CommandSpinRight;
+import org.firstinspires.ftc.teamcode.Commands.CommandTurnLeft;
 import org.firstinspires.ftc.teamcode.Commands.CommandTurnRight;
 import org.firstinspires.ftc.teamcode.Subsystems.AprilTagState;
 import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
@@ -29,9 +32,21 @@ public class averyAuto extends LinearOpMode {
         while (opModeIsActive()) {
 
             scheduler.schedule(new CommandDrive(drive, 1000));
-            scheduler.schedule(new CommandTurnRight(drive, 90));
-            scheduler.schedule(new CommandShoot(shooterState, 4000, 20000,5, false));
             scheduler.run();
+            scheduler.schedule(new CommandTurnRight(drive, 90));
+            scheduler.run();
+            scheduler.schedule(new CommandIntake(intakeState, 5000));
+            scheduler.run();
+            scheduler.schedule(new CommandTurnLeft(drive, 90));
+            scheduler.run();
+            scheduler.schedule(new CommandDrive(drive, -1000));
+            scheduler.run();
+            scheduler.schedule(new CommandSpinRight(sequencerState, 2000));
+            scheduler.run();
+            scheduler.schedule(new CommandShoot(shooterState, 4000, 5000));
+            scheduler.run();
+
+
         }
     }
 }
