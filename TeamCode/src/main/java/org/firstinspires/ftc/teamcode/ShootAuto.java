@@ -31,8 +31,6 @@ public class ShootAuto extends LinearOpMode {
     ShooterState shooterState = new ShooterState("shooterStates");
     SequencerState sequencerState = new SequencerState("sequncer");
     IntakeState intakeState = new IntakeState("intake");
-    AprilTagState aprilTagState = new AprilTagState("aprilTag");
-
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -43,7 +41,6 @@ public class ShootAuto extends LinearOpMode {
         robot.shooterStates = shooterState;
         robot.sequencerState = sequencerState;
         robot.intakeStates = intakeState;
-        robot.aprilTagState = aprilTagState;
         scheduler.setNewRobot(robot);
 
         robot.initialize(hardwareMap);
@@ -52,7 +49,7 @@ public class ShootAuto extends LinearOpMode {
 
         waitForStart();
 
-        double RPM = 5500; long duration = 15000;
+        double RPM = 5500; long duration = 1500;
         ConditionalCommand SHOOT = new ConditionalCommand(
                 new ParallelCommandGroup(
                         scheduler, Parameters.ALL,
@@ -73,6 +70,9 @@ public class ShootAuto extends LinearOpMode {
                 new CommandIntake(robot.intakeStates, 1000)
                 )
         );
+
+
+
         scheduler.schedule(
                 new SequentialCommandGroup(
                         scheduler,
@@ -81,13 +81,13 @@ public class ShootAuto extends LinearOpMode {
                         new Wait(0),
                         INTAKE,
                         new Wait(0),
-                        new CommandDrive(robot.driveStates, -0.6),
+                        new CommandDrive(robot.driveStates, -distance),
                         new Wait(0),
-                        new CommandTurnRight(robot.driveStates, 40),
+                        new CommandTurnRight(robot.driveStates,45),
                         SHOOT,
-                        new CommandTurnLeft(robot.driveStates, -45),
+                        new CommandTurnLeft(robot.driveStates,-45),
                         new Wait(0),
-                        new CommandDrive(robot.driveStates, 0.6)
+                        new CommandDrive(robot.driveStates, distance)
                 )
         );
 

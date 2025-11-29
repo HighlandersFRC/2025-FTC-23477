@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.Tools.PID;
+import org.firstinspires.ftc.teamcode.Tools.PIDF;
 
 
 public class ShooterState extends Subsystem {
@@ -11,7 +12,7 @@ public class ShooterState extends Subsystem {
     private SHOOTER_STATE currentSuperState = SHOOTER_STATE.IDLE;
     private DcMotor ShooterMotor;
 
-    private PID velocityPID;
+    private PIDF velocityPID;
     private double targetRPM = 0;
     private double targetTicks = 0;
     private boolean reachedTarget = false;
@@ -32,7 +33,8 @@ public class ShooterState extends Subsystem {
         ShooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         ShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        velocityPID = new PID(0.0005, 0.00001, 0.0001);
+        float feedForward = (float) 1 / 6000;
+        velocityPID = new PIDF(0.0005, 0.00001, 0.0001, feedForward);
         velocityPID.setMinOutput(-1);
         velocityPID.setMaxOutput(1);
 
@@ -76,8 +78,8 @@ public class ShooterState extends Subsystem {
 
     private void runVelocityPID() {
         double currentRPM = getCurrentRPM();
-        double output = velocityPID.updatePID(currentRPM);
-        ShooterMotor.setPower(output);
+        velocityPID.updatePID(currentRPM);
+        ShooterMotor.setPower(velocityPID.getResult());
     }
 
     private SHOOTER_STATE handleStateTransitions() {
@@ -103,7 +105,8 @@ public class ShooterState extends Subsystem {
     }
 
     private void handleDefaultState() {
-        ShooterMotor.setPower(0);
+        setTargetRPM(2000);
+        runVelocityPID();
     }
 
     private void handleIdleState() {

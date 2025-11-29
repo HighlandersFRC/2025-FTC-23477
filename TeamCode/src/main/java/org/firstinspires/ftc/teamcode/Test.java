@@ -3,15 +3,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Commands.CommandIntake;
-import org.firstinspires.ftc.teamcode.Commands.CommandJammed;
-import org.firstinspires.ftc.teamcode.Commands.CommandOuttake;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
 
 import org.firstinspires.ftc.teamcode.Commands.CommandSpinRight;
-import org.firstinspires.ftc.teamcode.Commands.CommandStopIntakeOuttake;
-import org.firstinspires.ftc.teamcode.Commands.CommandStopShoot;
 import org.firstinspires.ftc.teamcode.Commands.ConditionalCommand;
 import org.firstinspires.ftc.teamcode.Commands.ParallelCommandGroup;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
@@ -45,9 +40,6 @@ public class Test extends LinearOpMode {
 
         Drive drive = new Drive("drive", hardwareMap);
 
-        telemetry.addData("Status", "Initialized");
-        telemetry.addData("AprilTag Adjustment", "ENABLED");
-        telemetry.update();
 
         waitForStart();
 
@@ -57,17 +49,12 @@ public class Test extends LinearOpMode {
             shooterState.periodic();
             sequencerState.periodic();
 
-            // Intake control
-            if (gamepad1.right_trigger > 0) {
-                scheduler.schedule(new CommandIntake(robot.intakeStates, 1000));
-            }
-            // Shoot control
-            else if (gamepad1.right_bumper) {
+             if (gamepad1.right_bumper) {
                 scheduler.schedule(
                         new ConditionalCommand(
                                 new ParallelCommandGroup(
                                         scheduler, Parameters.ALL,
-                                        new CommandShoot(robot.shooterStates, 5500, 15000),
+                                        new CommandShoot(robot.shooterStates, 5500, 1500),
                                         new CommandSpinRight(robot.sequencerState, 5500)
                                 ),
                                 new CommandShoot(robot.shooterStates, 5500, 15000),
@@ -75,14 +62,17 @@ public class Test extends LinearOpMode {
                         )
                 );
             }
-            // Outtake control
-            else if (gamepad1.left_trigger > 0) {
-                scheduler.schedule(new CommandOuttake(robot.intakeStates, 1000));
-            }
 
             // Run command scheduler
             scheduler.run();
 
+            if (gamepad1.right_trigger > 0) {
+                intakeStates.setWantedState(IntakeState.INTAKE_STATE.INTAKE);
+            } else if (gamepad1.left_trigger > 0) {
+                intakeStates.setWantedState(IntakeState.INTAKE_STATE.OUTTAKE);
+            } else {
+                intakeStates.setWantedState(IntakeState.INTAKE_STATE.DEFAULT);
+            }
             // Drive control
             drive.FeildCentric(gamepad1);
 

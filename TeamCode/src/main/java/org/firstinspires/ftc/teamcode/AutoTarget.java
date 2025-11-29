@@ -88,6 +88,10 @@ public class AutoTarget extends LinearOpMode {
                     turnPower *= 0.5;
                 }
 
+                if (botpose.getPosition().x == forwardPID.getResult()){
+                    drive.stop();
+                }
+
 
                 forwardPower = Math.max(-0.8, Math.min(0.8, forwardPower));
                 strafePower  = Math.max(-0.6, Math.min(0.6, strafePower));

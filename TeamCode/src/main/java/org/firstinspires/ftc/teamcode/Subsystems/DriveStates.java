@@ -74,7 +74,7 @@ public class DriveStates extends Subsystem {
     private void handleDriveForwardState() {
         xPID.setSetPoint(driveForwardDistance());
         xPID.updatePID(Mouse.getX());
-        drive.drive(xPID.getResult(), xPID.getResult(), -xPID.getResult(), -xPID.getResult());
+        drive.drive(-xPID.getResult(), -xPID.getResult(), -xPID.getResult(), -xPID.getResult());
     }
 
     public void driveTurnDriveDistanceTheta(double degrees) {
@@ -109,9 +109,9 @@ public class DriveStates extends Subsystem {
         power = clamp(power, -0.6, 0.6);
         if (Math.abs(power) < 0.1) power = Math.signum(power) * 0.1;
     if (turnRight) {
-        drive.drive(-power, power, -power, power);
+        drive.drive(power, power, -power, -power);
     } else {
-        drive.drive(power, -power, power, -power);
+        drive.drive(-power, -power, power, power);
     }
     }
 
