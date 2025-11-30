@@ -40,7 +40,7 @@ public class DriveStates extends Subsystem {
         IDLE,
         DRIVE_FORWARD,
         DRIVE_TURN_RIGHT,
-        DRIVE_TURN_LEFT
+        DRIVE_TURN_LEFT,
     }
 
     private DRIVE_STATE handleStateTransitions() {
