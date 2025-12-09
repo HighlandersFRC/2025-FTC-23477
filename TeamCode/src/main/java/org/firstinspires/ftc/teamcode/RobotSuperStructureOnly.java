@@ -32,7 +32,6 @@ public class RobotSuperStructureOnly extends LinearOpMode {
 
             if (gamepad1.right_trigger > 0) {
                 shooterStates.setTargetRPM(6000);
-                shooterStates.setTargetTicks(15000);
                 shooterStates.setWantedState(ShooterState.SHOOTER_STATE.SHOOT);
             } else if (gamepad1.left_trigger > 0) {
                 shooterStates.setWantedState(ShooterState.SHOOTER_STATE.JAMMED);

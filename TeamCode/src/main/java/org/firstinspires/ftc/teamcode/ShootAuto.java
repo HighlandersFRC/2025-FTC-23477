@@ -1,17 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.Tools.Constants.SHOOT;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.Commands.Command;
 import org.firstinspires.ftc.teamcode.Commands.CommandDrive;
 import org.firstinspires.ftc.teamcode.Commands.CommandIntake;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
-
-import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
-import org.firstinspires.ftc.teamcode.Commands.CommandSpinRight;
 import org.firstinspires.ftc.teamcode.Commands.CommandTurnLeft;
 import org.firstinspires.ftc.teamcode.Commands.CommandTurnRight;
-import org.firstinspires.ftc.teamcode.Commands.ConditionalCommand;
 import org.firstinspires.ftc.teamcode.Commands.ParallelCommandGroup;
 import org.firstinspires.ftc.teamcode.Commands.SequentialCommandGroup;
 import org.firstinspires.ftc.teamcode.Commands.Wait;
@@ -48,45 +47,39 @@ public class ShootAuto extends LinearOpMode {
 
         waitForStart();
 
-        double RPM = 5500; long duration = 1500;
-        ConditionalCommand SHOOT = new ConditionalCommand(
-                new ParallelCommandGroup(
-                        scheduler, Parameters.ALL,
-                        new CommandShoot(robot.shooterStates, RPM, duration),
-                        new CommandSpinRight(robot.sequencerState, duration)
-                ),
-                new CommandShoot(robot.shooterStates, RPM, duration),
-                () -> robot.shooterStates.isAtTargetVelocity()
-        );
 
         double distance = 0.6;
+
+
+        Command SHOOT = SHOOT(scheduler, robot, true);
+
+        long waitDuration = 500;
         ParallelCommandGroup INTAKE = new ParallelCommandGroup(
                 scheduler,
                 Parameters.ALL,
                 new CommandDrive(robot.driveStates, distance), // forward 1 meter, Mouse.X reset internally
                 new SequentialCommandGroup(scheduler,
-                new Wait(1000),
+                new Wait(waitDuration),
                 new CommandIntake(robot.intakeStates, 1000)
                 )
         );
 
-
-
         scheduler.schedule(
                 new SequentialCommandGroup(
                         scheduler,
+                        new CommandDrive(robot.driveStates, -0.6), //Tune This
                         SHOOT,
-                        new CommandTurnLeft(robot.driveStates, -45),
+                        new CommandTurnLeft(robot.driveStates, -55),
                         new Wait(0),
                         INTAKE,
                         new Wait(0),
-                        new CommandDrive(robot.driveStates, -distance),
+                        new CommandDrive(robot.driveStates, -distance+0.1),
                         new Wait(0),
-                        new CommandTurnRight(robot.driveStates,45),
+                        new CommandTurnRight(robot.driveStates,55),
+                        new Wait(0),
+                        new CommandDrive(robot.driveStates, -0.2),
                         SHOOT,
-                        new CommandTurnLeft(robot.driveStates,-45),
-                        new Wait(0),
-                        new CommandDrive(robot.driveStates, distance)
+                        new CommandDrive(robot.driveStates, -1)
                 )
         );
 
@@ -106,4 +99,5 @@ public class ShootAuto extends LinearOpMode {
             telemetry.update();
         }
     }
+
 }

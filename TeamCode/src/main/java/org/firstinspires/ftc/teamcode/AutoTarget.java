@@ -8,8 +8,19 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
+import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
+import org.firstinspires.ftc.teamcode.Commands.CommandSpinRight;
+import org.firstinspires.ftc.teamcode.Commands.ConditionalCommand;
+import org.firstinspires.ftc.teamcode.Commands.ParallelCommandGroup;
+import org.firstinspires.ftc.teamcode.Subsystems.AprilTagState;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
+import org.firstinspires.ftc.teamcode.Subsystems.SequencerState;
+import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
+import org.firstinspires.ftc.teamcode.Tools.NewRobot;
 import org.firstinspires.ftc.teamcode.Tools.PID;
+import org.firstinspires.ftc.teamcode.Tools.Parameters;
 
 import java.util.List;
 
@@ -19,6 +30,11 @@ public class AutoTarget extends LinearOpMode {
     private Limelight3A limelight;
     private double lastTx = 0;
 
+    IntakeState intakeStates = new IntakeState("aashrithStates");
+    ShooterState shooterState = new ShooterState("shooterState");
+    SequencerState sequencerState = new SequencerState("sequencerState");
+    AprilTagState aprilTagState = new AprilTagState("aprilTag");
+    CommandScheduler scheduler = new CommandScheduler();
 
     private final PID forwardPID = new PID(1.0, 0.0, 0.01);
     private final PID strafePID  = new PID(1.0, 0.0, 0.01);
@@ -31,6 +47,17 @@ public class AutoTarget extends LinearOpMode {
         DcMotor backLeftMotor = hardwareMap.dcMotor.get("left_back");
         DcMotor frontRightMotor = hardwareMap.dcMotor.get("right_front");
         DcMotor backRightMotor = hardwareMap.dcMotor.get("right_back");
+        intakeStates.init(hardwareMap);
+        shooterState.init(hardwareMap);
+        sequencerState.init(hardwareMap);
+        aprilTagState.init(hardwareMap);
+
+
+        NewRobot robot = new NewRobot(hardwareMap);
+        robot.intakeStates = intakeStates;
+        robot.shooterStates = shooterState;
+        robot.sequencerState = sequencerState;
+        scheduler.setNewRobot(robot);
 
         Drive drive = new Drive("drive", hardwareMap);
 
@@ -58,6 +85,10 @@ public class AutoTarget extends LinearOpMode {
         turnPID.setSetPoint(desiredTx);
 
         while (opModeIsActive()) {
+            intakeStates.periodic();
+            shooterState.periodic();
+            sequencerState.periodic();
+            aprilTagState.periodic();
 
             if (gamepad1.x) {
                 autoMode = !autoMode;
@@ -122,6 +153,34 @@ public class AutoTarget extends LinearOpMode {
 
             } else if (!autoMode) {
 
+                double RPM = 4500;
+                long duration = 2000;
+
+                if (gamepad1.right_bumper) {
+                    scheduler.schedule(
+                            new ConditionalCommand(
+                                    new ParallelCommandGroup(
+                                            scheduler, Parameters.ALL,
+                                            new CommandShoot(robot.shooterStates, RPM, duration),
+                                            new CommandSpinRight(robot.sequencerState, duration)
+                                    ),
+                                    new CommandShoot(robot.shooterStates, RPM, duration),
+                                    () -> robot.shooterStates.isAtTargetVelocity()
+                            )
+                    );
+                }
+
+                // Run command scheduler
+                scheduler.run();
+
+                if (gamepad1.right_trigger > 0) {
+                    intakeStates.setWantedState(IntakeState.INTAKE_STATE.INTAKE);
+                } else if (gamepad1.left_trigger > 0) {
+                    intakeStates.setWantedState(IntakeState.INTAKE_STATE.OUTTAKE);
+                } else {
+                    intakeStates.setWantedState(IntakeState.INTAKE_STATE.DEFAULT);
+                }
+                // Drive control
                 drive.FeildCentric(gamepad1);
                 telemetry.addData("Mode", "MANUAL");
 

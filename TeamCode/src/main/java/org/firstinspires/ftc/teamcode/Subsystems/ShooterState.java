@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import static org.firstinspires.ftc.teamcode.Tools.Constants.velocityPID;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import org.firstinspires.ftc.teamcode.Tools.PID;
-import org.firstinspires.ftc.teamcode.Tools.PIDF;
 
 
 public class ShooterState extends Subsystem {
@@ -12,10 +12,7 @@ public class ShooterState extends Subsystem {
     private SHOOTER_STATE currentSuperState = SHOOTER_STATE.IDLE;
     private DcMotor ShooterMotor;
 
-    private PIDF velocityPID;
     private double targetRPM = 0;
-    private double targetTicks = 0;
-    private boolean reachedTarget = false;
 
     private int ticksPerRev = 28;
 
@@ -33,8 +30,6 @@ public class ShooterState extends Subsystem {
         ShooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         ShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        float feedForward = (float) 1 / 6000;
-        velocityPID = new PIDF(0.0005, 0.00001, 0.0001, feedForward);
         velocityPID.setMinOutput(-1);
         velocityPID.setMaxOutput(1);
 
@@ -48,19 +43,7 @@ public class ShooterState extends Subsystem {
         System.out.println("SHOOTER: Target RPM set to " + rpm);
     }
 
-    public void setTargetTicks(double ticks) {
-        targetTicks = ticks;
-        reachedTarget = false;
-        ShooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        ShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        lastEncoderPos = 0;
-        lastTime = System.nanoTime();
-        System.out.println("SHOOTER: Target ticks set to " + ticks);
-    }
 
-    public boolean hasReachedTargetTicks() {
-        return reachedTarget;
-    }
 
     private double getCurrentRPM() {
         int currentPos = ShooterMotor.getCurrentPosition();
@@ -105,8 +88,10 @@ public class ShooterState extends Subsystem {
     }
 
     private void handleDefaultState() {
-        setTargetRPM(2000);
-        runVelocityPID();
+//        setTargetRPM(3000);
+//        runVelocityPID();
+
+        ShooterMotor.setPower(0.6);
     }
 
     private void handleIdleState() {

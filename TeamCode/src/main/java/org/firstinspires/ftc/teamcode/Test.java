@@ -1,14 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+
+import static org.firstinspires.ftc.teamcode.Tools.Constants.SHOOT;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
-import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
-
-import org.firstinspires.ftc.teamcode.Commands.CommandSpinRight;
-import org.firstinspires.ftc.teamcode.Commands.ConditionalCommand;
-import org.firstinspires.ftc.teamcode.Commands.ParallelCommandGroup;
+import org.firstinspires.ftc.teamcode.Commands.CommandSpinLeft;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
 import org.firstinspires.ftc.teamcode.Subsystems.SequencerState;
@@ -16,7 +14,6 @@ import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
-import org.firstinspires.ftc.teamcode.Tools.Parameters;
 
 @TeleOp
 public class Test extends LinearOpMode {
@@ -38,28 +35,22 @@ public class Test extends LinearOpMode {
         robot.sequencerState = sequencerState;
         scheduler.setNewRobot(robot);
 
+
         Drive drive = new Drive("drive", hardwareMap);
 
 
         waitForStart();
-
+        Mouse.configureOtos();
         while (opModeIsActive()) {
             // Update subsystems
             intakeStates.periodic();
             shooterState.periodic();
             sequencerState.periodic();
 
+
              if (gamepad1.right_bumper) {
                 scheduler.schedule(
-                        new ConditionalCommand(
-                                new ParallelCommandGroup(
-                                        scheduler, Parameters.ALL,
-                                        new CommandShoot(robot.shooterStates, 5500, 1500),
-                                        new CommandSpinRight(robot.sequencerState, 5500)
-                                ),
-                                new CommandShoot(robot.shooterStates, 5500, 15000),
-                                () -> robot.shooterStates.isAtTargetVelocity()
-                        )
+                        SHOOT(scheduler, robot, false)
                 );
             }
 

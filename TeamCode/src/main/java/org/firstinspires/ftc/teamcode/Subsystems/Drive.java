@@ -207,7 +207,7 @@ public class Drive extends Subsystem {
         double frontLeftPower = (-rotY + rotX + rx);
         double backLeftPower = (-rotY - rotX + rx);
         double frontRightPower = (-rotY - rotX - rx);
-        double backRightPower = (-rotY + rotX - rx);
+        double backRightPower = (rotY - rotX + rx);
 
 
         frontLeftMotor.setPower(frontLeftPower);
