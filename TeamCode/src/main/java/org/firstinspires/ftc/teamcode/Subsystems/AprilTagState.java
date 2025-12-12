@@ -118,7 +118,7 @@ public class AprilTagState extends Subsystem {
                 lastGoodPose = new double[]{x, pose.getPosition().y, z};
             }
 
-            // getTx() should exist per your original code usage
+            /* getTx() should exist per your original code usage*/
             tx = result.getTx();
         }
 
