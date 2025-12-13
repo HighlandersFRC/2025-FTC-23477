@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Commands;
 
+import org.firstinspires.ftc.teamcode.Subsystems.AprilTagState;
 import org.firstinspires.ftc.teamcode.Subsystems.SequencerState;
 import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
@@ -15,11 +16,13 @@ public class CommandShootSequence implements Command {
     private long startTime;
     private boolean sequencerStarted = false;
 
+
     public CommandShootSequence(CommandScheduler scheduler,
                                 ShooterState shooter,
                                 SequencerState sequencer,
                                 double rpm,
-                                long duration) {
+                                long duration
+                                ) {
         this.scheduler = scheduler;
         this.shooter = shooter;
         this.sequencer = sequencer;

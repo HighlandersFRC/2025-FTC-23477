@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.Tools.Mouse;
 import org.firstinspires.ftc.teamcode.Tools.Parameters;
 
 @Autonomous
-public class ShootAuto extends LinearOpMode {
+public class ShootAutoRed extends LinearOpMode {
     DriveStates drive = new DriveStates("driver");
     ShooterState shooterState = new ShooterState("shooterStates");
     SequencerState sequencerState = new SequencerState("sequncer");
@@ -50,17 +50,14 @@ public class ShootAuto extends LinearOpMode {
 
         double distance = 0.6;
 
-
-
-
         long waitDuration = 100;
         ParallelCommandGroup INTAKE = new ParallelCommandGroup(
                 scheduler,
                 Parameters.ALL,
                 new CommandDrive(robot.driveStates, distance), // forward 1 meter, Mouse.X reset internally
                 new SequentialCommandGroup(scheduler,
-                new Wait(waitDuration),
-                new CommandIntake(robot.intakeStates, 1000)
+                        new Wait(waitDuration),
+                        new CommandIntake(robot.intakeStates, 1000)
                 )
         );
 
@@ -69,13 +66,13 @@ public class ShootAuto extends LinearOpMode {
                         scheduler,
                         new CommandDrive(robot.driveStates, -0.95), //Tune This
                         SHOOT(scheduler, robot, true),
-                        new CommandTurnLeft(robot.driveStates, -60),
+                        new CommandTurnRight(robot.driveStates, 60),
                         new Wait(0),
                         INTAKE,
                         new Wait(0),
                         new CommandDrive(robot.driveStates, -distance+0.1),
                         new Wait(0),
-                        new CommandTurnRight(robot.driveStates,45),
+                        new CommandTurnLeft(robot.driveStates,-45),
                         new Wait(0),
                         SHOOT(scheduler, robot, false),
                         new CommandDrive(robot.driveStates, -1)

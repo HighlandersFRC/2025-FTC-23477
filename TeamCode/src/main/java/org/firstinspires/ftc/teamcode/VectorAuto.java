@@ -26,7 +26,7 @@ public class VectorAuto extends LinearOpMode {
             double dx = targetX - Mouse.getX();
             double dy = targetY - Mouse.getY();
 
-            drive.VectorDrive(new Vector(dx, dy), targetTheta);
+            drive.autoDrive(new Vector(dx, dy), targetTheta);
 
             telemetry.addData("Target", "(%.2f, %.2f)", targetX, targetY);
             telemetry.addData("Current", "(%.2f, %.2f, %.1f°)", Mouse.getX(), Mouse.getY(), Math.toDegrees(Mouse.getTheta()));

@@ -10,6 +10,7 @@ public class DriveStates extends Subsystem {
     private Drive drive;
     private PID xPID = new PID(1, 0, 0);
     private PID thetaPID = new PID(1, 0, 0.001);
+    private PID yPID = new PID(1, 0, 0);
     private double DISTANCE_TOLERANCE = 0.1;
     private double THETA_TOLERANCE = 2.0;
     private double distance;
@@ -27,8 +28,12 @@ public class DriveStates extends Subsystem {
 
         thetaPID.setMinOutput(-1);
         thetaPID.setMaxOutput(1);
+
         xPID.setMinOutput(-1);
         xPID.setMaxOutput(1);
+
+        yPID.setMinOutput(-1);
+        yPID.setMaxOutput(1);
     }
 
     public void setWantedState(DRIVE_STATE driveState) {
@@ -74,7 +79,30 @@ public class DriveStates extends Subsystem {
     private void handleDriveForwardState() {
         xPID.setSetPoint(driveForwardDistance());
         xPID.updatePID(Mouse.getX());
-        drive.drive(xPID.getResult(), xPID.getResult(), xPID.getResult(), -xPID.getResult());
+
+        yPID.setSetPoint(0);
+        yPID.updatePID(Mouse.getY());
+
+        thetaPID.setSetPoint(0);
+        thetaPID.updatePID(Mouse.getTheta());
+
+        double rotX = xPID.getResult();
+        double rotY = yPID.getResult();
+        double rotationFactor = thetaPID.getResult();
+
+        double denominator = Math.max(1, rotX + rotY + rotationFactor);
+
+        double frontLeftPower = (-rotY + rotX + rotationFactor) / denominator;
+        double backLeftPower = (-rotY - rotX + rotationFactor) / denominator;
+        double frontRightPower = (-rotY - rotX - rotationFactor) / denominator;
+        double backRightPower = (rotY - rotX + rotationFactor) / denominator;
+
+//        double frontLeftPower = (-rotY + rotX + rx);
+//        double backLeftPower = (-rotY - rotX + rx);
+//        double frontRightPower = (-rotY - rotX - rx);
+//        double backRightPower = (rotY - rotX + rx);
+
+        drive.drive(xPID.getResult(), xPID.getResult(), xPID.getResult(), xPID.getResult());
     }
 
     public void driveTurnDriveDistanceTheta(double degrees) {

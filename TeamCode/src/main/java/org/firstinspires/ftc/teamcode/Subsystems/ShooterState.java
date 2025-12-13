@@ -100,6 +100,7 @@ public class ShooterState extends Subsystem {
 
     private void handleShootingState() {
         runVelocityPID();
+        System.out.println("Current RPM: " + getCurrentRPM());
     }
 
     private void handleJammedState() {

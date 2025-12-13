@@ -188,19 +188,19 @@ public class Drive extends Subsystem {
     public void FeildCentric(Gamepad gamepad) {
 
 
-        double x = -gamepad.left_stick_x * 2;
-        double y = -gamepad.left_stick_y;
-        double rx = -gamepad.right_stick_x;
 
 
-        double botHeading = -Math.toRadians(Mouse.getTheta());
         Mouse.update();
 
         if (gamepad.options) {
             Mouse.configureOtos();
         }
 
+        double x = -gamepad.left_stick_x * 2;
+        double y = -gamepad.left_stick_y;
+        double rx = -gamepad.right_stick_x;
 
+        double botHeading = -Math.toRadians(Mouse.getTheta());
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
         double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
