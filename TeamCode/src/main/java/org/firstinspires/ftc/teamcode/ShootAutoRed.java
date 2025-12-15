@@ -5,10 +5,10 @@ import static org.firstinspires.ftc.teamcode.Tools.Constants.SHOOT;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Commands.Command;
 import org.firstinspires.ftc.teamcode.Commands.CommandDrive;
 import org.firstinspires.ftc.teamcode.Commands.CommandIntake;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
+import org.firstinspires.ftc.teamcode.Commands.CommandStrafe;
 import org.firstinspires.ftc.teamcode.Commands.CommandTurnLeft;
 import org.firstinspires.ftc.teamcode.Commands.CommandTurnRight;
 import org.firstinspires.ftc.teamcode.Commands.ParallelCommandGroup;
@@ -48,7 +48,10 @@ public class ShootAutoRed extends LinearOpMode {
         waitForStart();
 
 
-        double distance = 0.6;
+        double distance = 0.7;
+
+
+
 
         long waitDuration = 100;
         ParallelCommandGroup INTAKE = new ParallelCommandGroup(
@@ -56,26 +59,33 @@ public class ShootAutoRed extends LinearOpMode {
                 Parameters.ALL,
                 new CommandDrive(robot.driveStates, distance), // forward 1 meter, Mouse.X reset internally
                 new SequentialCommandGroup(scheduler,
-                        new Wait(waitDuration),
-                        new CommandIntake(robot.intakeStates, 1000)
+                new Wait(waitDuration),
+                new CommandIntake(robot.intakeStates, 1000)
                 )
         );
 
         scheduler.schedule(
                 new SequentialCommandGroup(
                         scheduler,
-                        new CommandDrive(robot.driveStates, -0.95), //Tune This
+                        new CommandDrive(robot.driveStates, -0.85), //Tune This
                         SHOOT(scheduler, robot, true),
-                        new CommandTurnRight(robot.driveStates, 60),
+                        new CommandTurnLeft(robot.driveStates, -45),
+                        new Wait(0),
+                        new CommandStrafe(robot.driveStates, 0.3),
                         new Wait(0),
                         INTAKE,
                         new Wait(0),
                         new CommandDrive(robot.driveStates, -distance+0.1),
                         new Wait(0),
-                        new CommandTurnLeft(robot.driveStates,-45),
+                        new CommandTurnRight(robot.driveStates,40),
                         new Wait(0),
-                        SHOOT(scheduler, robot, false),
-                        new CommandDrive(robot.driveStates, -1)
+                        new ParallelCommandGroup(
+                                scheduler,
+                        Parameters.ALL,
+                        new CommandIntake(robot.intakeStates, 300),
+                        SHOOT(scheduler, robot, true)
+                                ),
+                        new CommandStrafe(robot.driveStates, 0.5)
                 )
         );
 
@@ -92,6 +102,7 @@ public class ShootAutoRed extends LinearOpMode {
 
             telemetry.addData("MOuseX", Mouse.getX());
             telemetry.addData("MOuseTheta", Mouse.getTheta());
+            telemetry.addData("RPM", shooterState.getCurrentRPM());
             telemetry.update();
         }
     }

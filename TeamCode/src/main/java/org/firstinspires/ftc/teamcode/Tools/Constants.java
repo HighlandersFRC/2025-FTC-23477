@@ -43,7 +43,7 @@ public class Constants {
 
     @NonNull
     public static SequentialCommandGroup SHOOT(CommandScheduler scheduler, NewRobot robot, boolean isAuto) {
-        long duration = isAuto ? 4000 : 3000;
+        long duration = isAuto ? 3500 : 3000;
         double RPM = 3200;
         if (isAuto) {
             return new SequentialCommandGroup(
@@ -58,7 +58,7 @@ public class Constants {
                             () -> robot.shooterStates.isAtTargetVelocity()
                     ),
 
-                    new CommandIntake(robot.intakeStates, 500),
+                    new CommandIntake(robot.intakeStates, 1000),
 
                     new ConditionalCommand(
                             new ParallelCommandGroup(

@@ -45,7 +45,7 @@ public class ShooterState extends Subsystem {
 
 
 
-    private double getCurrentRPM() {
+    public double getCurrentRPM() {
         int currentPos = ShooterMotor.getCurrentPosition();
         long currentTime = System.nanoTime();
         double dt = (currentTime - lastTime) / 1e9;

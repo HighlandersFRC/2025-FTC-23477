@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Tools.Mouse;
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
 
 @TeleOp
-public class Test extends LinearOpMode {
+public class Robot extends LinearOpMode {
     IntakeState intakeStates = new IntakeState("aashrithStates");
     ShooterState shooterState = new ShooterState("shooterState");
     SequencerState sequencerState = new SequencerState("sequencerState");
@@ -48,7 +48,7 @@ public class Test extends LinearOpMode {
             sequencerState.periodic();
 
 
-             if (gamepad1.right_bumper) {
+            if (gamepad1.right_bumper) {
                 scheduler.schedule(
                         SHOOT(scheduler, robot, false)
                 );
@@ -63,6 +63,10 @@ public class Test extends LinearOpMode {
                 intakeStates.setWantedState(IntakeState.INTAKE_STATE.OUTTAKE);
             } else {
                 intakeStates.setWantedState(IntakeState.INTAKE_STATE.DEFAULT);
+            }
+
+            if (shooterState.isAtTargetVelocity()) {
+                gamepad1.rumble(500);
             }
             // Drive control
             drive.FeildCentric(gamepad1);

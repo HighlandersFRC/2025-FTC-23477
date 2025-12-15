@@ -9,11 +9,12 @@ public class DriveStates extends Subsystem {
     private DRIVE_STATE currentSuperState = DRIVE_STATE.IDLE;
     private Drive drive;
     private PID xPID = new PID(1, 0, 0);
-    private PID thetaPID = new PID(1, 0, 0.001);
+    private PID thetaPID = new PID(1.3, 0, 0.001);
     private PID yPID = new PID(1, 0, 0);
     private double DISTANCE_TOLERANCE = 0.1;
     private double THETA_TOLERANCE = 2.0;
-    private double distance;
+    private double distanceX;
+    private double distanceY;
     private double targetTheta;
     private double forwardTargetTheta = 0;
 
@@ -46,6 +47,7 @@ public class DriveStates extends Subsystem {
         DRIVE_FORWARD,
         DRIVE_TURN_RIGHT,
         DRIVE_TURN_LEFT,
+        DRIVE_STRAFE
     }
 
     private DRIVE_STATE handleStateTransitions() {
@@ -55,6 +57,7 @@ public class DriveStates extends Subsystem {
             case DRIVE_FORWARD: currentSuperState = DRIVE_STATE.DRIVE_FORWARD; break;
             case DRIVE_TURN_RIGHT: currentSuperState = DRIVE_STATE.DRIVE_TURN_RIGHT; break;
             case DRIVE_TURN_LEFT: currentSuperState = DRIVE_STATE.DRIVE_TURN_LEFT; break;
+            case DRIVE_STRAFE: currentSuperState = DRIVE_STATE.DRIVE_STRAFE; break;
         }
         return currentSuperState;
     }
@@ -67,42 +70,35 @@ public class DriveStates extends Subsystem {
 
     public void driveForwardDriveDistanceX(double distanceMeters) {
         Mouse.configureOtos();      // reset odometry X to 0 before starting a new forward move
-        this.distance = distanceMeters;  // set target distance relative to current position
+        this.distanceX = distanceMeters;  // set target distance relative to current position
         forwardTargetTheta = Mouse.getTheta();
     }
 
+    public void driveForwardDriveDistanceY(double distanceMeters) {
+        Mouse.configureOtos();
+        this.distanceY = distanceMeters;
+    }
 
     private double driveForwardDistance() {
-        return distance; // instead of distance + Mouse.getX()/100
+        return distanceX; // instead of distance + Mouse.getX()/100
+    }
+
+    private double driveStrafeDistance() {
+        return distanceY;
     }
 
     private void handleDriveForwardState() {
         xPID.setSetPoint(driveForwardDistance());
         xPID.updatePID(Mouse.getX());
 
-        yPID.setSetPoint(0);
+        drive.drive(xPID.getResult(), xPID.getResult(), xPID.getResult(), -xPID.getResult());
+    }
+
+    private void handleStrafeState() {
+        yPID.setSetPoint(driveStrafeDistance());
         yPID.updatePID(Mouse.getY());
 
-        thetaPID.setSetPoint(0);
-        thetaPID.updatePID(Mouse.getTheta());
-
-        double rotX = xPID.getResult();
-        double rotY = yPID.getResult();
-        double rotationFactor = thetaPID.getResult();
-
-        double denominator = Math.max(1, rotX + rotY + rotationFactor);
-
-        double frontLeftPower = (-rotY + rotX + rotationFactor) / denominator;
-        double backLeftPower = (-rotY - rotX + rotationFactor) / denominator;
-        double frontRightPower = (-rotY - rotX - rotationFactor) / denominator;
-        double backRightPower = (rotY - rotX + rotationFactor) / denominator;
-
-//        double frontLeftPower = (-rotY + rotX + rx);
-//        double backLeftPower = (-rotY - rotX + rx);
-//        double frontRightPower = (-rotY - rotX - rx);
-//        double backRightPower = (rotY - rotX + rx);
-
-        drive.drive(xPID.getResult(), xPID.getResult(), xPID.getResult(), xPID.getResult());
+        drive.drive(yPID.getResult(), -yPID.getResult(), -yPID.getResult(), -yPID.getResult());
     }
 
     public void driveTurnDriveDistanceTheta(double degrees) {
@@ -150,7 +146,11 @@ public class DriveStates extends Subsystem {
     }
 
     public boolean isFinishedX() {
-        return Math.abs(Mouse.getX() - distance) <= DISTANCE_TOLERANCE;
+        return Math.abs(Mouse.getX() - distanceX) <= DISTANCE_TOLERANCE;
+    }
+
+    public boolean isFinishedY(){
+        return Math.abs(Mouse.getY() - distanceY) <= DISTANCE_TOLERANCE;
     }
 
     public boolean isFinishedTheta() {
@@ -168,6 +168,7 @@ public class DriveStates extends Subsystem {
             case DRIVE_FORWARD: handleDriveForwardState(); break;
             case DRIVE_TURN_RIGHT: handleDriveTurnRightState(); break;
             case DRIVE_TURN_LEFT: handleDriveTurnLeftState(); break;
+            case DRIVE_STRAFE: handleStrafeState(); break;
         }
     }
 
