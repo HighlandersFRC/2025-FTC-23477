@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.Commands;
 
-import org.firstinspires.ftc.teamcode.Subsystems.AprilTagState;
 import org.firstinspires.ftc.teamcode.Subsystems.SequencerState;
 import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
@@ -33,7 +32,6 @@ public class CommandShootSequence implements Command {
     @Override
     public void start() {
         startTime = System.currentTimeMillis();
-        shooter.setTargetRPM(rpm);
         shooter.setWantedState(ShooterState.SHOOTER_STATE.SHOOT);
     }
 

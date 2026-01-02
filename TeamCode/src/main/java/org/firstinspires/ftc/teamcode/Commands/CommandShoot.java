@@ -5,42 +5,53 @@ import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 public class CommandShoot implements Command {
 
-    private final ShooterState shooterState;
-    private final double targetRPM;
-    private final long duration;
-    private long startTime;
-    public CommandShoot(ShooterState shooterState, double targetRPM, long duration) {
-        this.shooterState = shooterState;
-        this.targetRPM = targetRPM;
-        this.duration = duration;
+    private final ShooterState shooter;
+    private final double distance;
+    private final long durationMs;
 
+    private long atSpeedStartTime = -1; // timer hasn't started yet
+
+    public CommandShoot(ShooterState shooter, double distance, long durationMs) {
+        this.shooter = shooter;
+        this.distance = distance;
+        this.durationMs = durationMs;
     }
 
     @Override
     public void start() {
-        startTime = System.currentTimeMillis();
-        shooterState.setTargetRPM(targetRPM);
-        shooterState.setWantedState(ShooterState.SHOOTER_STATE.SHOOT);
+        atSpeedStartTime = -1; // reset timer
+        shooter.setTargetRPMFromDistance(distance);
+        shooter.setWantedState(ShooterState.SHOOTER_STATE.SHOOT);
     }
 
     @Override
     public void execute() {
+        // Shooter PID runs in ShooterState.periodic()
 
-    }
-
-
-    @Override
-    public void end() {
-        shooterState.setWantedState(ShooterState.SHOOTER_STATE.DEFAULT);
+        // Start timer only once, when at target velocity
+        if (shooter.isAtTargetVelocity() && atSpeedStartTime < 0) {
+            atSpeedStartTime = System.currentTimeMillis();
+        }
     }
 
     @Override
     public boolean isFinished() {
-        return System.currentTimeMillis() - startTime >= duration;
+        // Timer hasn't started yet → keep running
+        if (atSpeedStartTime < 0) {
+            return false;
+        }
+
+        // End after holding speed for durationMs
+        return System.currentTimeMillis() - atSpeedStartTime >= durationMs;
+    }
+
+    @Override
+    public void end() {
+        shooter.setWantedState(ShooterState.SHOOTER_STATE.IDLE);
     }
 
     @Override
     public Subsystem getRequiredSubsystem() {
-        return shooterState;
+        return shooter;
     }
 }

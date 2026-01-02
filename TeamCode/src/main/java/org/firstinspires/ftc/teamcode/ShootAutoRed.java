@@ -102,7 +102,6 @@ public class ShootAutoRed extends LinearOpMode {
 
             telemetry.addData("MOuseX", Mouse.getX());
             telemetry.addData("MOuseTheta", Mouse.getTheta());
-            telemetry.addData("RPM", shooterState.getCurrentRPM());
             telemetry.update();
         }
     }

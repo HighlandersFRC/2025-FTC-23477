@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.Tools.Limelight;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
 import org.firstinspires.ftc.teamcode.Tools.PID;
 
@@ -18,6 +21,13 @@ public class DriveStates extends Subsystem {
     private double targetTheta;
     private double forwardTargetTheta = 0;
 
+    private PID thetaPIDLimelight = new PID(0.045, 0.0, 0.030);
+    private double lastTx = 0;
+    private static final double TX_TOLERANCE = 1.5; // degrees
+    private static final double MAX_TURN = 0.45;
+    private static final double MIN_TURN = 0.08;
+
+
     public DriveStates(String name) {
         super(name);
     }
@@ -27,6 +37,8 @@ public class DriveStates extends Subsystem {
         Mouse.init(hardwareMap);
         Mouse.configureOtos();
 
+        Limelight.init(hardwareMap);
+
         thetaPID.setMinOutput(-1);
         thetaPID.setMaxOutput(1);
 
@@ -35,6 +47,8 @@ public class DriveStates extends Subsystem {
 
         yPID.setMinOutput(-1);
         yPID.setMaxOutput(1);
+
+        thetaPIDLimelight.setSetPoint(0.0);
     }
 
     public void setWantedState(DRIVE_STATE driveState) {
@@ -47,7 +61,8 @@ public class DriveStates extends Subsystem {
         DRIVE_FORWARD,
         DRIVE_TURN_RIGHT,
         DRIVE_TURN_LEFT,
-        DRIVE_STRAFE
+        DRIVE_STRAFE,
+        AUTO_TURN
     }
 
     private DRIVE_STATE handleStateTransitions() {
@@ -58,6 +73,7 @@ public class DriveStates extends Subsystem {
             case DRIVE_TURN_RIGHT: currentSuperState = DRIVE_STATE.DRIVE_TURN_RIGHT; break;
             case DRIVE_TURN_LEFT: currentSuperState = DRIVE_STATE.DRIVE_TURN_LEFT; break;
             case DRIVE_STRAFE: currentSuperState = DRIVE_STATE.DRIVE_STRAFE; break;
+            case AUTO_TURN: currentSuperState = DRIVE_STATE.AUTO_TURN; break;
         }
         return currentSuperState;
     }
@@ -132,17 +148,53 @@ public class DriveStates extends Subsystem {
 
         power = clamp(power, -0.6, 0.6);
         if (Math.abs(power) < 0.1) power = Math.signum(power) * 0.1;
-    if (turnRight) {
-        drive.drive(-power, power, -power, -power);
-    } else {
-        drive.drive(power, -power, power, power);
-    }
+        if (turnRight) {
+            drive.drive(-power, power, -power, -power);
+        } else {
+            drive.drive(power, -power, power, power);
+        }
+
+
 
 
 //        double frontLeftPower = (-rotY + rotX + rx);
 //        double frontRightPower = (-rotY - rotX - rx);
 //        double backLeftPower = (-rotY - rotX + rx);
 //        double backRightPower = (rotY - rotX + rx);
+    }
+
+    private void handleAutoTurnState() {
+        LLResult result = Limelight.getResult();
+        if (result != null && result.isValid()) {
+
+            double tx = Limelight.getTx();
+
+            // Smooth tx
+            double smoothTx = 0.3 * lastTx + 0.7 * tx;
+            lastTx = smoothTx;
+
+            // PID turn
+            double turnPower = -thetaPIDLimelight.updatePID(smoothTx);
+
+            // Min power
+            if (turnPower != 0 && Math.abs(turnPower) < MIN_TURN) {
+                turnPower = Math.signum(turnPower) * MIN_TURN;
+            }
+
+            // Clamp
+            turnPower = Math.max(-MAX_TURN, Math.min(MAX_TURN, turnPower));
+
+            // Drive turn
+            drive.drive(turnPower, -turnPower, turnPower, turnPower);
+
+        }
+    }
+
+    public boolean isFinishedAutoTurnTheta() {
+        double tx = Limelight.getTx();
+        double smoothTx = 0.3 * lastTx + 0.7 * tx;
+        lastTx = smoothTx;
+        return Math.abs(smoothTx) < TX_TOLERANCE;
     }
 
     public boolean isFinishedX() {
@@ -169,6 +221,7 @@ public class DriveStates extends Subsystem {
             case DRIVE_TURN_RIGHT: handleDriveTurnRightState(); break;
             case DRIVE_TURN_LEFT: handleDriveTurnLeftState(); break;
             case DRIVE_STRAFE: handleStrafeState(); break;
+            case AUTO_TURN: handleAutoTurnState(); break;
         }
     }
 

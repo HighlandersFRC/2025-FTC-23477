@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.Commands.CommandSpinLeft;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
+import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
 import org.firstinspires.ftc.teamcode.Subsystems.SequencerState;
 import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
@@ -20,10 +21,11 @@ import org.firstinspires.ftc.teamcode.Tools.Mouse;
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
 
 @TeleOp
-public class Robot extends LinearOpMode {
+public class Test extends LinearOpMode {
     IntakeState intakeStates = new IntakeState("aashrithStates");
     ShooterState shooterState = new ShooterState("shooterState");
     SequencerState sequencerState = new SequencerState("sequencerState");
+    DriveStates driveStates = new DriveStates("drivestates");
     CommandScheduler scheduler = new CommandScheduler();
 
     @Override
@@ -32,12 +34,15 @@ public class Robot extends LinearOpMode {
         intakeStates.init(hardwareMap);
         shooterState.init(hardwareMap);
         sequencerState.init(hardwareMap);
+        driveStates.init(hardwareMap);
+
         Limelight.init(hardwareMap);
 
         NewRobot robot = new NewRobot(hardwareMap);
         robot.intakeStates = intakeStates;
         robot.shooterStates = shooterState;
         robot.sequencerState = sequencerState;
+        robot.driveStates = driveStates;
         scheduler.setNewRobot(robot);
 
 
@@ -51,14 +56,16 @@ public class Robot extends LinearOpMode {
             intakeStates.periodic();
             shooterState.periodic();
             sequencerState.periodic();
+            driveStates.periodic();
 
 
             if (gamepad1.right_bumper) {
                 scheduler.schedule(
                         SHOOT(scheduler, robot, false)
                 );
+            } else {
+                drive.FeildCentric(gamepad1);
             }
-
             // Run command scheduler
             scheduler.run();
 
@@ -70,8 +77,7 @@ public class Robot extends LinearOpMode {
                 intakeStates.setWantedState(IntakeState.INTAKE_STATE.DEFAULT);
             }
 
-            // Drive control
-            drive.FeildCentric(gamepad1);
+
 
             // Telemetry
             telemetry.addData("Position", "(%.2f, %.2f, %.1f°)",
@@ -82,11 +88,6 @@ public class Robot extends LinearOpMode {
                     0.762
             ));
             telemetry.addData("Is Detected", Limelight.isDetected());
-            telemetry.addData("interpolation", shooterState.interpolateRPM(1.341, 3500.0, 1.6378, 3917.9567, (1.341 + 1.6378)/2));
-            telemetry.addData("interpolation based on distance 1", shooterState.getRPMFromDistance(1.341));
-            telemetry.addData("interpolation based on distance 2", shooterState.getRPMFromDistance((1.341 + 1.6378)/2));
-            telemetry.addData("interpolation based on distance 3", shooterState.getRPMFromDistance((1.6378 + 2.571)/2));
-            telemetry.addData("interpolation based on distance 4", shooterState.getRPMFromDistance((5)));
 
             telemetry.update();
 

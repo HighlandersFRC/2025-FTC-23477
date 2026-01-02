@@ -332,7 +332,7 @@ public class Drive extends Subsystem {
         double vy = -vector.getJ();
         double rotationFactor = -angle;
 
-        double botHeading = Math.toRadians(FinalPose.Yaw);
+        double botHeading = Math.toRadians(FinalPose.yaw);
 
         double rotY = vx * Math.cos(botHeading) - vy * Math.sin(botHeading);
         double rotX = vx * Math.sin(botHeading) + vy * Math.cos(botHeading);
@@ -387,17 +387,23 @@ public class Drive extends Subsystem {
         double vy = vector.getJ();
         double rotationFactor = -angle;
 
-        double botHeading = Math.toRadians(FinalPose.Yaw);
+        double botHeading = Math.toRadians(FinalPose.yaw);
 
         double rotX = vx * Math.cos(-botHeading) - vy * Math.sin(-botHeading);
         double rotY = vx * Math.sin(-botHeading) + vy * Math.cos(-botHeading);
 
         double denominator = Math.max(0.3, Math.abs(rotY) + Math.abs(rotX) + Math.abs(rotationFactor));
 
-        double frontLeftPower = (-rotY + rotX + rotationFactor) ;
-        double backLeftPower = (rotY + rotX -  rotationFactor) ;
-        double frontRightPower = (-rotY - rotX -  rotationFactor) / denominator;
-        double backRightPower = (-rotY + rotX -  rotationFactor) / denominator;
+        double frontLeftPower = (-rotY + rotX - rotationFactor) ;
+        double backLeftPower = (-rotY - rotX - rotationFactor) ;
+        double frontRightPower = (-rotY - rotX +  rotationFactor);
+        double backRightPower = (rotY - rotX -  rotationFactor) ;
+        //Field Centric
+//        double frontLeftPower = (-rotY + rotX + rx);
+//        double backLeftPower = (-rotY - rotX + rx);
+//        double frontRightPower = (-rotY - rotX - rx);
+//        double backRightPower = (rotY - rotX + rx);
+
 
         frontRightMotor.setPower(frontRightPower);
         frontLeftMotor.setPower(frontLeftPower);

@@ -7,8 +7,8 @@ import org.firstinspires.ftc.teamcode.Commands.Command;
 import org.firstinspires.ftc.teamcode.Commands.CommandIntake;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
-import org.firstinspires.ftc.teamcode.Commands.CommandShootSequence;
 import org.firstinspires.ftc.teamcode.Commands.CommandSpinRight;
+import org.firstinspires.ftc.teamcode.Commands.CommandTurnAuto;
 import org.firstinspires.ftc.teamcode.Commands.ConditionalCommand;
 import org.firstinspires.ftc.teamcode.Commands.ParallelCommandGroup;
 import org.firstinspires.ftc.teamcode.Commands.SequentialCommandGroup;
@@ -43,18 +43,20 @@ public class Constants {
 
     @NonNull
     public static SequentialCommandGroup SHOOT(CommandScheduler scheduler, NewRobot robot, boolean isAuto) {
-        long duration = isAuto ? 3500 : 3000;
-        double RPM = 3200;
+        long duration = isAuto ? 3500 : 2000;
+        double distance = Limelight.getDistance(
+                0.762
+        );
         if (isAuto) {
             return new SequentialCommandGroup(
                     scheduler,
                     new ConditionalCommand(
                             new ParallelCommandGroup(
                                     scheduler, Parameters.ANY,
-                                    new CommandShoot(robot.shooterStates, RPM, duration),
+                                    new CommandShoot(robot.shooterStates, distance, duration),
                                     new CommandSpinRight(robot.sequencerState, duration)
                             ),
-                            new CommandShoot(robot.shooterStates, RPM, duration),
+                            new CommandShoot(robot.shooterStates, distance, duration),
                             () -> robot.shooterStates.isAtTargetVelocity()
                     ),
 
@@ -63,10 +65,10 @@ public class Constants {
                     new ConditionalCommand(
                             new ParallelCommandGroup(
                                     scheduler, Parameters.ANY,
-                                    new CommandShoot(robot.shooterStates, RPM, duration),
+                                    new CommandShoot(robot.shooterStates, distance, duration),
                                     new CommandSpinRight(robot.sequencerState, duration)
                             ),
-                            new CommandShoot(robot.shooterStates, RPM, duration),
+                            new CommandShoot(robot.shooterStates, distance, duration),
                             () -> robot.shooterStates.isAtTargetVelocity()
                     )
             );
@@ -76,10 +78,10 @@ public class Constants {
                     new ConditionalCommand(
                             new ParallelCommandGroup(
                                     scheduler, Parameters.ANY,
-                                    new CommandShoot(robot.shooterStates, RPM, duration),
+                                    new CommandShoot(robot.shooterStates, distance, duration),
                                     new CommandSpinRight(robot.sequencerState, duration)
                             ),
-                            new CommandShoot(robot.shooterStates, RPM, duration),
+                            new CommandShoot(robot.shooterStates, distance, duration),
                             () -> robot.shooterStates.isAtTargetVelocity()
                     ));
         }

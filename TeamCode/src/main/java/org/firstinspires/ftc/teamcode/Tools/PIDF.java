@@ -110,6 +110,14 @@ public class PIDF {
         return input;
     }
 
+    public void reset() {
+        totalError = 0;
+        prevError = 0;
+        error = 0;
+        result = 0;
+    }
+
+
     public double getError() {
         return error;
     }

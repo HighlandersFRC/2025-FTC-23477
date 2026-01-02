@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Commands.CommandDrive;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 
+import org.firstinspires.ftc.teamcode.Commands.CommandTurnAuto;
+import org.firstinspires.ftc.teamcode.Commands.CommandTurnLeft;
 import org.firstinspires.ftc.teamcode.Subsystems.AprilTagState;
 import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
@@ -34,7 +36,6 @@ public class LeaveAuto extends LinearOpMode {
         robot.shooterStates = shooterState;
         robot.sequencerState = sequencerState;
         robot.intakeStates = intakeState;
-        robot.aprilTagState = aprilTagState;
         scheduler.setNewRobot(robot);
 
         robot.initialize(hardwareMap);
@@ -45,7 +46,7 @@ public class LeaveAuto extends LinearOpMode {
 
 
         scheduler.schedule(
-                new CommandDrive(robot.driveStates, 1)
+                new CommandTurnAuto(robot.driveStates)
         );
 
 
