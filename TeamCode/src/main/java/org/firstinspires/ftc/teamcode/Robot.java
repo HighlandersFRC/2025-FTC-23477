@@ -2,14 +2,12 @@ package org.firstinspires.ftc.teamcode;
 
 
 import static org.firstinspires.ftc.teamcode.Tools.Constants.SHOOT;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.tagHeight;
 
-import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
-import org.firstinspires.ftc.teamcode.Commands.CommandSpinLeft;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
 import org.firstinspires.ftc.teamcode.Subsystems.SequencerState;
@@ -28,7 +26,6 @@ public class Robot extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        // Initialize subsystems
         intakeStates.init(hardwareMap);
         shooterState.init(hardwareMap);
         sequencerState.init(hardwareMap);
@@ -47,7 +44,6 @@ public class Robot extends LinearOpMode {
         waitForStart();
         Mouse.configureOtos();
         while (opModeIsActive()) {
-            // Update subsystems
             intakeStates.periodic();
             shooterState.periodic();
             sequencerState.periodic();
@@ -55,11 +51,10 @@ public class Robot extends LinearOpMode {
 
             if (gamepad1.right_bumper) {
                 scheduler.schedule(
-                        SHOOT(scheduler, robot, false)
+                        SHOOT(scheduler, robot, 3200,false)
                 );
             }
 
-            // Run command scheduler
             scheduler.run();
 
             if (gamepad1.right_trigger > 0) {
@@ -70,24 +65,14 @@ public class Robot extends LinearOpMode {
                 intakeStates.setWantedState(IntakeState.INTAKE_STATE.DEFAULT);
             }
 
-            // Drive control
-            drive.FeildCentric(gamepad1);
+            drive.FieldCentric(gamepad1);
 
-            // Telemetry
             telemetry.addData("Position", "(%.2f, %.2f, %.1f°)",
                     Mouse.getX(), Mouse.getY(), Math.toDegrees(Mouse.getTheta()));
             telemetry.addData("Target RPM", shooterState.getTargetRPM());
             telemetry.addData("Current RPM", shooterState.getCurrentRPM());
-            telemetry.addData("Distance", Limelight.getDistance(
-                    0.762
-            ));
             telemetry.addData("Is Detected", Limelight.isDetected());
-            telemetry.addData("interpolation", shooterState.interpolateRPM(1.341, 3500.0, 1.6378, 3917.9567, (1.341 + 1.6378)/2));
-            telemetry.addData("interpolation based on distance 1", shooterState.getRPMFromDistance(1.341));
-            telemetry.addData("interpolation based on distance 2", shooterState.getRPMFromDistance((1.341 + 1.6378)/2));
-            telemetry.addData("interpolation based on distance 3", shooterState.getRPMFromDistance((1.6378 + 2.571)/2));
-            telemetry.addData("interpolation based on distance 4", shooterState.getRPMFromDistance((5)));
-
+            telemetry.addData("Current Distance", Limelight.getDistance(tagHeight));
             telemetry.update();
 
             telemetry.update();

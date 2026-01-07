@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Commands.CommandDrive;
 import org.firstinspires.ftc.teamcode.Commands.CommandIntake;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.Commands.CommandStrafe;
+import org.firstinspires.ftc.teamcode.Commands.CommandTurnAuto;
 import org.firstinspires.ftc.teamcode.Commands.CommandTurnLeft;
 import org.firstinspires.ftc.teamcode.Commands.CommandTurnRight;
 import org.firstinspires.ftc.teamcode.Commands.ParallelCommandGroup;
@@ -48,44 +49,42 @@ public class ShootAutoRed extends LinearOpMode {
         waitForStart();
 
 
-        double distance = 0.7;
-
-
+        double distance = 0.48;
 
 
         long waitDuration = 100;
         ParallelCommandGroup INTAKE = new ParallelCommandGroup(
                 scheduler,
                 Parameters.ALL,
-                new CommandDrive(robot.driveStates, distance), // forward 1 meter, Mouse.X reset internally
+                new CommandDrive(robot.driveStates, distance),
                 new SequentialCommandGroup(scheduler,
                 new Wait(waitDuration),
                 new CommandIntake(robot.intakeStates, 1000)
                 )
         );
+long duration = 4000;
 
         scheduler.schedule(
                 new SequentialCommandGroup(
                         scheduler,
-                        new CommandDrive(robot.driveStates, -0.85), //Tune This
-                        SHOOT(scheduler, robot, true),
+                        new CommandDrive(robot.driveStates, -0.6), //Tune This
+                        new Wait(0),
+                        new CommandTurnAuto(robot.driveStates),
+                        SHOOT(scheduler, robot, duration, true),
                         new CommandTurnLeft(robot.driveStates, -45),
                         new Wait(0),
-                        new CommandStrafe(robot.driveStates, 0.3),
+                        new CommandStrafe(robot.driveStates, 0.24),
                         new Wait(0),
                         INTAKE,
                         new Wait(0),
-                        new CommandDrive(robot.driveStates, -distance+0.1),
+                        new CommandDrive(robot.driveStates, -distance),
                         new Wait(0),
-                        new CommandTurnRight(robot.driveStates,40),
+                        new CommandTurnRight(robot.driveStates,45),
                         new Wait(0),
-                        new ParallelCommandGroup(
-                                scheduler,
-                        Parameters.ALL,
-                        new CommandIntake(robot.intakeStates, 300),
-                        SHOOT(scheduler, robot, true)
-                                ),
-                        new CommandStrafe(robot.driveStates, 0.5)
+                        new CommandTurnAuto(robot.driveStates),
+                        new Wait(0),
+                        SHOOT(scheduler, robot, duration,true),
+                        new CommandStrafe(robot.driveStates, 0.15)
                 )
         );
 

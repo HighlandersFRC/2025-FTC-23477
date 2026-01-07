@@ -22,7 +22,7 @@ public class FieldCentric extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            driveSubsystem.FeildCentric(gamepad1);
+            driveSubsystem.FieldCentric(gamepad1);
 
 
             TelemetryPacket packet = new TelemetryPacket();

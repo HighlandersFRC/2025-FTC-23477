@@ -87,7 +87,7 @@ public class AutoTurnLimelight extends LinearOpMode {
 
             } else {
                 // Manual field-centric driving
-                drive.FeildCentric(gamepad1);
+                drive.FieldCentric(gamepad1);
                 telemetry.addData("Mode", "MANUAL - Field Centric");
             }
 

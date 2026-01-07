@@ -22,20 +22,20 @@ import java.util.function.Supplier;
 public class PolarPathFollower implements Command {
 
     private Set<String> addedCommandKeys;
-    private CommandScheduler scheduler;
+    private final CommandScheduler scheduler;
     private double pathStartTime;
-    private JSONArray points;
+    private final JSONArray points;
 
-    private PID xPID = new PID(3.6, 0, 1.9);
-    private PID yPID = new PID(3.6, 0, 1.9);
-    private PID yawPID = new PID(1, 0, 0);
-    private HashMap<String, Supplier<Command>> commandMap;
-    private HashMap<String, BooleanSupplier> conditionMap;
+    private final PID xPID = new PID(3.6, 0, 1.9);
+    private final PID yPID = new PID(3.6, 0, 1.9);
+    private final PID yawPID = new PID(5, 0, 0);
+    private final HashMap<String, Supplier<Command>> commandMap;
+    private final HashMap<String, BooleanSupplier> conditionMap;
 
-    private ArrayList<Command> activeCommands = new ArrayList<>();
+    private final ArrayList<Command> activeCommands = new ArrayList<>();
     private double nextX, nextY;
     Drive drive;
-    public PolarPathFollower(Drive drive, Peripherals peripherals, JSONObject pathJSON,
+    public PolarPathFollower(Drive drive, JSONObject pathJSON,
                              HashMap<String, Supplier<Command>> commandMap,
                              HashMap<String, BooleanSupplier> conditionMap,
                              CommandScheduler scheduler) throws JSONException {

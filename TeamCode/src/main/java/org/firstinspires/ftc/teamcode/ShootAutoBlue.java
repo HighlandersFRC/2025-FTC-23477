@@ -64,11 +64,13 @@ public class ShootAutoBlue extends LinearOpMode {
                 )
         );
 
+        long duration = 4000;
+
         scheduler.schedule(
                 new SequentialCommandGroup(
                         scheduler,
                         new CommandDrive(robot.driveStates, -0.95), //Tune This
-                        SHOOT(scheduler, robot, true),
+                        SHOOT(scheduler, robot, duration,true),
                         new CommandTurnRight(robot.driveStates, 60),
                         new Wait(0),
                         INTAKE,
@@ -81,7 +83,7 @@ public class ShootAutoBlue extends LinearOpMode {
                                 scheduler,
                                 Parameters.ALL,
                                 new CommandIntake(robot.intakeStates, 300),
-                                SHOOT(scheduler, robot, true)
+                                SHOOT(scheduler, robot, duration,true)
                         ),
                         new CommandStrafe(robot.driveStates, -0.5)
                 )

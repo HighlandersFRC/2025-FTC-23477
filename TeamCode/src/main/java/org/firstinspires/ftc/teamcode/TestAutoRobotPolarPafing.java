@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.PathingTool.PathLoading;
 import org.firstinspires.ftc.teamcode.PathingTool.PolarPathFollower;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
-import org.firstinspires.ftc.teamcode.Subsystems.Peripherals;
 import org.firstinspires.ftc.teamcode.Subsystems.SequencerState;
 import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 import org.firstinspires.ftc.teamcode.Tools.Constants;
@@ -34,11 +33,9 @@ public class TestAutoRobotPolarPafing extends LinearOpMode {
         Mouse.configureOtos();
 
 
-
         PathLoading pathLoading = new PathLoading(hardwareMap.appContext, "DriveForward.polarpath");
         CommandScheduler scheduler = new CommandScheduler();
         Drive drive = new Drive("drive", hardwareMap);
-        Peripherals peripherals = new Peripherals("peripherals");
         PolarPathFollower moveToPosition;
         drive.setPosition(0,0,0);
         NewRobot robot = new NewRobot(hardwareMap);
@@ -50,7 +47,7 @@ public class TestAutoRobotPolarPafing extends LinearOpMode {
         robot.initialize(hardwareMap);
 
         try {
-            moveToPosition = new PolarPathFollower(drive, peripherals, PathLoading.getJsonPathData(), Constants.commandMap, Constants.conditionMap, scheduler);
+            moveToPosition = new PolarPathFollower(drive, PathLoading.getJsonPathData(), Constants.commandMap, Constants.conditionMap, scheduler);
             scheduler.schedule(new SequentialCommandGroup(scheduler, moveToPosition, new CommandIntake(robot.intakeStates, 1000)));
         } catch (Exception e) {
             throw new RuntimeException(e);

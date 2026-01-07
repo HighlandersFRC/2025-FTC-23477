@@ -4,6 +4,11 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import static org.firstinspires.ftc.teamcode.Tools.Constants.cameraAngle;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.cameraHeight;
+
+import java.util.Objects;
+
 public final class Limelight {
 
     private static Limelight3A limelight;
@@ -34,18 +39,41 @@ public final class Limelight {
         return result != null ? result.getTy() : 0.0;
     }
 
+    public static double getX() {
+        LLResult result = getResult();
+        if (result == null) {
+            return 0;
+        }
+        return result.getBotpose().getPosition().x;
+    }
+
+    public static double getY() {
+        LLResult result = getResult();
+        if (result == null) {
+            return 0;
+        }
+        return result.getBotpose().getPosition().y;
+    }
+
+    public static boolean isConnected() {
+        return limelight.isConnected();
+    }
 
     public static double getDistance(
             double tagHeight
     ) {
+
+
+
         LLResult result = getResult();
         if (result == null) return 0.0;
 
         double ty = result.getTy();
-        double angleRad = Math.toRadians(0 + ty);
+        double angleRad = Math.toRadians(cameraAngle + ty);
 
-        return (tagHeight - 0.3556) / Math.tan(angleRad);
+        return (tagHeight - cameraHeight) / Math.tan(angleRad);
     }
+
 
     public static boolean isDetected() {
         LLResult result = getResult();

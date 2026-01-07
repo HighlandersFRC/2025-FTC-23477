@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import static org.firstinspires.ftc.teamcode.Tools.Constants.SHOOTER_LOOKUP;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.lastEncoderPos;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.lastTime;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.targetRPM;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.ticksPerSecond;
 import static org.firstinspires.ftc.teamcode.Tools.Constants.velocityPID;
 
 import android.annotation.SuppressLint;
@@ -14,30 +19,11 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 public class ShooterState extends Subsystem {
-
-
-    private DcMotor shooterMotor;
-
+    public DcMotor shooterMotor;
 
     private SHOOTER_STATE wantedState = SHOOTER_STATE.IDLE;
     private SHOOTER_STATE currentState = SHOOTER_STATE.IDLE;
     private SHOOTER_STATE lastState = null;
-
-
-    private double targetRPM = 0;
-
-    private int lastEncoderPos = 0;
-    private long lastTime = 0;
-    private double ticksPerSecond = 0;
-
-
-    private static final double[][] SHOOTER_LOOKUP = {
-            {0.0, 3000},
-            {1.341, 3500.0},
-            {1.6378, 3917.9567},
-            {2.571, 6000}
-    };
-
 
     public ShooterState(String name) {
         super(name);
@@ -49,7 +35,7 @@ public class ShooterState extends Subsystem {
 
         shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         shooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        shooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         velocityPID.setMinOutput(-1);
         velocityPID.setMaxOutput(1);
@@ -57,12 +43,6 @@ public class ShooterState extends Subsystem {
         lastTime = System.nanoTime();
         lastEncoderPos = shooterMotor.getCurrentPosition();
         Limelight.init(hardwareMap);
-
-//        [0.0, 3000.0],
-//    [1.341, 3500.0],
-//    [1.6378, 3917.9567],
-//    [2.571, 6000]
-
     }
 
 
@@ -83,26 +63,20 @@ public class ShooterState extends Subsystem {
     public void periodic() {
         handleStateTransition();
 
-        if (currentState != lastState) {
-            onStateEnter(currentState);
-            lastState = currentState;
-        }
-
         switch (currentState) {
             case IDLE:
+                shooterMotor.setPower(0);
+                targetRPM = 0;
                 idleLoop();
                 break;
 
             case SHOOT:
+                velocityPID.reset();
                 shootLoop();
                 break;
 
-            case JAMMED:
-                jammedLoop();
-                break;
-
             case DEFAULT:
-                defaultLoop();
+                shooterMotor.setPower(0.6);
                 break;
         }
     }
@@ -112,31 +86,10 @@ public class ShooterState extends Subsystem {
     }
 
 
-    private void onStateEnter(SHOOTER_STATE state) {
-        switch (state) {
-            case IDLE:
-                shooterMotor.setPower(0);
-                targetRPM = 0;
-                break;
 
-            case SHOOT:
-                velocityPID.reset();
-                System.out.println("SHOOTER: Entering SHOOT state");
-                break;
-
-            case JAMMED:
-                shooterMotor.setPower(-0.27);
-                break;
-
-            case DEFAULT:
-                shooterMotor.setPower(0.6);
-                break;
-        }
-    }
 
     private void idleLoop() {
-        targetRPM = 1000;
-        runVelocityPID();
+        shooterMotor.setPower(0.2);
     }
 
     @SuppressLint("DefaultLocale")
@@ -144,13 +97,6 @@ public class ShooterState extends Subsystem {
         runVelocityPID();
     }
 
-    private void jammedLoop() {
-        shooterMotor.setPower(-0.27);
-    }
-
-    private void defaultLoop() {
-        shooterMotor.setPower(0.6);
-    }
 
 
     private void runVelocityPID() {
@@ -161,6 +107,7 @@ public class ShooterState extends Subsystem {
     }
 
     public double getCurrentRPM() {
+        shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         int currentPos = shooterMotor.getCurrentPosition();
         long currentTime = System.nanoTime();
 
@@ -183,7 +130,6 @@ public class ShooterState extends Subsystem {
     public void setTargetRPMFromDistance(double distance) {
         double rpm = getRPMFromDistance(distance);
         targetRPM = rpm;
-        targetRPM = targetRPM * 1.19;
         velocityPID.setSetPoint(rpm);
     }
 
@@ -213,7 +159,6 @@ public class ShooterState extends Subsystem {
     public enum SHOOTER_STATE {
         IDLE,
         SHOOT,
-        JAMMED,
         DEFAULT
     }
 }

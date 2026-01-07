@@ -1,6 +1,18 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import static org.firstinspires.ftc.teamcode.Tools.Constants.DISTANCE_TOLERANCE;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.MAX_TURN;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.MIN_TURN;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.THETA_TOLERANCE;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.TX_TOLERANCE;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.lastTx;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.thetaPID;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.thetaPIDLimelight;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.xPID;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.yPID;
+
 import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Tools.Limelight;
@@ -11,22 +23,11 @@ public class DriveStates extends Subsystem {
     private DRIVE_STATE wantedSuperState = DRIVE_STATE.IDLE;
     private DRIVE_STATE currentSuperState = DRIVE_STATE.IDLE;
     private Drive drive;
-    private PID xPID = new PID(1, 0, 0);
-    private PID thetaPID = new PID(1.3, 0, 0.001);
-    private PID yPID = new PID(1, 0, 0);
-    private double DISTANCE_TOLERANCE = 0.1;
-    private double THETA_TOLERANCE = 2.0;
+
+
     private double distanceX;
     private double distanceY;
     private double targetTheta;
-    private double forwardTargetTheta = 0;
-
-    private PID thetaPIDLimelight = new PID(0.045, 0.0, 0.030);
-    private double lastTx = 0;
-    private static final double TX_TOLERANCE = 1.5; // degrees
-    private static final double MAX_TURN = 0.45;
-    private static final double MIN_TURN = 0.08;
-
 
     public DriveStates(String name) {
         super(name);
@@ -82,12 +83,13 @@ public class DriveStates extends Subsystem {
         drive.stop();
     }
 
+
+
     private void handleIdleState() {}
 
     public void driveForwardDriveDistanceX(double distanceMeters) {
-        Mouse.configureOtos();      // reset odometry X to 0 before starting a new forward move
-        this.distanceX = distanceMeters;  // set target distance relative to current position
-        forwardTargetTheta = Mouse.getTheta();
+        Mouse.configureOtos();
+        this.distanceX = distanceMeters;
     }
 
     public void driveForwardDriveDistanceY(double distanceMeters) {
@@ -96,7 +98,7 @@ public class DriveStates extends Subsystem {
     }
 
     private double driveForwardDistance() {
-        return distanceX; // instead of distance + Mouse.getX()/100
+        return distanceX;
     }
 
     private double driveStrafeDistance() {
@@ -107,14 +109,14 @@ public class DriveStates extends Subsystem {
         xPID.setSetPoint(driveForwardDistance());
         xPID.updatePID(Mouse.getX());
 
-        drive.drive(xPID.getResult(), xPID.getResult(), xPID.getResult(), -xPID.getResult());
+        drive.drive(-xPID.getResult(), xPID.getResult(), -xPID.getResult(), -xPID.getResult());
     }
 
     private void handleStrafeState() {
         yPID.setSetPoint(driveStrafeDistance());
         yPID.updatePID(Mouse.getY());
 
-        drive.drive(yPID.getResult(), -yPID.getResult(), -yPID.getResult(), -yPID.getResult());
+        drive.drive(-yPID.getResult(), -yPID.getResult(), yPID.getResult(), -yPID.getResult());
     }
 
     public void driveTurnDriveDistanceTheta(double degrees) {
@@ -122,11 +124,11 @@ public class DriveStates extends Subsystem {
     }
 
     private void handleDriveTurnRightState() {
-        handleDriveTurn(true);  // true = turning right
+        handleDriveTurn(true);
     }
 
     private void handleDriveTurnLeftState() {
-        handleDriveTurn(false); // false = turning left
+        handleDriveTurn(false);
     }
 
     // Unified turning logic
@@ -149,18 +151,16 @@ public class DriveStates extends Subsystem {
         power = clamp(power, -0.6, 0.6);
         if (Math.abs(power) < 0.1) power = Math.signum(power) * 0.1;
         if (turnRight) {
-            drive.drive(-power, power, -power, -power);
+            drive.drive(power, power, power, -power);
         } else {
-            drive.drive(power, -power, power, power);
+            drive.drive(-power, -power, -power, power);
         }
 
 
-
-
-//        double frontLeftPower = (-rotY + rotX + rx);
-//        double frontRightPower = (-rotY - rotX - rx);
-//        double backLeftPower = (-rotY - rotX + rx);
-//        double backRightPower = (rotY - rotX + rx);
+//        double frontLeftPower = (-rotY - rotX + rx);
+//        double frontRightPower = (rotY - rotX + rx);
+//        double backLeftPower = (-rotY + rotX + rx);
+//        double backRightPower = (-rotY - rotX - rx);
     }
 
     private void handleAutoTurnState() {
@@ -169,23 +169,19 @@ public class DriveStates extends Subsystem {
 
             double tx = Limelight.getTx();
 
-            // Smooth tx
+
             double smoothTx = 0.3 * lastTx + 0.7 * tx;
             lastTx = smoothTx;
 
-            // PID turn
             double turnPower = -thetaPIDLimelight.updatePID(smoothTx);
 
-            // Min power
             if (turnPower != 0 && Math.abs(turnPower) < MIN_TURN) {
                 turnPower = Math.signum(turnPower) * MIN_TURN;
             }
 
-            // Clamp
             turnPower = Math.max(-MAX_TURN, Math.min(MAX_TURN, turnPower));
 
-            // Drive turn
-            drive.drive(turnPower, -turnPower, turnPower, turnPower);
+            drive.drive(turnPower, turnPower, turnPower, -turnPower);
 
         }
     }

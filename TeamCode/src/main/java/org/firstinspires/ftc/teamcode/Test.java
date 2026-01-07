@@ -3,13 +3,10 @@ package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.teamcode.Tools.Constants.SHOOT;
 
-import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
-import org.firstinspires.ftc.teamcode.Commands.CommandSpinLeft;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
@@ -30,7 +27,6 @@ public class Test extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        // Initialize subsystems
         intakeStates.init(hardwareMap);
         shooterState.init(hardwareMap);
         sequencerState.init(hardwareMap);
@@ -61,12 +57,10 @@ public class Test extends LinearOpMode {
 
             if (gamepad1.right_bumper) {
                 scheduler.schedule(
-                        SHOOT(scheduler, robot, false)
+                        SHOOT(scheduler, robot, 3200,false)
                 );
-            } else {
-                drive.FeildCentric(gamepad1);
             }
-            // Run command scheduler
+
             scheduler.run();
 
             if (gamepad1.right_trigger > 0) {
@@ -77,6 +71,24 @@ public class Test extends LinearOpMode {
                 intakeStates.setWantedState(IntakeState.INTAKE_STATE.DEFAULT);
             }
 
+            boolean isTouched = false;
+            boolean lastTouchpadState = false;
+
+
+            boolean currentTouchpadState = gamepad1.touchpad_finger_1;
+
+            if (currentTouchpadState && !lastTouchpadState) {
+                isTouched = !isTouched;
+            }
+
+
+            lastTouchpadState = currentTouchpadState;
+
+            if (isTouched) {
+                driveStates.setWantedState(DriveStates.DRIVE_STATE.AUTO_TURN);
+            } else if (driveStates.isFinishedAutoTurnTheta()) {
+                drive.FieldCentric(gamepad1);
+            }
 
 
             // Telemetry
@@ -87,6 +99,7 @@ public class Test extends LinearOpMode {
             telemetry.addData("Distance", Limelight.getDistance(
                     0.762
             ));
+            telemetry.addData("Port LL", Limelight.isConnected());
             telemetry.addData("Is Detected", Limelight.isDetected());
 
             telemetry.update();
