@@ -61,8 +61,6 @@ public class ShooterState extends Subsystem {
 
         switch (currentState) {
             case IDLE:
-                shooterMotor.setPower(0);
-                targetRPM = 0;
                 idleLoop();
                 break;
 
