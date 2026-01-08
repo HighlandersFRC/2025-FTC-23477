@@ -14,16 +14,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Tools.Limelight;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 public class ShooterState extends Subsystem {
     public DcMotor shooterMotor;
 
     private SHOOTER_STATE wantedState = SHOOTER_STATE.IDLE;
     private SHOOTER_STATE currentState = SHOOTER_STATE.IDLE;
-    private SHOOTER_STATE lastState = null;
 
     public ShooterState(String name) {
         super(name);

@@ -114,9 +114,13 @@ public class Constants {
 
 
     // PolarPathing
-
     public static final double AUTONOMOUS_LOOKAHEAD_DISTANCE = 1;
     public static final double AUTONOMOUS_LOOKAHEAD_LINEAR_RADIUS = 1;
     public static final double AUTONOMOUS_LOOKAHEAD_ANGULAR_RADIUS = Math.PI;
+
+
+    public static final PID xPIDP = new PID(3.6, 0, 1.9);
+    public static final PID yPIDP = new PID(3.6, 0, 1.9);
+    public static final PID yawPIDP = new PID(5, 0, 0);
 
 }

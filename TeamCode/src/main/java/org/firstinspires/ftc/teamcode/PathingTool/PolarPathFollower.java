@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.PathingTool;
 
+import static org.firstinspires.ftc.teamcode.Tools.Constants.xPIDP;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.yPIDP;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.yawPIDP;
+
 import org.firstinspires.ftc.teamcode.Commands.*;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.Peripherals;
@@ -26,9 +30,7 @@ public class PolarPathFollower implements Command {
     private double pathStartTime;
     private final JSONArray points;
 
-    private final PID xPID = new PID(3.6, 0, 1.9);
-    private final PID yPID = new PID(3.6, 0, 1.9);
-    private final PID yawPID = new PID(5, 0, 0);
+
     private final HashMap<String, Supplier<Command>> commandMap;
     private final HashMap<String, BooleanSupplier> conditionMap;
 
@@ -69,8 +71,8 @@ public class PolarPathFollower implements Command {
             throw new RuntimeException("Error reading point data from JSON", e);
         }
 
-        yawPID.setMinInput(-180);
-        yawPID.setMinInput(180);
+        yawPIDP.setMinInput(-180);
+        yawPIDP.setMinInput(180);
     }
 
     public void execute() {
@@ -91,17 +93,17 @@ public class PolarPathFollower implements Command {
             double currentY = FinalPose.y;
             double currentTheta = Math.toRadians(FinalPose.yaw);
 
-            xPID.setSetPoint(nextX);
-            xPID.updatePID(currentX);
+            xPIDP.setSetPoint(nextX);
+            xPIDP.updatePID(currentX);
 
-            yPID.setSetPoint(nextY);
-            yPID.updatePID(currentY);
+            yPIDP.setSetPoint(nextY);
+            yPIDP.updatePID(currentY);
 
-            yawPID.setSetPoint(nextTheta);
-            yawPID.updatePID(currentTheta);
+            yawPIDP.setSetPoint(nextTheta);
+            yawPIDP.updatePID(currentTheta);
 
-            Vector relativePos = new Vector(xPID.getResult(), yPID.getResult());
-            drive.autoDrive(relativePos, yawPID.getResult());
+            Vector relativePos = new Vector(xPIDP.getResult(), yPIDP.getResult());
+            drive.autoDrive(relativePos, yawPIDP.getResult());
 
             JSONArray commands = points.getJSONObject(index).optJSONArray("commands");
             if (commands != null) {
