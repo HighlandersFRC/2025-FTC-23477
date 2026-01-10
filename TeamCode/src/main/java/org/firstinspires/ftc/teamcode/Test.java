@@ -57,7 +57,7 @@ public class Test extends LinearOpMode {
 
             if (gamepad1.right_bumper) {
                 scheduler.schedule(
-                        SHOOT(scheduler, robot, 3200,false)
+                        SHOOT(scheduler, robot, 5000,false)
                 );
             }
 
@@ -71,22 +71,18 @@ public class Test extends LinearOpMode {
                 intakeStates.setWantedState(IntakeState.INTAKE_STATE.DEFAULT);
             }
 
-            boolean isTouched = false;
-            boolean lastTouchpadState = false;
+            boolean xPreviouslyPressed = false;
+            boolean autoTurnActive = false;
 
-
-            boolean currentTouchpadState = gamepad1.touchpad_finger_1;
-
-            if (currentTouchpadState && !lastTouchpadState) {
-                isTouched = !isTouched;
+            if (gamepad1.x && !xPreviouslyPressed) {
+                autoTurnActive = !autoTurnActive;
             }
+            xPreviouslyPressed = gamepad1.x;
 
 
-            lastTouchpadState = currentTouchpadState;
-
-            if (isTouched) {
+            if (autoTurnActive) {
                 driveStates.setWantedState(DriveStates.DRIVE_STATE.AUTO_TURN);
-            } else if (driveStates.isFinishedAutoTurnTheta()) {
+            } else {
                 drive.FieldCentric(gamepad1);
             }
 
@@ -101,7 +97,6 @@ public class Test extends LinearOpMode {
             ));
             telemetry.addData("Port LL", Limelight.isConnected());
             telemetry.addData("Is Detected", Limelight.isDetected());
-
             telemetry.update();
 
             telemetry.update();

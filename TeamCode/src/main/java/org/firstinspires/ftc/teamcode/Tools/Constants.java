@@ -22,7 +22,7 @@ public class Constants {
 
 
     // Drive Auto
-    public static final PID xPID = new PID(1, 0, 0);
+    public static final PID xPID = new PID(1.5, 0, 0);
     public static final PID thetaPID = new PID(1.3, 0, 0.001);
     public static final PID yPID = new PID(5, 0, 0);
 

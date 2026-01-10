@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 
 import org.firstinspires.ftc.teamcode.Commands.CommandTurnAuto;
 import org.firstinspires.ftc.teamcode.Commands.CommandTurnLeft;
-import org.firstinspires.ftc.teamcode.Subsystems.AprilTagState;
 import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
 import org.firstinspires.ftc.teamcode.Subsystems.SequencerState;
@@ -24,8 +23,6 @@ public class LeaveAuto extends LinearOpMode {
     ShooterState shooterState = new ShooterState("shooterStates");
     SequencerState sequencerState = new SequencerState("sequncer");
     IntakeState intakeState = new IntakeState("intake");
-    AprilTagState aprilTagState = new AprilTagState("aprilTag");
-
     @Override
     public void runOpMode() throws InterruptedException {
 

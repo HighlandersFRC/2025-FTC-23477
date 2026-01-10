@@ -48,7 +48,11 @@ public class Drive extends Subsystem {
 
         // Initialize motors using the HardwareMap
         initialize(hardwareMap);
-        Mouse.init(hardwareMap);
+
+
+
+
+
 // Set motor directions (if needed)
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -81,7 +85,7 @@ public class Drive extends Subsystem {
         frontRightMotor = hardwareMap.get(DcMotorEx.class, "right_front");
         backRightMotor = hardwareMap.get(DcMotorEx.class, "right_back");
 
-        Mouse.init(hardwareMap);
+       // Mouse.init(hardwareMap);
 
         frontRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -150,15 +154,15 @@ public class Drive extends Subsystem {
     }
 
     public void teleopDrive(Gamepad gamepad1) {
-        double x = -gamepad1.left_stick_x * 2;
-        double y = -gamepad1.left_stick_y;
-        double rx = gamepad1.right_stick_x;
+        double x = -gamepad1.left_stick_x;
+        double y = -gamepad1.left_stick_y * 2;
+        double rx = -gamepad1.right_stick_x * 2;
 
 
-        double frontLeftPower = (-y + x + rx);
-        double backLeftPower = (y + x - rx);
-        double frontRightPower = (y + x + rx);
-        double backRightPower = (y - x + rx);
+        double frontLeftPower = (y + x - rx);
+        double backLeftPower = (-y + x + rx);
+        double frontRightPower = (-y + x + rx);
+        double backRightPower = (-y - x - rx);
 
 
         frontLeftMotor.setPower(frontLeftPower);

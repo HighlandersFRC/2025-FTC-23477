@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Tools;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Subsystems.AprilTagState;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -18,13 +17,11 @@ public class NewRobot {
     public Drive drive;
     public ShooterState shooterStates;
     public IntakeState intakeStates;
-    public AprilTagState aprilTagState;
     public SequencerState sequencerState;
     public DriveStates driveStates;
     public NewRobot(HardwareMap hardwareMap) {
         this.shooterStates = new ShooterState("shooter");
         this.intakeStates = new IntakeState("intake");
-        this.aprilTagState = new AprilTagState("aprilTagState");
         this.sequencerState = new SequencerState("sequencer");
         this.driveStates =  new DriveStates("drive");
     }
@@ -37,7 +34,6 @@ public class NewRobot {
     public void initialize(HardwareMap hardwareMap) {
         shooterStates.init(hardwareMap);
         intakeStates.init(hardwareMap);
-        aprilTagState.init(hardwareMap);
         sequencerState.init(hardwareMap);
         driveStates.init(hardwareMap);
     }
