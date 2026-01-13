@@ -34,7 +34,7 @@ public class V2robot extends LinearOpMode {
             intakeStates.setWantedState(IntakeState.INTAKE_STATE.DEFAULT);
         }
 
-        drive.FeildCentric(gamepad1);
+        drive.FieldCentric(gamepad1);
 
         telemetry.addData("Position", "(%.2f, %.2f, %.1f°)",
                 Mouse.getX(), Mouse.getY(), Math.toDegrees(Mouse.getTheta()));
