@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.teamcode.Tools.Constants.SHOOT;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.durationMsAuto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -49,7 +50,7 @@ public class ShootAutoRed extends LinearOpMode {
         waitForStart();
 
 
-        double distance = 0.48;
+        double distance = 0.42;
 
 
         long waitDuration = 100;
@@ -62,7 +63,7 @@ public class ShootAutoRed extends LinearOpMode {
                 new CommandIntake(robot.intakeStates, 1000)
                 )
         );
-long duration = 4000;
+
 
         scheduler.schedule(
                 new SequentialCommandGroup(
@@ -70,21 +71,21 @@ long duration = 4000;
                         new CommandDrive(robot.driveStates, -0.6), //Tune This
                         new Wait(0),
                         new CommandTurnAuto(robot.driveStates),
-                        SHOOT(scheduler, robot, duration, true),
+                        SHOOT(scheduler, robot, durationMsAuto, true, false),
                         new CommandTurnLeft(robot.driveStates, -45),
                         new Wait(0),
-                        new CommandStrafe(robot.driveStates, 0.24),
+                        new CommandStrafe(robot.driveStates, 0.4),
                         new Wait(0),
                         INTAKE,
                         new Wait(0),
-                        new CommandDrive(robot.driveStates, -distance),
+                        new CommandDrive(robot.driveStates, -distance-0.3),
                         new Wait(0),
-                        new CommandTurnRight(robot.driveStates,45),
+                        new CommandTurnRight(robot.driveStates,40),
                         new Wait(0),
                         new CommandTurnAuto(robot.driveStates),
                         new Wait(0),
-                        SHOOT(scheduler, robot, duration,true),
-                        new CommandStrafe(robot.driveStates, 0.15)
+                        SHOOT(scheduler, robot, durationMsAuto,true, false),
+                        new CommandStrafe(robot.driveStates, 0.4)
                 )
         );
 
@@ -101,6 +102,7 @@ long duration = 4000;
 
             telemetry.addData("MOuseX", Mouse.getX());
             telemetry.addData("MOuseTheta", Mouse.getTheta());
+            telemetry.addData("RPM current", robot.shooterStates.getCurrentRPM());
             telemetry.update();
         }
     }

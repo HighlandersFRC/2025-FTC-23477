@@ -57,7 +57,7 @@ public class Test extends LinearOpMode {
 
             if (gamepad1.right_bumper) {
                 scheduler.schedule(
-                        SHOOT(scheduler, robot, 5000,false)
+                        SHOOT(scheduler, robot, 5000,false, false)
                 );
             }
 

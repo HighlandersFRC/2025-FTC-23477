@@ -4,7 +4,9 @@ package org.firstinspires.ftc.teamcode.Tools;
 import androidx.annotation.NonNull;
 
 import org.firstinspires.ftc.teamcode.Commands.Command;
+import org.firstinspires.ftc.teamcode.Commands.CommandIndex;
 import org.firstinspires.ftc.teamcode.Commands.CommandIntake;
+import org.firstinspires.ftc.teamcode.Commands.CommandQueue;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
 import org.firstinspires.ftc.teamcode.Commands.CommandSpinRight;
@@ -48,7 +50,11 @@ public class Constants {
     public static final SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0.0127, -0.0635, 180);
 
     // Intake
-    public static PID IntakeHoldPID = new PID(0.5, 0, 0);
+    public static final PID IntakeHoldPID = new PID(0.5, 0, 0);
+
+    // Indexer
+    public static double IndexerPos;
+    public static final PID IndexerPID = new PID(0.5, 0, 0);
 
     // Shooter
     public static double targetRPM = 0;
@@ -60,15 +66,17 @@ public class Constants {
     public static PIDF velocityPID = new PIDF(0.005, 0.00001, 0.0001, feedForward);
 
     public static final double[][] SHOOTER_LOOKUP = {
-            {0.0, 2900},
+            {0.0, 3500},
             {1.341, 3700.0},
             {1.6378, 3900.0},
             {2.571, 6000}
     };
 
+    public static final long durationMs = 3200;
+    public static final long durationMsAuto = 4000;
 
     @NonNull
-    public static SequentialCommandGroup SHOOT(CommandScheduler scheduler, NewRobot robot, long duration, boolean isAuto) {
+    public static SequentialCommandGroup SHOOT(CommandScheduler scheduler, NewRobot robot, long duration, boolean isAuto, boolean isNew) {
         double distance = Limelight.getDistance(
                 tagHeight
         );
@@ -92,6 +100,39 @@ public class Constants {
                                     scheduler, Parameters.ANY,
                                     new CommandShoot(robot.shooterStates, distance, duration),
                                     new CommandSpinRight(robot.sequencerState, duration)
+                            ),
+                            new CommandShoot(robot.shooterStates, distance, duration),
+                            () -> robot.shooterStates.isAtTargetVelocity()
+                    )
+            );
+        } else if(isNew) {
+            return new SequentialCommandGroup(
+                    scheduler,
+                    new ConditionalCommand(
+                            new ParallelCommandGroup(
+                                    scheduler, Parameters.ANY,
+                                    new CommandShoot(robot.shooterStates, distance, duration),
+                                    new CommandQueue(robot.queueState, duration)
+                            ),
+                            new CommandShoot(robot.shooterStates, distance, duration),
+                            () -> robot.shooterStates.isAtTargetVelocity()
+                    ),
+                    new CommandIndex(robot.indexerState, 500),
+                    new ConditionalCommand(
+                            new ParallelCommandGroup(
+                                    scheduler, Parameters.ANY,
+                                    new CommandShoot(robot.shooterStates, distance, duration),
+                                    new CommandQueue(robot.queueState, duration)
+                            ),
+                            new CommandShoot(robot.shooterStates, distance, duration),
+                            () -> robot.shooterStates.isAtTargetVelocity()
+                    ),
+                    new CommandIndex(robot.indexerState, 500),
+                    new ConditionalCommand(
+                            new ParallelCommandGroup(
+                                    scheduler, Parameters.ANY,
+                                    new CommandShoot(robot.shooterStates, distance, duration),
+                                    new CommandQueue(robot.queueState, duration)
                             ),
                             new CommandShoot(robot.shooterStates, distance, duration),
                             () -> robot.shooterStates.isAtTargetVelocity()

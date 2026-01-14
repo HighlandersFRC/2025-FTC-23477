@@ -79,9 +79,6 @@ public class ShooterState extends Subsystem {
         currentState = wantedState;
     }
 
-
-
-
     private void idleLoop() {
         shooterMotor.setPower(0.2);
     }

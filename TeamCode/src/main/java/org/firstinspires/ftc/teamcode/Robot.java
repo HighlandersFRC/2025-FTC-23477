@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 
 import static org.firstinspires.ftc.teamcode.Tools.Constants.SHOOT;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.durationMs;
 import static org.firstinspires.ftc.teamcode.Tools.Constants.tagHeight;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -51,7 +52,7 @@ public class Robot extends LinearOpMode {
 
             if (gamepad1.right_bumper) {
                 scheduler.schedule(
-                        SHOOT(scheduler, robot, 3200,false)
+                        SHOOT(scheduler, robot, durationMs,false,false)
                 );
             }
 
