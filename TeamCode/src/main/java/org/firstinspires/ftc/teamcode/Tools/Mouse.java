@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.Tools;
 
-import static org.firstinspires.ftc.teamcode.Tools.Constants.ANGULAR_SCALER;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.LINEAR_SCALER;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.offset;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Mouse {
@@ -18,9 +15,10 @@ public class Mouse {
     public static void configureOtos() {
         mouse.setLinearUnit(SparkFunOTOS.LinearUnit.METERS);
         mouse.setAngularUnit(SparkFunOTOS.AngularUnit.DEGREES);
+        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0.0127, -0.0635, 180);
         mouse.setOffset(offset);
-        mouse.setLinearScalar(LINEAR_SCALER);
-        mouse.setAngularScalar(ANGULAR_SCALER);
+        mouse.setLinearScalar(0.96292729898);
+        mouse.setAngularScalar(1.01530630663);
         mouse.calibrateImu();
         mouse.resetTracking();
         System.out.println("configured");

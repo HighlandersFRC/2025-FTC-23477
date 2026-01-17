@@ -66,6 +66,9 @@ public class QueueState extends Subsystem {
             case IDLE:
                 handleIdleState();
                 break;
+            case QUEUE:
+                handleQueueState();
+                break;
         }
     }
 

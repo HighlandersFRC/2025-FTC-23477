@@ -80,7 +80,7 @@ public class ShooterState extends Subsystem {
     }
 
     private void idleLoop() {
-        shooterMotor.setPower(0.2);
+        shooterMotor.setPower(0.25);
     }
 
     @SuppressLint("DefaultLocale")

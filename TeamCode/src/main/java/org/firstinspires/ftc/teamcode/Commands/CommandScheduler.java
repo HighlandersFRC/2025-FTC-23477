@@ -56,6 +56,9 @@ public class CommandScheduler {
             RobotLog.d("Command Scheduled: " + command.getClass().getSimpleName());
         }
     }
+    public boolean isSubsystemBusy(Subsystem subsystem) {
+        return activeSubsystemCommands.containsKey(subsystem);
+    }
 
     public void run() {
         List<Command> finishedCommands = new ArrayList<>();

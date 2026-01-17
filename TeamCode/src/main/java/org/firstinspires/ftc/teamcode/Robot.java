@@ -31,6 +31,7 @@ public class Robot extends LinearOpMode {
         shooterState.init(hardwareMap);
         sequencerState.init(hardwareMap);
         Limelight.init(hardwareMap);
+        Mouse.init(hardwareMap);
 
         NewRobot robot = new NewRobot(hardwareMap);
         robot.intakeStates = intakeStates;

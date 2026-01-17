@@ -44,7 +44,9 @@ public class TestAutoRobotPolarPafing extends LinearOpMode {
         robot.intakeStates = intakeState;
         scheduler.setNewRobot(robot);
 
-        robot.initialize(hardwareMap);
+       shooterState.init(hardwareMap);
+       sequencerState.init(hardwareMap);
+       intakeState.init(hardwareMap);
 
         try {
             moveToPosition = new PolarPathFollower(drive, PathLoading.getJsonPathData(), Constants.commandMap, Constants.conditionMap, scheduler);

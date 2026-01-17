@@ -25,7 +25,10 @@ public class LeaveAuto extends LinearOpMode {
     IntakeState intakeState = new IntakeState("intake");
     @Override
     public void runOpMode() throws InterruptedException {
-
+        drive.init(hardwareMap);
+        shooterState.init(hardwareMap);
+        sequencerState.init(hardwareMap);
+        intakeState.init(hardwareMap);
         CommandScheduler scheduler = new CommandScheduler();
 
         NewRobot robot = new NewRobot(hardwareMap);
@@ -35,7 +38,7 @@ public class LeaveAuto extends LinearOpMode {
         robot.intakeStates = intakeState;
         scheduler.setNewRobot(robot);
 
-        robot.initialize(hardwareMap);
+
 
         Mouse.configureOtos();
 
@@ -43,7 +46,7 @@ public class LeaveAuto extends LinearOpMode {
 
 
         scheduler.schedule(
-                new CommandTurnAuto(robot.driveStates)
+                new CommandDrive(robot.driveStates, 1)
         );
 
 

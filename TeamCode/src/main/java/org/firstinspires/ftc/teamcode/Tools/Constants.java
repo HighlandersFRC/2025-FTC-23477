@@ -24,7 +24,7 @@ public class Constants {
 
 
     // Drive Auto
-    public static final PID xPID = new PID(1.5, 0, 0);
+    public static final PID xPID = new PID(0.5, 0, 0);
     public static final PID thetaPID = new PID(1.3, 0, 0.001);
     public static final PID yPID = new PID(5, 0, 0);
 
@@ -43,12 +43,6 @@ public class Constants {
 
     public static double tagHeight = 0.762;
 
-    // Mouse Sensor
-    public static final double LINEAR_SCALER = 0.96292729898;
-    public static final double ANGULAR_SCALER = 1.01530630663;
-
-    public static final SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0.0127, -0.0635, 180);
-
     // Intake
     public static final PID IntakeHoldPID = new PID(0.5, 0, 0);
 
@@ -66,7 +60,7 @@ public class Constants {
     public static PIDF velocityPID = new PIDF(0.005, 0.00001, 0.0001, feedForward);
 
     public static final double[][] SHOOTER_LOOKUP = {
-            {0.0, 3500},
+            {0.0, 3000},
             {1.341, 3700.0},
             {1.6378, 3900.0},
             {2.571, 6000}
@@ -151,6 +145,47 @@ public class Constants {
                             () -> robot.shooterStates.isAtTargetVelocity()
                     ));
         }
+    }
+
+
+    @NonNull
+    public static SequentialCommandGroup IndexTest(CommandScheduler scheduler, NewRobot robot, long duration) {
+        double distance = 0;
+            return new SequentialCommandGroup(
+                    scheduler,
+                    new ConditionalCommand(
+                            new ParallelCommandGroup(
+                                    scheduler, Parameters.ANY,
+                                    new CommandShoot(robot.shooterStates, distance, duration),
+                                    new CommandQueue(robot.queueState, duration)
+                            ),
+                            new CommandShoot(robot.shooterStates, distance, duration),
+                            () -> robot.shooterStates.isAtTargetVelocity()
+                    ),
+                    new CommandIndex(robot.indexerState, duration),
+                    new ConditionalCommand(
+                            new ParallelCommandGroup(
+                                    scheduler, Parameters.ANY,
+                                    new CommandShoot(robot.shooterStates, distance, duration),
+                                    new CommandQueue(robot.queueState, duration)
+                            ),
+                            new CommandShoot(robot.shooterStates, distance, duration),
+                            () -> robot.shooterStates.isAtTargetVelocity()
+                    ),
+                    new CommandIndex(robot.indexerState, duration),
+                    new ConditionalCommand(
+                            new ParallelCommandGroup(
+                                    scheduler, Parameters.ANY,
+                                    new CommandShoot(robot.shooterStates, distance, duration),
+                                    new CommandQueue(robot.queueState, duration)
+                            ),
+                            new CommandShoot(robot.shooterStates, distance, duration),
+                            () -> robot.shooterStates.isAtTargetVelocity()
+                    )
+
+
+            );
+
     }
 
 

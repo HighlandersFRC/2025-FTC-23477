@@ -34,6 +34,11 @@ public class ShootAutoRed extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
+        drive.init(hardwareMap);
+        shooterState.init(hardwareMap);
+        sequencerState.init(hardwareMap);
+        intakeState.init(hardwareMap);
+
         CommandScheduler scheduler = new CommandScheduler();
 
         NewRobot robot = new NewRobot(hardwareMap);
@@ -43,7 +48,6 @@ public class ShootAutoRed extends LinearOpMode {
         robot.intakeStates = intakeState;
         scheduler.setNewRobot(robot);
 
-        robot.initialize(hardwareMap);
 
         Mouse.configureOtos();
 
