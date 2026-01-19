@@ -35,7 +35,7 @@ public class IndexerState extends Subsystem {
         REMOVE,
     }
 
-    private INDEXER_STATE handleStateTransitions() {
+    private void handleStateTransitions() {
         switch (wantedSuperState) {
             case DEFAULT:
                 currentSuperState = INDEXER_STATE.DEFAULT;
@@ -50,12 +50,10 @@ public class IndexerState extends Subsystem {
                 currentSuperState = INDEXER_STATE.REMOVE;
                 break;
         }
-        return currentSuperState;
     }
 
     private void handleDefaultState() {
-        setPosition(Indexer.getCurrentPosition());
-        runToPosition();
+        Indexer.setPower(0);
     }
 
     private void handleIdleState() {

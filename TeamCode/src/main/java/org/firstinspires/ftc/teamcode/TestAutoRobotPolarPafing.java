@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Commands.CommandIntake;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.Commands.SequentialCommandGroup;
-import org.firstinspires.ftc.teamcode.Commands.Wait;
 import org.firstinspires.ftc.teamcode.PathingTool.PathLoading;
 import org.firstinspires.ftc.teamcode.PathingTool.PolarPathFollower;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
@@ -18,7 +17,6 @@ import org.firstinspires.ftc.teamcode.Tools.FieldOfMerit;
 import org.firstinspires.ftc.teamcode.Tools.FinalPose;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
-import org.json.JSONException;
 
 @Autonomous
 public class TestAutoRobotPolarPafing extends LinearOpMode {
@@ -33,7 +31,7 @@ public class TestAutoRobotPolarPafing extends LinearOpMode {
         Mouse.configureOtos();
 
 
-        PathLoading pathLoading = new PathLoading(hardwareMap.appContext, "DriveForward.polarpath");
+        new PathLoading(hardwareMap.appContext, "Yipee.polarpath");
         CommandScheduler scheduler = new CommandScheduler();
         Drive drive = new Drive("drive", hardwareMap);
         PolarPathFollower moveToPosition;

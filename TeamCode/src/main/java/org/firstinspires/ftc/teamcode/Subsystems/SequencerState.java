@@ -26,7 +26,7 @@ public class SequencerState extends Subsystem {
         SPIN_LEFT
     }
 
-    private SEQUENCER_STATE handleStateTransitions() {
+    private void handleStateTransitions() {
         switch (wantedSuperState) {
             case DEFAULT:
                 currentSuperState = SEQUENCER_STATE.DEFAULT;
@@ -41,7 +41,6 @@ public class SequencerState extends Subsystem {
                 currentSuperState = SEQUENCER_STATE.SPIN_RIGHT;
                 break;
         }
-        return currentSuperState;
     }
 
     private void handleDefaultState() {

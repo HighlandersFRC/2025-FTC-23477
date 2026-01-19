@@ -109,14 +109,14 @@ public class DriveStates extends Subsystem {
         xPID.setSetPoint(driveForwardDistance());
         xPID.updatePID(Mouse.getX());
 
-        drive.drive(xPID.getResult(), -xPID.getResult(), xPID.getResult(), xPID.getResult());
+        drive.drive(-xPID.getResult(), xPID.getResult(), xPID.getResult(), -xPID.getResult());
     }
 
     private void handleStrafeState() {
         yPID.setSetPoint(driveStrafeDistance());
         yPID.updatePID(Mouse.getY());
 
-        drive.drive(-yPID.getResult(), -yPID.getResult(), yPID.getResult(), -yPID.getResult());
+        drive.drive(-yPID.getResult(), -yPID.getResult(), -yPID.getResult(), -yPID.getResult());
     }
 
     public void driveTurnDriveDistanceTheta(double degrees) {
@@ -151,16 +151,16 @@ public class DriveStates extends Subsystem {
         power = clamp(power, -0.6, 0.6);
         if (Math.abs(power) < 0.1) power = Math.signum(power) * 0.1;
         if (turnRight) {
-            drive.drive(-power, -power, -power, power);
+            drive.drive(-power, -power, power, -power);
         } else {
-            drive.drive(power, power, power, -power);
+            drive.drive(power, power, -power, power);
         }
 
 
-//        double frontLeftPower = (-rotY - rotX + rx);
-//        double frontRightPower = (rotY - rotX + rx);
-//        double backLeftPower = (-rotY + rotX + rx);
-//        double backRightPower = (-rotY - rotX - rx);
+//        double frontLeftPower = (-rotY - rotX - rx);
+//        double frontRightPower = (rotY - rotX - rx);
+//        double backLeftPower = (rotY - rotX + rx);
+//        double backRightPower = (-rotY - rotX + rx);
     }
 
     private void handleAutoTurnState() {
@@ -181,7 +181,7 @@ public class DriveStates extends Subsystem {
 
             turnPower = Math.max(-MAX_TURN, Math.min(MAX_TURN, turnPower));
 
-            drive.drive(turnPower, turnPower, turnPower, -turnPower);
+            drive.drive(-turnPower, -turnPower, turnPower, -turnPower);
 
         }
     }

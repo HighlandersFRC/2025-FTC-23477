@@ -25,6 +25,9 @@ public class Test extends LinearOpMode {
     DriveStates driveStates = new DriveStates("drivestates");
     CommandScheduler scheduler = new CommandScheduler();
 
+    private boolean autoTurnActive = false;
+    private boolean xPreviouslyPressed = false;
+
     @Override
     public void runOpMode() throws InterruptedException {
         intakeStates.init(hardwareMap);
@@ -57,7 +60,7 @@ public class Test extends LinearOpMode {
 
             if (gamepad1.right_bumper) {
                 scheduler.schedule(
-                        SHOOT(scheduler, robot, 5000,false, false)
+                        SHOOT(scheduler, robot, 5000,false)
                 );
             }
 
@@ -71,13 +74,11 @@ public class Test extends LinearOpMode {
                 intakeStates.setWantedState(IntakeState.INTAKE_STATE.DEFAULT);
             }
 
-            boolean xPreviouslyPressed = false;
-            boolean autoTurnActive = false;
-
             if (gamepad1.x && !xPreviouslyPressed) {
                 autoTurnActive = !autoTurnActive;
             }
             xPreviouslyPressed = gamepad1.x;
+
 
 
             if (autoTurnActive) {
@@ -91,7 +92,6 @@ public class Test extends LinearOpMode {
             telemetry.addData("Position", "(%.2f, %.2f, %.1f°)",
                     Mouse.getX(), Mouse.getY(), Math.toDegrees(Mouse.getTheta()));
             telemetry.addData("Target RPM", shooterState.getTargetRPM());
-            telemetry.addData("Current RPM", shooterState.getCurrentRPM());
             telemetry.addData("Distance", Limelight.getDistance(
                     0.762
             ));

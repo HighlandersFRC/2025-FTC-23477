@@ -1,10 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import static org.firstinspires.ftc.teamcode.Tools.Constants.SHOOTER_LOOKUP;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.lastEncoderPos;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.lastTime;
 import static org.firstinspires.ftc.teamcode.Tools.Constants.targetRPM;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.ticksPerSecond;
 import static org.firstinspires.ftc.teamcode.Tools.Constants.velocityPID;
 
 import android.annotation.SuppressLint;
@@ -21,6 +18,15 @@ public class ShooterState extends Subsystem {
     private SHOOTER_STATE wantedState = SHOOTER_STATE.IDLE;
     private SHOOTER_STATE currentState = SHOOTER_STATE.IDLE;
 
+    private int lastEncoderPos = 0;
+    private long lastTime = 0;
+
+    // FIX: cache RPM once per loop
+    private double currentRPM = 0;
+
+    private static final int TICKS_PER_REV = 28;
+    private static final double MIN_DT = 0.02; // 20
+
     public ShooterState(String name) {
         super(name);
     }
@@ -30,8 +36,6 @@ public class ShooterState extends Subsystem {
         shooterMotor = hardwareMap.dcMotor.get("ShooterMotor");
 
         shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        shooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         velocityPID.setMinOutput(-1);
         velocityPID.setMaxOutput(1);
@@ -47,7 +51,7 @@ public class ShooterState extends Subsystem {
     }
 
     public boolean isAtTargetVelocity() {
-        return Math.abs(targetRPM - getCurrentRPM()) < 100;
+        return Math.abs(targetRPM - computeRPM()) < 100;
     }
 
     public double getTargetRPM() {
@@ -65,7 +69,6 @@ public class ShooterState extends Subsystem {
                 break;
 
             case SHOOT:
-                velocityPID.reset();
                 shootLoop();
                 break;
 
@@ -76,45 +79,50 @@ public class ShooterState extends Subsystem {
     }
 
     private void handleStateTransition() {
-        currentState = wantedState;
+        if (currentState != wantedState) {
+            if (wantedState == SHOOTER_STATE.SHOOT) {
+                velocityPID.reset();
+            }
+            currentState = wantedState;
+        }
     }
 
     private void idleLoop() {
-        shooterMotor.setPower(0.25);
+        shooterMotor.setPower(-0.25);
     }
 
     @SuppressLint("DefaultLocale")
     private void shootLoop() {
-        runVelocityPID();
+        currentRPM = computeRPM();
+       runVelocityPID();
     }
 
 
 
     private void runVelocityPID() {
-        double currentRPM = getCurrentRPM();
         velocityPID.setSetPoint(targetRPM);
         velocityPID.updatePID(currentRPM);
-        shooterMotor.setPower(velocityPID.getResult());
+        shooterMotor.setPower(-velocityPID.getResult());
     }
 
-    public double getCurrentRPM() {
-        shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        int currentPos = shooterMotor.getCurrentPosition();
+    public double computeRPM() {
+        int currentPos = -shooterMotor.getCurrentPosition();
         long currentTime = System.nanoTime();
 
         double dt = (currentTime - lastTime) / 1e9;
         int deltaTicks = currentPos - lastEncoderPos;
 
-        if (dt > 0) {
-            ticksPerSecond = deltaTicks / dt;
+        if (dt < MIN_DT) {
+            return currentRPM; // prevent spike
         }
 
         lastEncoderPos = currentPos;
         lastTime = currentTime;
 
-        int ticksPerRev = 28;
-        return (ticksPerSecond / ticksPerRev) * 60.0;
+        double ticksPerSecond = deltaTicks / dt;
+        return (ticksPerSecond / TICKS_PER_REV) * 60.0;
     }
+
 
 
     @SuppressLint("DefaultLocale")

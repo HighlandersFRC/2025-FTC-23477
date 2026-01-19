@@ -4,8 +4,13 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import static org.firstinspires.ftc.teamcode.Tools.Constants.cameraAngle;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.cameraHeight;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.MAX_ANGLE;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.MAX_STEP;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.MIN_ANGLE;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.cameraHeightI;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.tiltPID;
+
+import org.firstinspires.ftc.teamcode.Subsystems.AdjustLL;
 
 import java.util.Objects;
 
@@ -13,11 +18,16 @@ public final class Limelight {
 
     private static Limelight3A limelight;
 
+    private static AdjustLL adjust;
+
     private Limelight() {}
 
     public static void init(HardwareMap hardwareMap) {
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.start();
+
+
+     //   adjust.init(hardwareMap);
     }
 
     public static LLResult getResult() {
@@ -62,8 +72,9 @@ public final class Limelight {
     public static double getDistance(
             double tagHeight
     ) {
+        double cameraAngle = adjust.getDegrees();
 
-
+        double cameraHeightM = cameraHeightI * 39.37;
 
         LLResult result = getResult();
         if (result == null) return 0.0;
@@ -71,7 +82,7 @@ public final class Limelight {
         double ty = result.getTy();
         double angleRad = Math.toRadians(cameraAngle + ty);
 
-        return (tagHeight - cameraHeight) / Math.tan(angleRad);
+        return (tagHeight - cameraHeightM) / Math.tan(angleRad);
     }
 
 
@@ -79,6 +90,28 @@ public final class Limelight {
         LLResult result = getResult();
         return result != null && result.isValid() && result.getBotpose() != null;
     }
+
+
+    // adjustable LL
+
+//    public static void autoAdjustToTagPID() {
+//        LLResult result = getResult();
+//        if (result == null) return;
+//
+//        double ty = result.getTy();
+//
+//        double output = tiltPID.updatePID(ty);
+//
+//        output = Math.max(-MAX_STEP, Math.min(output, MAX_STEP));
+//
+//        double currentAngle = adjust.getDegrees();
+//        double newAngle = currentAngle + output;
+//
+//        newAngle = Math.max(MIN_ANGLE, Math.min(newAngle, MAX_ANGLE));
+//
+//        adjust.setDegrees(newAngle);
+//    }
+
 
 
     public static boolean hasTarget() {

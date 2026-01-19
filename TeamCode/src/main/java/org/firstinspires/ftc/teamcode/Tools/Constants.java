@@ -24,24 +24,33 @@ public class Constants {
 
 
     // Drive Auto
-    public static final PID xPID = new PID(0.5, 0, 0);
+    public static final PID xPID = new PID(1.5, 0, 0);
     public static final PID thetaPID = new PID(1.3, 0, 0.001);
     public static final PID yPID = new PID(5, 0, 0);
 
     public static final double DISTANCE_TOLERANCE = 0.1;
     public static final double THETA_TOLERANCE = 2.0;
 
+
     // Limelight
-    public static PID thetaPIDLimelight = new PID(0.05, 0.0, 0.5);
+    public static final PID thetaPIDLimelight = new PID(0.04, 0.0, 0.01);
     public static double lastTx = 0;
     public static final double TX_TOLERANCE = 1.5;
     public static final double MAX_TURN = 0.45;
     public static final double MIN_TURN = 0.08;
 
-    public static double cameraHeight = 0.3556;
-    public static double cameraAngle = 0;
+    public static final double cameraHeightI = 11.5;
 
-    public static double tagHeight = 0.762;
+    public static final double tagHeight = 0.762;
+    public static final double maxAngle = 180;
+
+    public static final double MIN_ANGLE = 10;
+    public static final double MAX_ANGLE = 80;
+
+    public static final double MAX_STEP = 2.0; // degrees per loop
+
+    public static final PID tiltPID = new PID(0.5, 0, 0);
+
 
     // Intake
     public static final PID IntakeHoldPID = new PID(0.5, 0, 0);
@@ -56,21 +65,21 @@ public class Constants {
     public static long lastTime = 0;
     public static double ticksPerSecond = 0;
 
-    public static float feedForward = (float) 1 / 6000;
-    public static PIDF velocityPID = new PIDF(0.005, 0.00001, 0.0001, feedForward);
+    public static final float feedForward = (float) 1 / 6000;
+    public static final PIDF velocityPID = new PIDF(0.05, 0.00001, 0.0001, feedForward);
 
     public static final double[][] SHOOTER_LOOKUP = {
-            {0.0, 3000},
-            {1.341, 3700.0},
-            {1.6378, 3900.0},
+            {0.0, 3500},
+            {1.341, 4500.0},
+            {1.6378, 4900.0},
             {2.571, 6000}
     };
 
-    public static final long durationMs = 3200;
-    public static final long durationMsAuto = 4000;
+    public static final long durationMs = 3600;
+    public static final long durationMsAuto = 4500;
 
     @NonNull
-    public static SequentialCommandGroup SHOOT(CommandScheduler scheduler, NewRobot robot, long duration, boolean isAuto, boolean isNew) {
+    public static SequentialCommandGroup SHOOT(CommandScheduler scheduler, NewRobot robot, long duration, boolean isAuto) {
         double distance = Limelight.getDistance(
                 tagHeight
         );
@@ -83,50 +92,17 @@ public class Constants {
                                     new CommandShoot(robot.shooterStates, distance, duration),
                                     new CommandSpinRight(robot.sequencerState, duration)
                             ),
-                            new CommandShoot(robot.shooterStates, distance, duration),
+                            new CommandShoot(robot.shooterStates, distance, duration+300),
                             () -> robot.shooterStates.isAtTargetVelocity()
                     ),
 
-                    new CommandIntake(robot.intakeStates, 1700),
+                    new CommandIntake(robot.intakeStates, 1000),
 
                     new ConditionalCommand(
                             new ParallelCommandGroup(
                                     scheduler, Parameters.ANY,
                                     new CommandShoot(robot.shooterStates, distance, duration),
                                     new CommandSpinRight(robot.sequencerState, duration)
-                            ),
-                            new CommandShoot(robot.shooterStates, distance, duration),
-                            () -> robot.shooterStates.isAtTargetVelocity()
-                    )
-            );
-        } else if(isNew) {
-            return new SequentialCommandGroup(
-                    scheduler,
-                    new ConditionalCommand(
-                            new ParallelCommandGroup(
-                                    scheduler, Parameters.ANY,
-                                    new CommandShoot(robot.shooterStates, distance, duration),
-                                    new CommandQueue(robot.queueState, duration)
-                            ),
-                            new CommandShoot(robot.shooterStates, distance, duration),
-                            () -> robot.shooterStates.isAtTargetVelocity()
-                    ),
-                    new CommandIndex(robot.indexerState, 500),
-                    new ConditionalCommand(
-                            new ParallelCommandGroup(
-                                    scheduler, Parameters.ANY,
-                                    new CommandShoot(robot.shooterStates, distance, duration),
-                                    new CommandQueue(robot.queueState, duration)
-                            ),
-                            new CommandShoot(robot.shooterStates, distance, duration),
-                            () -> robot.shooterStates.isAtTargetVelocity()
-                    ),
-                    new CommandIndex(robot.indexerState, 500),
-                    new ConditionalCommand(
-                            new ParallelCommandGroup(
-                                    scheduler, Parameters.ANY,
-                                    new CommandShoot(robot.shooterStates, distance, duration),
-                                    new CommandQueue(robot.queueState, duration)
                             ),
                             new CommandShoot(robot.shooterStates, distance, duration),
                             () -> robot.shooterStates.isAtTargetVelocity()
@@ -134,16 +110,17 @@ public class Constants {
             );
         } else {
             return new SequentialCommandGroup(
-                    scheduler,
-                    new ConditionalCommand(
-                            new ParallelCommandGroup(
-                                    scheduler, Parameters.ANY,
-                                    new CommandShoot(robot.shooterStates, distance, duration),
-                                    new CommandSpinRight(robot.sequencerState, duration)
-                            ),
+                    scheduler, new ConditionalCommand(
+                    new ParallelCommandGroup(
+                            scheduler, Parameters.ANY,
                             new CommandShoot(robot.shooterStates, distance, duration),
-                            () -> robot.shooterStates.isAtTargetVelocity()
-                    ));
+                            new CommandSpinRight(robot.sequencerState, duration)
+                    ),
+                    new CommandShoot(robot.shooterStates, distance, duration),
+                    () -> robot.shooterStates.isAtTargetVelocity()
+            )
+            );
+
         }
     }
 
@@ -161,27 +138,27 @@ public class Constants {
                             ),
                             new CommandShoot(robot.shooterStates, distance, duration),
                             () -> robot.shooterStates.isAtTargetVelocity()
-                    ),
-                    new CommandIndex(robot.indexerState, duration),
-                    new ConditionalCommand(
-                            new ParallelCommandGroup(
-                                    scheduler, Parameters.ANY,
-                                    new CommandShoot(robot.shooterStates, distance, duration),
-                                    new CommandQueue(robot.queueState, duration)
-                            ),
-                            new CommandShoot(robot.shooterStates, distance, duration),
-                            () -> robot.shooterStates.isAtTargetVelocity()
-                    ),
-                    new CommandIndex(robot.indexerState, duration),
-                    new ConditionalCommand(
-                            new ParallelCommandGroup(
-                                    scheduler, Parameters.ANY,
-                                    new CommandShoot(robot.shooterStates, distance, duration),
-                                    new CommandQueue(robot.queueState, duration)
-                            ),
-                            new CommandShoot(robot.shooterStates, distance, duration),
-                            () -> robot.shooterStates.isAtTargetVelocity()
                     )
+//                    ,new CommandIndex(robot.indexerState, duration),
+//                    new ConditionalCommand(
+//                            new ParallelCommandGroup(
+//                                    scheduler, Parameters.ANY,
+//                                    new CommandShoot(robot.shooterStates, distance, duration),
+//                                    new CommandQueue(robot.queueState, duration)
+//                            ),
+//                            new CommandShoot(robot.shooterStates, distance, duration),
+//                            () -> robot.shooterStates.isAtTargetVelocity()
+//                    ),
+//                    new CommandIndex(robot.indexerState, duration),
+//                    new ConditionalCommand(
+//                            new ParallelCommandGroup(
+//                                    scheduler, Parameters.ANY,
+//                                    new CommandShoot(robot.shooterStates, distance, duration),
+//                                    new CommandQueue(robot.queueState, duration)
+//                            ),
+//                            new CommandShoot(robot.shooterStates, distance, duration),
+//                            () -> robot.shooterStates.isAtTargetVelocity()
+//                    )
 
 
             );

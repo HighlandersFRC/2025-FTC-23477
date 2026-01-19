@@ -72,23 +72,25 @@ public class ShootAutoRed extends LinearOpMode {
         scheduler.schedule(
                 new SequentialCommandGroup(
                         scheduler,
+                        new Wait(0),
                         new CommandDrive(robot.driveStates, -0.6), //Tune This
                         new Wait(0),
                         new CommandTurnAuto(robot.driveStates),
-                        SHOOT(scheduler, robot, durationMsAuto, true, false),
+                        SHOOT(scheduler, robot, durationMsAuto, true),
                         new CommandTurnLeft(robot.driveStates, -45),
                         new Wait(0),
-                        new CommandStrafe(robot.driveStates, 0.4),
+                        new CommandStrafe(robot.driveStates, 0.36),
                         new Wait(0),
                         INTAKE,
                         new Wait(0),
-                        new CommandDrive(robot.driveStates, -distance-0.3),
+                        new CommandDrive(robot.driveStates, -distance-0.15),
                         new Wait(0),
-                        new CommandTurnRight(robot.driveStates,40),
+                        new CommandTurnRight(robot.driveStates,45),
                         new Wait(0),
                         new CommandTurnAuto(robot.driveStates),
                         new Wait(0),
-                        SHOOT(scheduler, robot, durationMsAuto,true, false),
+                        new CommandDrive(robot.driveStates, 0.3),
+                        SHOOT(scheduler, robot, durationMsAuto,true),
                         new CommandStrafe(robot.driveStates, 0.4)
                 )
         );
@@ -106,7 +108,6 @@ public class ShootAutoRed extends LinearOpMode {
 
             telemetry.addData("MOuseX", Mouse.getX());
             telemetry.addData("MOuseTheta", Mouse.getTheta());
-            telemetry.addData("RPM current", robot.shooterStates.getCurrentRPM());
             telemetry.update();
         }
     }

@@ -155,14 +155,14 @@ public class Drive extends Subsystem {
 
     public void teleopDrive(Gamepad gamepad1) {
         double x = -gamepad1.left_stick_x;
-        double y = -gamepad1.left_stick_y * 2;
-        double rx = -gamepad1.right_stick_x * 2;
+        double y = -gamepad1.left_stick_y;
+        double rx = -gamepad1.right_stick_x;
 
 
-        double frontLeftPower = (y + x - rx);
-        double backLeftPower = (-y + x + rx);
-        double frontRightPower = (-y + x + rx);
-        double backRightPower = (-y - x - rx);
+        double frontLeftPower = (-y + x + rx);
+        double backLeftPower = (y + x - rx);
+        double frontRightPower = (y + x + rx);
+        double backRightPower = (-y + x - rx);
 
 
         frontLeftMotor.setPower(frontLeftPower);
@@ -204,10 +204,10 @@ public class Drive extends Subsystem {
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
         double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
-        double frontLeftPower = (-rotY - rotX + rx);
-        double backLeftPower = (-rotY + rotX + rx);
-        double frontRightPower = (rotY - rotX + rx);
-        double backRightPower = (-rotY - rotX - rx);
+        double frontLeftPower = (-rotY - rotX - rx);
+        double backLeftPower = (rotY - rotX + rx);
+        double frontRightPower = (rotY - rotX - rx);
+        double backRightPower = (-rotY - rotX + rx);
 
 
         frontLeftMotor.setPower(frontLeftPower);
@@ -344,15 +344,15 @@ public class Drive extends Subsystem {
 
         double denominator = Math.max(0.3, Math.abs(rotY) + Math.abs(rotX) + Math.abs(rotationFactor));
 
-        double frontLeftPower = (-rotY - rotX + rotationFactor) ;
-        double backLeftPower = (-rotY + rotX + rotationFactor) ;
-        double frontRightPower = (rotY - rotX + rotationFactor);
-        double backRightPower = (-rotY - rotX - rotationFactor);
-        // Field Centric
-        // double frontLeftPower = (-rotY - rotX + rx);
-        // double backLeftPower = (-rotY + rotX + rx);
-//         double frontRightPower = (rotY - rotX + rx);
-//         double backRightPower = (-rotY - rotX - rx);
+        double frontLeftPower = (-rotY - rotX - rotationFactor) / denominator;
+        double backLeftPower = (rotY - rotX + rotationFactor) / denominator;
+        double frontRightPower = (rotY - rotX - rotationFactor) / denominator;
+        double backRightPower = (-rotY - rotX +  rotationFactor) / denominator;
+        //Field Centric
+//        double frontLeftPower = (-rotY - rotX - rx);
+//        double backLeftPower = (rotY - rotX + rx);
+//        double frontRightPower = (rotY - rotX - rx);
+//        double backRightPower = (-rotY - rotX + rx);
 
 
 
@@ -396,15 +396,18 @@ public class Drive extends Subsystem {
 
         double denominator = Math.max(0.3, Math.abs(rotY) + Math.abs(rotX) + Math.abs(rotationFactor));
 
-        double frontLeftPower = (-rotY - rotX + rotationFactor) / denominator;
-        double backLeftPower = (-rotY + rotX + rotationFactor) / denominator;
-        double frontRightPower = (rotY - rotX + rotationFactor) / denominator;
-        double backRightPower = (-rotY - rotX -  rotationFactor) / denominator;
+        double frontLeftPower = (-rotY - rotX - rotationFactor) / denominator;
+        double backLeftPower = (rotY - rotX + rotationFactor) / denominator;
+        double frontRightPower = (rotY - rotX - rotationFactor) / denominator;
+        double backRightPower = (-rotY - rotX +  rotationFactor) / denominator;
+
         //Field Centric
-//        double frontLeftPower = (-rotY - rotX + rx);
-//        double backLeftPower = (-rotY + rotX + rx);
-//        double frontRightPower = (rotY - rotX + rx);
-//        double backRightPower = (-rotY - rotX - rx);
+//        double frontLeftPower = (-rotY - rotX - rx);
+//        double backLeftPower = (rotY - rotX + rx);
+//        double frontRightPower = (rotY - rotX - rx);
+//        double backRightPower = (-rotY - rotX + rx);
+
+
 
 
         frontRightMotor.setPower(frontRightPower);

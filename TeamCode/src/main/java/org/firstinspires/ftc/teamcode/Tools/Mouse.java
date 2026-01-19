@@ -15,10 +15,10 @@ public class Mouse {
     public static void configureOtos() {
         mouse.setLinearUnit(SparkFunOTOS.LinearUnit.METERS);
         mouse.setAngularUnit(SparkFunOTOS.AngularUnit.DEGREES);
-        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0.0127, -0.0635, 180);
+        SparkFunOTOS.Pose2D offset = new SparkFunOTOS.Pose2D(0.1524, -0.1016, 180);
         mouse.setOffset(offset);
-        mouse.setLinearScalar(0.96292729898);
-        mouse.setAngularScalar(1.01530630663);
+        mouse.setLinearScalar(0.96292729898); // Calibrate
+        mouse.setAngularScalar(1.01530630663); // Calibrate
         mouse.calibrateImu();
         mouse.resetTracking();
         System.out.println("configured");
@@ -43,6 +43,7 @@ public class Mouse {
     public static double getTheta() {
         return theta;
     }
+
 
 
 }

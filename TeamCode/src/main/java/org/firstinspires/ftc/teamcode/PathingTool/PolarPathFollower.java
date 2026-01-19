@@ -6,11 +6,9 @@ import static org.firstinspires.ftc.teamcode.Tools.Constants.yawPIDP;
 
 import org.firstinspires.ftc.teamcode.Commands.*;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
-import org.firstinspires.ftc.teamcode.Subsystems.Peripherals;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 import org.firstinspires.ftc.teamcode.Tools.FinalPose;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
-import org.firstinspires.ftc.teamcode.Tools.PID;
 import org.firstinspires.ftc.teamcode.Tools.Parameters;
 import org.firstinspires.ftc.teamcode.Tools.Vector;
 import org.json.JSONArray;
@@ -19,111 +17,119 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 public class PolarPathFollower implements Command {
 
-    private Set<String> addedCommandKeys;
+    private final Drive drive;
     private final CommandScheduler scheduler;
-    private double pathStartTime;
     private final JSONArray points;
-
-
     private final HashMap<String, Supplier<Command>> commandMap;
     private final HashMap<String, BooleanSupplier> conditionMap;
 
-    private final ArrayList<Command> activeCommands = new ArrayList<>();
+    private int lastPointIndex = 0;
+
+    private double pathStartTime;
     private double nextX, nextY;
-    Drive drive;
+    private final Set<String> activeCommandKeys = new HashSet<>();
+
     public PolarPathFollower(Drive drive, JSONObject pathJSON,
                              HashMap<String, Supplier<Command>> commandMap,
                              HashMap<String, BooleanSupplier> conditionMap,
                              CommandScheduler scheduler) throws JSONException {
+        this.drive = drive;
         this.scheduler = scheduler;
         this.points = pathJSON.getJSONArray("sampled_points");
         this.commandMap = commandMap;
         this.conditionMap = conditionMap;
-        this.drive = drive;
-    }
-
-    private double getPathTime() {
-        return System.currentTimeMillis() / 1000.0;
     }
 
     private double getCurrentTime() {
-        return getPathTime() - pathStartTime;
+        return (System.currentTimeMillis() / 1000.0) - pathStartTime;
     }
 
     @Override
     public void start() {
-        this.pathStartTime = getPathTime();
+        pathStartTime = System.currentTimeMillis() / 1000.0;
 
         try {
-            JSONObject currentPoint = points.getJSONObject(0);
-            nextX = currentPoint.getDouble("x");
-            nextY = currentPoint.getDouble("y");
-            double nextTheta = currentPoint.getDouble("angle");
+            JSONObject firstPoint = points.getJSONObject(0);
+            nextX = firstPoint.getDouble("x");
+            nextY = firstPoint.getDouble("y");
+            double nextThetaDeg = Math.toDegrees(firstPoint.getDouble("angle"));
 
-            Mouse.setPosition(nextX, nextY, Math.toDegrees(nextTheta));
+            Mouse.setPosition(nextX, nextY, nextThetaDeg);
         } catch (JSONException e) {
-            throw new RuntimeException("Error reading point data from JSON", e);
+            throw new RuntimeException("Error reading first point from JSON", e);
         }
 
         yawPIDP.setMinInput(-180);
-        yawPIDP.setMinInput(180);
+        yawPIDP.setMaxInput(180);
     }
 
+    @Override
     public void execute() {
         FinalPose.poseUpdate();
-        double elapsedTime = getPathTime() - pathStartTime;
+        double elapsedTime = getCurrentTime();
 
-        int index = (int) ((elapsedTime + 0.05) / 0.01);
-        if (index >= points.length()) {
-            index = points.length() - 1;
-        }
+        JSONObject point = null;
         try {
-            JSONObject currentPoint = points.getJSONObject(index);
-            nextX = currentPoint.getDouble("x");
-            nextY = currentPoint.getDouble("y");
-            double nextTheta = currentPoint.getDouble("angle");
+            for (int i = lastPointIndex; i < points.length(); i++) {
+                JSONObject p = points.getJSONObject(i);
+                if (p.getDouble("time") > elapsedTime) break;
+                point = p;
+                lastPointIndex = i;
+            }
+
+            if (point == null) return;
+
+            nextX = point.getDouble("x");
+            nextY = point.getDouble("y");
+            double nextThetaDeg = Math.toDegrees(point.getDouble("angle"));
 
             double currentX = FinalPose.x;
             double currentY = FinalPose.y;
-            double currentTheta = Math.toRadians(FinalPose.yaw);
-
+            double currentTheta = FinalPose.yaw;
             xPIDP.setSetPoint(nextX);
             xPIDP.updatePID(currentX);
 
             yPIDP.setSetPoint(nextY);
             yPIDP.updatePID(currentY);
 
-            yawPIDP.setSetPoint(nextTheta);
+            yawPIDP.setSetPoint(nextThetaDeg);
             yawPIDP.updatePID(currentTheta);
 
             Vector relativePos = new Vector(xPIDP.getResult(), yPIDP.getResult());
             drive.autoDrive(relativePos, yawPIDP.getResult());
 
-            JSONArray commands = points.getJSONObject(index).optJSONArray("commands");
+            JSONArray commands = point.optJSONArray("commands");
             if (commands != null) {
                 for (int i = 0; i < commands.length(); i++) {
                     JSONObject commandJSON = commands.getJSONObject(i);
-                    Command command = parseCommand(commandJSON);
-                    if (command != null && !activeCommands.contains(command)) {
-                        scheduler.schedule(command);
-                        activeCommands.add(command);
+                    if (commandJSON.has("command")) {
+                        String commandKey = commandJSON.getString("command");
+                        if (!activeCommandKeys.contains(commandKey)) {
+                            Command command = parseCommand(commandJSON);
+                            if (command != null) {
+                                scheduler.schedule(command);
+                                activeCommandKeys.add(commandKey);
+                            }
+                        }
+                    } else {
+                        Command command = parseCommand(commandJSON);
+                        if (command != null) scheduler.schedule(command);
                     }
                 }
             }
-
-            System.out.println("Vector X: " + relativePos.getI() + ", Vector Y: " + relativePos.getJ() +
-                    ", Theta: " + currentTheta + ", Index: " + index);
 
         } catch (JSONException e) {
             throw new RuntimeException("Error reading point data from JSON", e);
         }
     }
+
 
     private Command parseCommand(JSONObject commandJSON) throws JSONException {
         if (commandJSON.has("command")) {
@@ -140,32 +146,32 @@ public class PolarPathFollower implements Command {
 
     private Command singleCommandFromJSON(JSONObject commandJSON) throws JSONException {
         String commandName = commandJSON.getString("command");
-        if (commandMap.containsKey(commandName)) {
-            return commandMap.get(commandName).get();
+
+        Supplier<Command> commandSupplier = commandMap.get(commandName);
+        if (commandSupplier != null) {
+            return commandSupplier.get();
         }
+
         return null;
     }
 
+
     private Command parseParallelCommandGroup(JSONArray commands) throws JSONException {
-        ArrayList<Command> commandList = new ArrayList<>();
+        ArrayList<Command> list = new ArrayList<>();
         for (int i = 0; i < commands.length(); i++) {
-            Command command = parseCommand(commands.getJSONObject(i));
-            if (command != null) {
-                commandList.add(command);
-            }
+            Command c = parseCommand(commands.getJSONObject(i));
+            if (c != null) list.add(c);
         }
-        return new ParallelCommandGroup(scheduler, Parameters.ALL, commandList.toArray(new Command[0]));
+        return new ParallelCommandGroup(scheduler, Parameters.ALL, list.toArray(new Command[0]));
     }
 
     private Command parseSequentialCommandGroup(JSONArray commands) throws JSONException {
-        ArrayList<Command> commandList = new ArrayList<>();
+        ArrayList<Command> list = new ArrayList<>();
         for (int i = 0; i < commands.length(); i++) {
-            Command command = parseCommand(commands.getJSONObject(i));
-            if (command != null) {
-                commandList.add(command);
-            }
+            Command c = parseCommand(commands.getJSONObject(i));
+            if (c != null) list.add(c);
         }
-        return new SequentialCommandGroup(scheduler, commandList.toArray(new Command[0]));
+        return new SequentialCommandGroup(scheduler, list.toArray(new Command[0]));
     }
 
     private Command parseConditionalCommand(JSONObject commandJSON) throws JSONException {
@@ -182,8 +188,15 @@ public class PolarPathFollower implements Command {
 
     @Override
     public boolean isFinished() {
-        return getCurrentTime() >= points.length() * 0.01;
+        try {
+            if (points.length() == 0) return true;
+            double lastTime = points.getJSONObject(points.length() - 1).getDouble("time");
+            return getCurrentTime() >= lastTime;
+        } catch (JSONException e) {
+            return true;
+        }
     }
+
 
     @Override
     public Subsystem getRequiredSubsystem() {

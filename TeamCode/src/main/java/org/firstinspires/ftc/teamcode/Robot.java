@@ -53,7 +53,7 @@ public class Robot extends LinearOpMode {
 
             if (gamepad1.right_bumper) {
                 scheduler.schedule(
-                        SHOOT(scheduler, robot, durationMs,false,false)
+                        SHOOT(scheduler, robot, durationMs,false)
                 );
             }
 
@@ -72,7 +72,6 @@ public class Robot extends LinearOpMode {
             telemetry.addData("Position", "(%.2f, %.2f, %.1f°)",
                     Mouse.getX(), Mouse.getY(), Math.toDegrees(Mouse.getTheta()));
             telemetry.addData("Target RPM", shooterState.getTargetRPM());
-            telemetry.addData("Current RPM", shooterState.getCurrentRPM());
             telemetry.addData("Is Detected", Limelight.isDetected());
             telemetry.addData("Current Distance", Limelight.getDistance(tagHeight));
             telemetry.update();

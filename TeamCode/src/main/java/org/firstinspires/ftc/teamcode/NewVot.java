@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import static org.firstinspires.ftc.teamcode.Tools.Constants.IndexTest;
 import static org.firstinspires.ftc.teamcode.Tools.Constants.SHOOT;
 import static org.firstinspires.ftc.teamcode.Tools.Constants.durationMs;
 import static org.firstinspires.ftc.teamcode.Tools.Constants.tagHeight;
@@ -37,6 +38,7 @@ public class NewVot extends LinearOpMode {
         indexerState.init(hardwareMap);
         queueState.init(hardwareMap);
         Limelight.init(hardwareMap);
+        Mouse.init(hardwareMap);
 
         NewRobot robot = new NewRobot(hardwareMap);
         robot.intakeStates = intakeStates;
@@ -62,7 +64,7 @@ public class NewVot extends LinearOpMode {
 
             if (gamepad1.right_bumper) {
                 scheduler.schedule(
-                        SHOOT(scheduler, robot, durationMs,false, true)
+                        IndexTest(scheduler, robot, durationMs)
                 );
             }
 
@@ -84,9 +86,9 @@ public class NewVot extends LinearOpMode {
             telemetry.addData("Position", "(%.2f, %.2f, %.1f°)",
                     Mouse.getX(), Mouse.getY(), Math.toDegrees(Mouse.getTheta()));
             telemetry.addData("Target RPM", shooterState.getTargetRPM());
-            telemetry.addData("Current RPM", shooterState.getCurrentRPM());
             telemetry.addData("Is Detected", Limelight.isDetected());
             telemetry.addData("Current Distance", Limelight.getDistance(tagHeight));
+            telemetry.addData("CurrentRPM", shooterState.computeRPM());
             telemetry.update();
 
             telemetry.update();

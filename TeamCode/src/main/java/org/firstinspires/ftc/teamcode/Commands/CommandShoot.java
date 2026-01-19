@@ -32,7 +32,6 @@ public class CommandShoot implements Command {
 
     @Override
     public boolean isFinished() {
-
         return System.currentTimeMillis() - secondsPassed >= durationMs;
     }
 

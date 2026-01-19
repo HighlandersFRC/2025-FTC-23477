@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.PathingTool;
 
 import android.content.Context;
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,26 +16,29 @@ public class PathLoading {
     private static JSONObject jsonPathData;
 
     public PathLoading(Context context, String pathFileName) {
-        loadJSONFromAsset(context, pathFileName);
-    }
-
-    private void loadJSONFromAsset(Context context, String pathFileName) {
         try {
-            InputStream inputStream = context.getAssets().open(pathFileName);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-            reader.close();
-            inputStream.close();
-
-            jsonPathData = new JSONObject(sb.toString());
+           jsonPathData = loadJSONFromAsset(context, pathFileName);
         } catch (IOException | JSONException e) {
-            e.printStackTrace();
+            Log.e("JSON_LOAD", "Failed to load JSON file", e);
+            // Handle error gracefully: show a toast, use fallback data, or stop execution
         }
+
     }
+
+    private JSONObject loadJSONFromAsset(Context context, String pathFileName) throws IOException, JSONException {
+        InputStream inputStream = context.getAssets().open(pathFileName);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line);
+        }
+        reader.close();
+        inputStream.close();
+
+        return new JSONObject(sb.toString());
+    }
+
 
     public static JSONObject getJsonPathData() {
         return jsonPathData;

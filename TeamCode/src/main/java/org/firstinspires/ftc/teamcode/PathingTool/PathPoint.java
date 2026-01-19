@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.PathingTool;
 
 public class PathPoint {
-    private double x;
-    private double y;
+    private final double x;
+    private final double y;
 
     public PathPoint(double x, double y) {
         this.x = x;

@@ -24,10 +24,11 @@ public class QueueState extends Subsystem {
     public enum QUEUE_STATE{
         DEFAULT,
         IDLE,
-        QUEUE
+        QUEUE,
+        REMOVE
     }
 
-    private QUEUE_STATE handleStateTransitions() {
+    private void handleStateTransitions() {
         switch (wantedSuperState) {
             case DEFAULT:
                 currentSuperState = QUEUE_STATE.DEFAULT;
@@ -38,11 +39,14 @@ public class QueueState extends Subsystem {
             case QUEUE:
                 currentSuperState = QUEUE_STATE.QUEUE;
                 break;
+            case REMOVE:
+                currentSuperState = QUEUE_STATE.REMOVE;
+                break;
         }
-        return currentSuperState;
     }
 
     private void handleDefaultState() {
+        Queuer.setPower(0);
     }
 
     private void handleIdleState() {
@@ -50,6 +54,10 @@ public class QueueState extends Subsystem {
     }
 
     private void handleQueueState() {
+        Queuer.setPower(-1);
+    }
+
+    private void handleRemoveState() {
         Queuer.setPower(1);
     }
 
@@ -68,6 +76,9 @@ public class QueueState extends Subsystem {
                 break;
             case QUEUE:
                 handleQueueState();
+                break;
+            case REMOVE:
+                handleRemoveState();
                 break;
         }
     }

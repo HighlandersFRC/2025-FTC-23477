@@ -30,7 +30,7 @@ public class IntakeState extends Subsystem {
         INTAKE
     }
 
-    private INTAKE_STATE handleStateTransitions() {
+    private void handleStateTransitions() {
         switch (wantedSuperState) {
             case DEFAULT:
                 currentSuperState = INTAKE_STATE.DEFAULT;
@@ -45,13 +45,14 @@ public class IntakeState extends Subsystem {
                 currentSuperState = INTAKE_STATE.INTAKE;
                 break;
         }
-        return currentSuperState;
     }
 
     private void handleDefaultState() {
-        IntakeHoldPID.setSetPoint(IntakeMotor.getCurrentPosition());
-        IntakeHoldPID.updatePID(IntakeMotor.getCurrentPosition());;
-        IntakeMotor.setPower(-IntakeHoldPID.getResult());
+//        IntakeHoldPID.setSetPoint(IntakeMotor.getCurrentPosition());
+//        IntakeHoldPID.updatePID(IntakeMotor.getCurrentPosition());;
+//        IntakeMotor.setPower(-IntakeHoldPID.getResult());
+
+        IntakeMotor.setPower(0);
     }
 
     private void handleIdleState() {
@@ -59,11 +60,11 @@ public class IntakeState extends Subsystem {
     }
 
     private void handleOuttakeState() {
-        IntakeMotor.setPower(-1);
+        IntakeMotor.setPower(1);
     }
 
     private void handleIntakeState() {
-        IntakeMotor.setPower(1);
+        IntakeMotor.setPower(-1);
     }
 
     @Override
