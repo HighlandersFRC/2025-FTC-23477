@@ -1,7 +1,9 @@
-package org.firstinspires.ftc.teamcode.Subsystems;
+package org.firstinspires.ftc.teamcode.Subsystems.Queuer;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 public class QueueState extends Subsystem {
     private QUEUE_STATE wantedSuperState = QUEUE_STATE.IDLE;

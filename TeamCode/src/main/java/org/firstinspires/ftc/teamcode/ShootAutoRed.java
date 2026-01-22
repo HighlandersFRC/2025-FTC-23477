@@ -16,10 +16,10 @@ import org.firstinspires.ftc.teamcode.Commands.Drive.CommandTurnRight;
 import org.firstinspires.ftc.teamcode.Commands.CommandGroups.ParallelCommandGroup;
 import org.firstinspires.ftc.teamcode.Commands.CommandGroups.SequentialCommandGroup;
 import org.firstinspires.ftc.teamcode.Commands.Wait;
-import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
-import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
-import org.firstinspires.ftc.teamcode.Subsystems.SequencerState;
-import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
+import org.firstinspires.ftc.teamcode.Subsystems.Drive.DriveStates;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake.IntakeState;
+import org.firstinspires.ftc.teamcode.Subsystems.Queuer.SequencerState;
+import org.firstinspires.ftc.teamcode.Subsystems.Shooter.ShooterState;
 
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;

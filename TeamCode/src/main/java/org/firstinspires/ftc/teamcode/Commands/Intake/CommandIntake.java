@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.Commands.Intake;
 
 
 import org.firstinspires.ftc.teamcode.Commands.Command;
-import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake.IntakeState;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 

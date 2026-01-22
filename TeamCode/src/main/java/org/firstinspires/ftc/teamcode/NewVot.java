@@ -12,11 +12,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.Commands.Shooter.CommandShoot;
-import org.firstinspires.ftc.teamcode.Subsystems.Drive;
-import org.firstinspires.ftc.teamcode.Subsystems.IndexerState;
-import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
-import org.firstinspires.ftc.teamcode.Subsystems.QueueState;
-import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
+import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
+import org.firstinspires.ftc.teamcode.Subsystems.Indexer.IndexerState;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake.IntakeState;
+import org.firstinspires.ftc.teamcode.Subsystems.Queuer.QueueState;
+import org.firstinspires.ftc.teamcode.Subsystems.Shooter.ShooterState;
 
 import org.firstinspires.ftc.teamcode.Tools.Limelight;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;

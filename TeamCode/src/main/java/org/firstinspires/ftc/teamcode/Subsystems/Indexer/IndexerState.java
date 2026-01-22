@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Subsystems;
+package org.firstinspires.ftc.teamcode.Subsystems.Indexer;
 
 
 
@@ -7,6 +7,8 @@ import static org.firstinspires.ftc.teamcode.Tools.Constants.INDEXER_POS;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 public class IndexerState extends Subsystem {
     private INDEXER_STATE wantedSuperState = INDEXER_STATE.IDLE;

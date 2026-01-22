@@ -1,10 +1,12 @@
-package org.firstinspires.ftc.teamcode.Subsystems;
+package org.firstinspires.ftc.teamcode.Subsystems.Intake;
 
 import static org.firstinspires.ftc.teamcode.Tools.Constants.INTAKE_PID_HOLD;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 public class IntakeState extends Subsystem {
 

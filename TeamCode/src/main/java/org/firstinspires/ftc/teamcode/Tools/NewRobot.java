@@ -2,15 +2,15 @@ package org.firstinspires.ftc.teamcode.Tools;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Drive;
+import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
-import org.firstinspires.ftc.teamcode.Subsystems.IndexerState;
-import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
-import org.firstinspires.ftc.teamcode.Subsystems.QueueState;
-import org.firstinspires.ftc.teamcode.Subsystems.SequencerState;
-import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
+import org.firstinspires.ftc.teamcode.Subsystems.Drive.DriveStates;
+import org.firstinspires.ftc.teamcode.Subsystems.Indexer.IndexerState;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake.IntakeState;
+import org.firstinspires.ftc.teamcode.Subsystems.Queuer.QueueState;
+import org.firstinspires.ftc.teamcode.Subsystems.Queuer.SequencerState;
+import org.firstinspires.ftc.teamcode.Subsystems.Shooter.ShooterState;
 
 
 public class NewRobot {

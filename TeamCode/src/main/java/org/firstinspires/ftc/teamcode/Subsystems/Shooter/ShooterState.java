@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Subsystems;
+package org.firstinspires.ftc.teamcode.Subsystems.Shooter;
 
 import static org.firstinspires.ftc.teamcode.Tools.Constants.FLYWHEEL_GEAR_RATIO;
 import static org.firstinspires.ftc.teamcode.Tools.Constants.MOTOR_TICKS_PER_REV;
@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 import org.firstinspires.ftc.teamcode.Tools.Limelight;
 
 

@@ -1,7 +1,9 @@
-package org.firstinspires.ftc.teamcode.Subsystems;
+package org.firstinspires.ftc.teamcode.Subsystems.Queuer;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.CRServo;
+
+import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 public class SequencerState extends Subsystem {
     private SEQUENCER_STATE wantedSuperState = SEQUENCER_STATE.IDLE;

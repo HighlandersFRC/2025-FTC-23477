@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Commands.Drive;
 
 import org.firstinspires.ftc.teamcode.Commands.Command;
-import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
+import org.firstinspires.ftc.teamcode.Subsystems.Drive.DriveStates;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 public class CommandTurnAuto implements Command {

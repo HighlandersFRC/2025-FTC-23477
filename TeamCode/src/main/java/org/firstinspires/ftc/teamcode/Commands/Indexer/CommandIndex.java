@@ -1,8 +1,7 @@
 package org.firstinspires.ftc.teamcode.Commands.Indexer;
 
 import org.firstinspires.ftc.teamcode.Commands.Command;
-import org.firstinspires.ftc.teamcode.Subsystems.IndexerState;
-import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
+import org.firstinspires.ftc.teamcode.Subsystems.Indexer.IndexerState;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 

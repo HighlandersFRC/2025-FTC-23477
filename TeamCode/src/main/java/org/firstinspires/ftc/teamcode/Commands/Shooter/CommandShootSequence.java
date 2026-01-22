@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode.Commands.Shooter;
 import org.firstinspires.ftc.teamcode.Commands.Command;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.Commands.Queuer.CommandSpinRight;
-import org.firstinspires.ftc.teamcode.Subsystems.SequencerState;
-import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
+import org.firstinspires.ftc.teamcode.Subsystems.Queuer.SequencerState;
+import org.firstinspires.ftc.teamcode.Subsystems.Shooter.ShooterState;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 public class CommandShootSequence implements Command {

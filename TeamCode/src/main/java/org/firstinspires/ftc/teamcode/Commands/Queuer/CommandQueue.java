@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.Commands.Queuer;
 
 
 import org.firstinspires.ftc.teamcode.Commands.Command;
-import org.firstinspires.ftc.teamcode.Subsystems.QueueState;
+import org.firstinspires.ftc.teamcode.Subsystems.Queuer.QueueState;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 public class CommandQueue implements Command {

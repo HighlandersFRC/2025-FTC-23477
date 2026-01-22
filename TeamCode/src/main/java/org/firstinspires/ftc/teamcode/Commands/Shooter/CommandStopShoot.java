@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Commands.Shooter;
 
 import org.firstinspires.ftc.teamcode.Commands.Command;
-import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
+import org.firstinspires.ftc.teamcode.Subsystems.Shooter.ShooterState;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 

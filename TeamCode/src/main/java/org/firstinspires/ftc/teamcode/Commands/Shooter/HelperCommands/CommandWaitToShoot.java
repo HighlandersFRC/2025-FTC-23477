@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.Commands.Shooter.HelperCommands;
 
 import org.firstinspires.ftc.teamcode.Commands.Command;
-import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
+import org.firstinspires.ftc.teamcode.Subsystems.Shooter.ShooterState;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 public class CommandWaitToShoot implements Command {
