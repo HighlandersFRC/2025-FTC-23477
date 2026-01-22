@@ -122,10 +122,10 @@ public static final double METERS_TO_INCHES = 39.3701;
                     new ConditionalCommand(
                             new ParallelCommandGroup(
                                     scheduler, Parameters.ANY,
-                                    new CommandShoot(robot.shooterStates, distance),
+                                    new CommandShoot(robot.shooterStates, distance, 1000),
                                     new CommandSpinRight(robot.sequencerState, duration)
                             ),
-                            new CommandShoot(robot.shooterStates, distance),
+                            new CommandShoot(robot.shooterStates, distance, 1000),
                             () -> robot.shooterStates.isAtTargetVelocity()
                     ),
 
@@ -134,10 +134,10 @@ public static final double METERS_TO_INCHES = 39.3701;
                     new ConditionalCommand(
                             new ParallelCommandGroup(
                                     scheduler, Parameters.ANY,
-                                    new CommandShoot(robot.shooterStates, distance),
+                                    new CommandShoot(robot.shooterStates, distance, 1000),
                                     new CommandSpinRight(robot.sequencerState, duration)
                             ),
-                            new CommandShoot(robot.shooterStates, distance),
+                            new CommandShoot(robot.shooterStates, distance, 1000),
                             () -> robot.shooterStates.isAtTargetVelocity()
                     )
             );
@@ -146,10 +146,10 @@ public static final double METERS_TO_INCHES = 39.3701;
                     scheduler, new ConditionalCommand(
                     new ParallelCommandGroup(
                             scheduler, Parameters.ANY,
-                            new CommandShoot(robot.shooterStates, distance),
+                            new CommandShoot(robot.shooterStates, distance, 1000),
                             new CommandSpinRight(robot.sequencerState, duration)
                     ),
-                    new CommandShoot(robot.shooterStates, distance),
+                    new CommandShoot(robot.shooterStates, distance, 1000),
                     () -> robot.shooterStates.isAtTargetVelocity()
             )
             );
@@ -167,7 +167,7 @@ public static final double METERS_TO_INCHES = 39.3701;
                 new ConditionalCommand(
                         new ParallelCommandGroup(
                                 scheduler, Parameters.ANY,
-                                new CommandShoot(robot.shooterStates, distance),
+                                new CommandShoot(robot.shooterStates, distance, 1000),
                                 new CommandQueue(robot.queueState, duration)
                         ),
                         new CommandWaitToShoot(robot.shooterStates, distance),

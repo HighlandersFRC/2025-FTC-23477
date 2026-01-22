@@ -92,7 +92,7 @@ boolean isFeeding = robot.queueState.getPower() < 0;
             packet.put("CurrentRPM", shooterState.computeRPM());
             packet.put("Feeding", robot.shooterStates.isAtTargetVelocity());
             packet.put("FeedingStable", robot.shooterStates.isAtTargetVelocityStable());
-            packet.put("WhyFeed?", new CommandShoot(robot.shooterStates, Limelight.getDistance(TAG_HEIGHT)).isFinished());
+            packet.put("WhyFeed?", new CommandShoot(robot.shooterStates, Limelight.getDistance(TAG_HEIGHT), 1000).isFinished());
             packet.put("QueuerPower", isFeeding);
             packet.put("distance", Limelight.getDistance(TAG_HEIGHT));
             FtcDashboard.getInstance().sendTelemetryPacket(packet);

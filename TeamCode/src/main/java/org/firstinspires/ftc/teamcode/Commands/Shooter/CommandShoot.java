@@ -8,27 +8,29 @@ public class CommandShoot implements Command {
 
     private final ShooterState shooter;
     private final double distance;
+    private long startTime;
+    private long duration;
 
-    public CommandShoot(ShooterState shooter, double distance) {
+    public CommandShoot(ShooterState shooter, double distance, long duration) {
         this.shooter = shooter;
         this.distance = distance;
+        this.duration = duration;
     }
 
     @Override
     public void start() {
+        startTime = System.currentTimeMillis();
         shooter.setTargetRPMFromDistance(distance);
         shooter.setWantedState(ShooterState.SHOOTER_STATE.SHOOT);
     }
 
     @Override
     public void execute() {
-        // Shooter spins up automatically in periodic()
     }
 
     @Override
     public boolean isFinished() {
-        // Wait until the flywheel is ready OR timeout expires
-        return shooter.isAtTargetVelocityStable();
+        return System.currentTimeMillis() - startTime >= duration;
     }
 
     @Override
