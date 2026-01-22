@@ -1,9 +1,10 @@
-package org.firstinspires.ftc.teamcode.Commands;
+package org.firstinspires.ftc.teamcode.Commands.Queuer;
 
+import org.firstinspires.ftc.teamcode.Commands.Command;
 import org.firstinspires.ftc.teamcode.Subsystems.SequencerState;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
-public class CommandSpinLeft implements Command{
+public class CommandSpinLeft implements Command {
     SequencerState sequencerState;
     long startTime;
     long duration;

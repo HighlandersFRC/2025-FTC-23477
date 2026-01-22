@@ -1,17 +1,21 @@
-package org.firstinspires.ftc.teamcode.Commands;
+package org.firstinspires.ftc.teamcode.Commands.Drive;
 
+import org.firstinspires.ftc.teamcode.Commands.Command;
 import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
-public class CommandTurnAuto implements Command{
+public class CommandStrafe implements Command {
     DriveStates drive;
-    public CommandTurnAuto(DriveStates drive) {
+    double distance;
+    public CommandStrafe (DriveStates drive, double distance) {
         this.drive = drive;
+        this.distance = distance;
     }
 
     @Override
     public void start() {
-        drive.setWantedState(DriveStates.DRIVE_STATE.AUTO_TURN);
+        drive.driveForwardDriveDistanceY(distance);
+        drive.setWantedState(DriveStates.DRIVE_STATE.DRIVE_STRAFE);
     }
 
     @Override
@@ -26,7 +30,7 @@ public class CommandTurnAuto implements Command{
 
     @Override
     public boolean isFinished() {
-        return drive.isFinishedAutoTurnTheta();
+        return drive.isFinishedY();
     }
 
     @Override

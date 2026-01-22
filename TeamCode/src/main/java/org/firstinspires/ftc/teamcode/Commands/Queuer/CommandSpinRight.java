@@ -1,0 +1,42 @@
+package org.firstinspires.ftc.teamcode.Commands.Queuer;
+
+import org.firstinspires.ftc.teamcode.Commands.Command;
+import org.firstinspires.ftc.teamcode.Subsystems.SequencerState;
+import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
+
+public class CommandSpinRight implements Command {
+    SequencerState sequencerState;
+    long startTime;
+    long duration;
+    public CommandSpinRight(SequencerState sequencerState, long millis){
+        this.sequencerState = sequencerState;
+        this.duration = millis;
+    }
+
+
+    @Override
+    public void start() {
+        startTime = System.currentTimeMillis();
+        sequencerState.setWantedState(SequencerState.SEQUENCER_STATE.SPIN_RIGHT);
+    }
+
+    @Override
+    public void execute() {
+
+    }
+
+    @Override
+    public void end() {
+        sequencerState.setWantedState(SequencerState.SEQUENCER_STATE.DEFAULT);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return System.currentTimeMillis() - startTime >= duration;
+    }
+
+    @Override
+    public Subsystem getRequiredSubsystem() {
+        return sequencerState;
+    }
+}

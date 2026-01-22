@@ -4,15 +4,15 @@ package org.firstinspires.ftc.teamcode.Tools;
 import androidx.annotation.NonNull;
 
 import org.firstinspires.ftc.teamcode.Commands.Command;
-import org.firstinspires.ftc.teamcode.Commands.CommandIntake;
-import org.firstinspires.ftc.teamcode.Commands.CommandQueue;
+import org.firstinspires.ftc.teamcode.Commands.Intake.CommandIntake;
+import org.firstinspires.ftc.teamcode.Commands.Queuer.CommandQueue;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
-import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
-import org.firstinspires.ftc.teamcode.Commands.CommandSpinRight;
-import org.firstinspires.ftc.teamcode.Commands.ConditionalCommand;
+import org.firstinspires.ftc.teamcode.Commands.Shooter.CommandShoot;
+import org.firstinspires.ftc.teamcode.Commands.Queuer.CommandSpinRight;
+import org.firstinspires.ftc.teamcode.Commands.CommandGroups.ConditionalCommand;
 import org.firstinspires.ftc.teamcode.Commands.HelperCommands.CommandWaitToShoot;
-import org.firstinspires.ftc.teamcode.Commands.ParallelCommandGroup;
-import org.firstinspires.ftc.teamcode.Commands.SequentialCommandGroup;
+import org.firstinspires.ftc.teamcode.Commands.CommandGroups.ParallelCommandGroup;
+import org.firstinspires.ftc.teamcode.Commands.CommandGroups.SequentialCommandGroup;
 
 import java.util.HashMap;
 import java.util.function.BooleanSupplier;

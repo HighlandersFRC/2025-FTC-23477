@@ -1,14 +1,17 @@
-package org.firstinspires.ftc.teamcode.Commands;
+package org.firstinspires.ftc.teamcode.Commands.Queuer;
 
-import org.firstinspires.ftc.teamcode.Subsystems.SequencerState;
+
+import org.firstinspires.ftc.teamcode.Commands.Command;
+import org.firstinspires.ftc.teamcode.Subsystems.QueueState;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
-public class CommandSpinRight implements Command{
-    SequencerState sequencerState;
+public class CommandQueue implements Command {
+    QueueState queueState;
     long startTime;
     long duration;
-    public CommandSpinRight(SequencerState sequencerState, long millis){
-        this.sequencerState = sequencerState;
+
+    public CommandQueue(QueueState queueState, long millis){
+        this.queueState = queueState;
         this.duration = millis;
     }
 
@@ -16,7 +19,7 @@ public class CommandSpinRight implements Command{
     @Override
     public void start() {
         startTime = System.currentTimeMillis();
-        sequencerState.setWantedState(SequencerState.SEQUENCER_STATE.SPIN_RIGHT);
+        queueState.setWantedState(QueueState.QUEUE_STATE.QUEUE);
     }
 
     @Override
@@ -26,7 +29,7 @@ public class CommandSpinRight implements Command{
 
     @Override
     public void end() {
-        sequencerState.setWantedState(SequencerState.SEQUENCER_STATE.DEFAULT);
+        queueState.setWantedState(QueueState.QUEUE_STATE.IDLE);
     }
 
     @Override
@@ -36,6 +39,6 @@ public class CommandSpinRight implements Command{
 
     @Override
     public Subsystem getRequiredSubsystem() {
-        return sequencerState;
+        return queueState;
     }
 }

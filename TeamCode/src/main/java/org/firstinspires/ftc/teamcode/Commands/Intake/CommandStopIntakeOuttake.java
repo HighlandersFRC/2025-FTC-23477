@@ -1,24 +1,20 @@
-package org.firstinspires.ftc.teamcode.Commands;
+package org.firstinspires.ftc.teamcode.Commands.Intake;
 
+import org.firstinspires.ftc.teamcode.Commands.Command;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
-public class CommandOuttake implements Command{
+public class CommandStopIntakeOuttake implements Command{
     IntakeState intakeStates;
-    long startTime;
-    long duration;
 
-    public CommandOuttake(IntakeState intakeStates, long millis){
+    public CommandStopIntakeOuttake(IntakeState intakeStates){
         this.intakeStates = intakeStates;
-        this.duration = millis;
     }
-
 
     @Override
     public void start() {
-        startTime = System.currentTimeMillis();
-        intakeStates.setWantedState(IntakeState.INTAKE_STATE.OUTTAKE);
+        intakeStates.setWantedState(IntakeState.INTAKE_STATE.DEFAULT);
     }
 
     @Override
@@ -33,7 +29,7 @@ public class CommandOuttake implements Command{
 
     @Override
     public boolean isFinished() {
-        return System.currentTimeMillis() - startTime >= duration;
+        return false;
     }
 
     @Override

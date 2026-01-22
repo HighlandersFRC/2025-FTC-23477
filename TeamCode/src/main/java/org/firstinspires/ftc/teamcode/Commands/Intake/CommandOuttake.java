@@ -1,17 +1,17 @@
-package org.firstinspires.ftc.teamcode.Commands;
+package org.firstinspires.ftc.teamcode.Commands.Intake;
 
-import org.firstinspires.ftc.teamcode.Subsystems.IndexerState;
+import org.firstinspires.ftc.teamcode.Commands.Command;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
-public class CommandIndex implements Command{
-    IndexerState indexerState;
+public class CommandOuttake implements Command {
+    IntakeState intakeStates;
     long startTime;
     long duration;
 
-    public CommandIndex(IndexerState indexerState, long millis){
-        this.indexerState = indexerState;
+    public CommandOuttake(IntakeState intakeStates, long millis){
+        this.intakeStates = intakeStates;
         this.duration = millis;
     }
 
@@ -19,7 +19,7 @@ public class CommandIndex implements Command{
     @Override
     public void start() {
         startTime = System.currentTimeMillis();
-        indexerState.setWantedState(IndexerState.INDEXER_STATE.INDEX);
+        intakeStates.setWantedState(IntakeState.INTAKE_STATE.OUTTAKE);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class CommandIndex implements Command{
 
     @Override
     public void end() {
-       indexerState.setWantedState(IndexerState.INDEXER_STATE.IDLE);
+        intakeStates.setWantedState(IntakeState.INTAKE_STATE.DEFAULT);
     }
 
     @Override
@@ -39,6 +39,6 @@ public class CommandIndex implements Command{
 
     @Override
     public Subsystem getRequiredSubsystem() {
-        return indexerState;
+        return intakeStates;
     }
 }

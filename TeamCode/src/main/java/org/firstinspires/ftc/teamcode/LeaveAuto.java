@@ -3,11 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Commands.CommandDrive;
+import org.firstinspires.ftc.teamcode.Commands.Drive.CommandDrive;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 
-import org.firstinspires.ftc.teamcode.Commands.CommandTurnAuto;
-import org.firstinspires.ftc.teamcode.Commands.CommandTurnLeft;
+import org.firstinspires.ftc.teamcode.Commands.Drive.CommandTurnAuto;
+import org.firstinspires.ftc.teamcode.Commands.Drive.CommandTurnLeft;
 import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
 import org.firstinspires.ftc.teamcode.Subsystems.SequencerState;
