@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
+import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.IndexerState;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
@@ -84,12 +85,16 @@ public class NewVot extends LinearOpMode {
 
             drive.FieldCentric(gamepad1);
 
-
+boolean isFeeding = robot.queueState.getPower() < 0;
             TelemetryPacket packet = new TelemetryPacket();
             packet.put("Target RPM", shooterState.getTargetRPM());
             packet.put("Current Distance", Limelight.getDistance(TAG_HEIGHT));
             packet.put("CurrentRPM", shooterState.computeRPM());
             packet.put("Feeding", robot.shooterStates.isAtTargetVelocity());
+            packet.put("FeedingStable", robot.shooterStates.isAtTargetVelocityStable());
+            packet.put("WhyFeed?", new CommandShoot(robot.shooterStates, Limelight.getDistance(TAG_HEIGHT)).isFinished());
+            packet.put("QueuerPower", isFeeding);
+            packet.put("distance", Limelight.getDistance(TAG_HEIGHT));
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
 
             telemetry.addData("Position", "(%.2f, %.2f, %.1f°)",

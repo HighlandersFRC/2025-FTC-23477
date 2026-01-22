@@ -4,6 +4,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import static org.firstinspires.ftc.teamcode.Tools.Constants.CAMERA_ANGLE_DEGREES;
 import static org.firstinspires.ftc.teamcode.Tools.Constants.CAMERA_HEIGHT_INCHES;
 
 public final class Limelight {
@@ -65,14 +66,14 @@ public final class Limelight {
             double tagHeight
     ) {
        // double cameraAngle = adjust.getDegrees();
-        double cameraAngle = 0;
-        double cameraHeightM = CAMERA_HEIGHT_INCHES * 39.37;
+
+        double cameraHeightM = CAMERA_HEIGHT_INCHES / 39.37;
 
         LLResult result = getResult();
         if (result == null) return 0.0;
 
         double ty = result.getTy();
-        double angleRad = Math.toRadians(cameraAngle + ty);
+        double angleRad = Math.toRadians(CAMERA_ANGLE_DEGREES + ty);
 
         return (tagHeight - cameraHeightM) / Math.tan(angleRad);
     }

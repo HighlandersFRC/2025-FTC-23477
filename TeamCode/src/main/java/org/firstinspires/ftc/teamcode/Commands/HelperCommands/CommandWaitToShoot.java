@@ -1,14 +1,15 @@
-package org.firstinspires.ftc.teamcode.Commands;
+package org.firstinspires.ftc.teamcode.Commands.HelperCommands;
 
+import org.firstinspires.ftc.teamcode.Commands.Command;
 import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
-public class CommandShoot implements Command {
+public class CommandWaitToShoot implements Command {
 
     private final ShooterState shooter;
     private final double distance;
 
-    public CommandShoot(ShooterState shooter, double distance) {
+    public CommandWaitToShoot(ShooterState shooter, double distance) {
         this.shooter = shooter;
         this.distance = distance;
     }
@@ -21,18 +22,17 @@ public class CommandShoot implements Command {
 
     @Override
     public void execute() {
-        // Shooter spins up automatically in periodic()
+
     }
 
     @Override
     public boolean isFinished() {
-        // Wait until the flywheel is ready OR timeout expires
         return shooter.isAtTargetVelocityStable();
     }
 
     @Override
     public void end() {
-        shooter.setWantedState(ShooterState.SHOOTER_STATE.IDLE);
+        shooter.setWantedState(ShooterState.SHOOTER_STATE.SHOOT);
     }
 
     @Override
