@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.Commands.Shooter.CommandShoot;
 import org.firstinspires.ftc.teamcode.Commands.Queuer.CommandSpinRight;
 import org.firstinspires.ftc.teamcode.Commands.CommandGroups.ConditionalCommand;
-import org.firstinspires.ftc.teamcode.Commands.HelperCommands.CommandWaitToShoot;
+import org.firstinspires.ftc.teamcode.Commands.Shooter.HelperCommands.CommandWaitToShoot;
 import org.firstinspires.ftc.teamcode.Commands.CommandGroups.ParallelCommandGroup;
 import org.firstinspires.ftc.teamcode.Commands.CommandGroups.SequentialCommandGroup;
 

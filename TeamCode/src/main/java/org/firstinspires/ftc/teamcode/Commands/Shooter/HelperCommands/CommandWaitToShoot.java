@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Commands.HelperCommands;
+package org.firstinspires.ftc.teamcode.Commands.Shooter.HelperCommands;
 
 import org.firstinspires.ftc.teamcode.Commands.Command;
 import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
