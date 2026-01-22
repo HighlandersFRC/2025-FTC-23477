@@ -20,9 +20,9 @@ import org.json.JSONObject;
 
 public class Drive extends Subsystem {
 
-    private DcMotorEx frontLeftMotor;
-    private DcMotorEx backLeftMotor;
-    private DcMotorEx frontRightMotor;
+    public DcMotorEx frontLeftMotor;
+    public DcMotorEx backLeftMotor;
+    public DcMotorEx frontRightMotor;
     public DcMotorEx backRightMotor;
 
     private final double TICKS_PER_REV = 2000;
@@ -204,10 +204,10 @@ public class Drive extends Subsystem {
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
         double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
-        double frontLeftPower = (-rotY - rotX - rx);
-        double backLeftPower = (rotY - rotX + rx);
-        double frontRightPower = (rotY - rotX - rx);
-        double backRightPower = (-rotY - rotX + rx);
+        double frontLeftPower = (-rotY + rotX + rx);
+        double backLeftPower = (-rotY - rotX + rx);
+        double frontRightPower = (rotY + rotX + rx);
+        double backRightPower = (rotY - rotX + rx);
 
 
         frontLeftMotor.setPower(frontLeftPower);

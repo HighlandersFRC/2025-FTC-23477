@@ -3,7 +3,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 
-import static org.firstinspires.ftc.teamcode.Tools.Constants.maxAngle;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.MAX_ANGLE_2;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -26,11 +26,11 @@ public class AdjustLL extends Subsystem {
 
     public double getDegrees() {
         double position = Adjust.getPosition();
-        return position * maxAngle;
+        return position * MAX_ANGLE_2;
     }
 
     public void setDegrees(double degrees) {
-        double position = degrees / maxAngle;
+        double position = degrees / MAX_ANGLE_2;
         Adjust.setPosition(position);
     }
 }

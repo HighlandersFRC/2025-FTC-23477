@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.PathingTool;
 
-import static org.firstinspires.ftc.teamcode.Tools.Constants.xPIDP;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.yPIDP;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.yawPIDP;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.X_PID_P;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.Y_PID_P;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.YAW_PID_P;
 
 import org.firstinspires.ftc.teamcode.Commands.*;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
@@ -66,8 +66,8 @@ public class PolarPathFollower implements Command {
             throw new RuntimeException("Error reading first point from JSON", e);
         }
 
-        yawPIDP.setMinInput(-180);
-        yawPIDP.setMaxInput(180);
+        YAW_PID_P.setMinInput(-180);
+        YAW_PID_P.setMaxInput(180);
     }
 
     @Override
@@ -93,17 +93,17 @@ public class PolarPathFollower implements Command {
             double currentX = FinalPose.x;
             double currentY = FinalPose.y;
             double currentTheta = FinalPose.yaw;
-            xPIDP.setSetPoint(nextX);
-            xPIDP.updatePID(currentX);
+            X_PID_P.setSetPoint(nextX);
+            X_PID_P.updatePID(currentX);
 
-            yPIDP.setSetPoint(nextY);
-            yPIDP.updatePID(currentY);
+            Y_PID_P.setSetPoint(nextY);
+            Y_PID_P.updatePID(currentY);
 
-            yawPIDP.setSetPoint(nextThetaDeg);
-            yawPIDP.updatePID(currentTheta);
+            YAW_PID_P.setSetPoint(nextThetaDeg);
+            YAW_PID_P.updatePID(currentTheta);
 
-            Vector relativePos = new Vector(xPIDP.getResult(), yPIDP.getResult());
-            drive.autoDrive(relativePos, yawPIDP.getResult());
+            Vector relativePos = new Vector(X_PID_P.getResult(), Y_PID_P.getResult());
+            drive.autoDrive(relativePos, YAW_PID_P.getResult());
 
             JSONArray commands = point.optJSONArray("commands");
             if (commands != null) {

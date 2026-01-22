@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.Commands;
 
-
 import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
@@ -8,31 +7,31 @@ public class CommandShoot implements Command {
 
     private final ShooterState shooter;
     private final double distance;
-    private final long durationMs;
-    private long secondsPassed;
+    private final long timeoutMs;  // optional safety timeout
+    private long startTime;
 
-
-    public CommandShoot(ShooterState shooter, double distance, long durationMs) {
+    public CommandShoot(ShooterState shooter, double distance, long timeoutMs) {
         this.shooter = shooter;
         this.distance = distance;
-        this.durationMs = durationMs;
+        this.timeoutMs = timeoutMs;
     }
 
     @Override
     public void start() {
         shooter.setTargetRPMFromDistance(distance);
         shooter.setWantedState(ShooterState.SHOOTER_STATE.SHOOT);
-        secondsPassed = System.currentTimeMillis();
+        startTime = System.currentTimeMillis();
     }
 
     @Override
     public void execute() {
-
+        // Shooter spins up automatically in periodic()
     }
 
     @Override
     public boolean isFinished() {
-        return System.currentTimeMillis() - secondsPassed >= durationMs;
+        // Wait until the flywheel is ready OR timeout expires
+        return shooter.isAtTargetVelocityStable();
     }
 
     @Override

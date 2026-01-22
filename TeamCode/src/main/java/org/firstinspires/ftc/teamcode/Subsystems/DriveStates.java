@@ -5,19 +5,17 @@ import static org.firstinspires.ftc.teamcode.Tools.Constants.MAX_TURN;
 import static org.firstinspires.ftc.teamcode.Tools.Constants.MIN_TURN;
 import static org.firstinspires.ftc.teamcode.Tools.Constants.THETA_TOLERANCE;
 import static org.firstinspires.ftc.teamcode.Tools.Constants.TX_TOLERANCE;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.lastTx;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.thetaPID;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.thetaPIDLimelight;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.xPID;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.yPID;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.LAST_TX;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.THETA_PID;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.THETA_PID_LIMELIGHT;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.X_PID;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.Y_PID;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Tools.Limelight;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
-import org.firstinspires.ftc.teamcode.Tools.PID;
 
 public class DriveStates extends Subsystem {
     private DRIVE_STATE wantedSuperState = DRIVE_STATE.IDLE;
@@ -40,16 +38,16 @@ public class DriveStates extends Subsystem {
 
         Limelight.init(hardwareMap);
 
-        thetaPID.setMinOutput(-1);
-        thetaPID.setMaxOutput(1);
+        THETA_PID.setMinOutput(-1);
+        THETA_PID.setMaxOutput(1);
 
-        xPID.setMinOutput(-1);
-        xPID.setMaxOutput(1);
+        X_PID.setMinOutput(-1);
+        X_PID.setMaxOutput(1);
 
-        yPID.setMinOutput(-1);
-        yPID.setMaxOutput(1);
+        Y_PID.setMinOutput(-1);
+        Y_PID.setMaxOutput(1);
 
-        thetaPIDLimelight.setSetPoint(0.0);
+        THETA_PID_LIMELIGHT.setSetPoint(0.0);
     }
 
     public void setWantedState(DRIVE_STATE driveState) {
@@ -106,17 +104,17 @@ public class DriveStates extends Subsystem {
     }
 
     private void handleDriveForwardState() {
-        xPID.setSetPoint(driveForwardDistance());
-        xPID.updatePID(Mouse.getX());
+        X_PID.setSetPoint(driveForwardDistance());
+        X_PID.updatePID(Mouse.getX());
 
-        drive.drive(-xPID.getResult(), xPID.getResult(), xPID.getResult(), -xPID.getResult());
+        drive.drive(-X_PID.getResult(), X_PID.getResult(), X_PID.getResult(), -X_PID.getResult());
     }
 
     private void handleStrafeState() {
-        yPID.setSetPoint(driveStrafeDistance());
-        yPID.updatePID(Mouse.getY());
+        Y_PID.setSetPoint(driveStrafeDistance());
+        Y_PID.updatePID(Mouse.getY());
 
-        drive.drive(-yPID.getResult(), -yPID.getResult(), -yPID.getResult(), -yPID.getResult());
+        drive.drive(-Y_PID.getResult(), -Y_PID.getResult(), -Y_PID.getResult(), -Y_PID.getResult());
     }
 
     public void driveTurnDriveDistanceTheta(double degrees) {
@@ -141,10 +139,10 @@ public class DriveStates extends Subsystem {
             return;
         }
 
-        thetaPID.setSetPoint(targetTheta);
-        thetaPID.updatePID(currentTheta);
+        THETA_PID.setSetPoint(targetTheta);
+        THETA_PID.updatePID(currentTheta);
 
-        double power = thetaPID.getResult();
+        double power = THETA_PID.getResult();
         double scale = Math.min(1.0, Math.abs(error) / 45.0);
         power *= scale;
 
@@ -170,10 +168,10 @@ public class DriveStates extends Subsystem {
             double tx = Limelight.getTx();
 
 
-            double smoothTx = 0.3 * lastTx + 0.7 * tx;
-            lastTx = smoothTx;
+            double smoothTx = 0.3 * LAST_TX + 0.7 * tx;
+            LAST_TX = smoothTx;
 
-            double turnPower = -thetaPIDLimelight.updatePID(smoothTx);
+            double turnPower = -THETA_PID_LIMELIGHT.updatePID(smoothTx);
 
             if (turnPower != 0 && Math.abs(turnPower) < MIN_TURN) {
                 turnPower = Math.signum(turnPower) * MIN_TURN;
@@ -188,8 +186,8 @@ public class DriveStates extends Subsystem {
 
     public boolean isFinishedAutoTurnTheta() {
         double tx = Limelight.getTx();
-        double smoothTx = 0.3 * lastTx + 0.7 * tx;
-        lastTx = smoothTx;
+        double smoothTx = 0.3 * LAST_TX + 0.7 * tx;
+        LAST_TX = smoothTx;
         return Math.abs(smoothTx) < TX_TOLERANCE;
     }
 

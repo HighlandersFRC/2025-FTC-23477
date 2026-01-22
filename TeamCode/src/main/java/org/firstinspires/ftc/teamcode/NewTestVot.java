@@ -58,7 +58,7 @@ public class NewTestVot extends LinearOpMode {
 
 
            if (gamepad1.right_bumper) {
-               shooterState.setTargetRPMFromDistance(1000.);
+               shooterState.setTargetRPMFromDistance(0);
                shooterState.setWantedState(ShooterState.SHOOTER_STATE.SHOOT);
            } else {
                shooterState.setWantedState(ShooterState.SHOOTER_STATE.IDLE);

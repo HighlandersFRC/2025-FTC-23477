@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Commands;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 import org.firstinspires.ftc.teamcode.Tools.Parameters;
+import org.json.JSONException;
 
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -39,7 +40,7 @@ public class ParallelCommandGroup implements Command {
     }
 
     @Override
-    public void execute() {
+    public void execute() throws JSONException {
         for (Command command : commands) {
             command.execute();
         }

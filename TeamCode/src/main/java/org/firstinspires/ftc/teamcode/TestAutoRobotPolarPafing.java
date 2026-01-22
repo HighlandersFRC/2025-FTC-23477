@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.Tools.FieldOfMerit;
 import org.firstinspires.ftc.teamcode.Tools.FinalPose;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
+import org.json.JSONException;
 
 @Autonomous
 public class TestAutoRobotPolarPafing extends LinearOpMode {
@@ -58,7 +59,11 @@ public class TestAutoRobotPolarPafing extends LinearOpMode {
         while (opModeIsActive()) {
             FinalPose.poseUpdate();
 
-            scheduler.run();
+            try {
+                scheduler.run();
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
 
 
             double robotX = FinalPose.x;

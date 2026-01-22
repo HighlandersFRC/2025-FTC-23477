@@ -4,21 +4,13 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import static org.firstinspires.ftc.teamcode.Tools.Constants.MAX_ANGLE;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.MAX_STEP;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.MIN_ANGLE;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.cameraHeightI;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.tiltPID;
-
-import org.firstinspires.ftc.teamcode.Subsystems.AdjustLL;
-
-import java.util.Objects;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.CAMERA_HEIGHT_INCHES;
 
 public final class Limelight {
 
     private static Limelight3A limelight;
 
-    private static AdjustLL adjust;
+   // private static AdjustLL adjust;
 
     private Limelight() {}
 
@@ -72,9 +64,9 @@ public final class Limelight {
     public static double getDistance(
             double tagHeight
     ) {
-        double cameraAngle = adjust.getDegrees();
-
-        double cameraHeightM = cameraHeightI * 39.37;
+       // double cameraAngle = adjust.getDegrees();
+        double cameraAngle = 0;
+        double cameraHeightM = CAMERA_HEIGHT_INCHES * 39.37;
 
         LLResult result = getResult();
         if (result == null) return 0.0;

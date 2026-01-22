@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
+import org.json.JSONException;
 
 @Autonomous
 public class LeaveAuto extends LinearOpMode {
@@ -53,7 +54,11 @@ public class LeaveAuto extends LinearOpMode {
         while (opModeIsActive()) {
             Mouse.update();
 
-            scheduler.run();
+            try {
+                scheduler.run();
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
 
             drive.periodic();
             intakeState.periodic();

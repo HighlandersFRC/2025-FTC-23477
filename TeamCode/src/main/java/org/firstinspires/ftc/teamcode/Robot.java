@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 
 import static org.firstinspires.ftc.teamcode.Tools.Constants.SHOOT;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.durationMs;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.tagHeight;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.DURATION_MS;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.TAG_HEIGHT;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 import org.firstinspires.ftc.teamcode.Tools.Limelight;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
+import org.json.JSONException;
 
 @TeleOp
 public class Robot extends LinearOpMode {
@@ -53,11 +54,15 @@ public class Robot extends LinearOpMode {
 
             if (gamepad1.right_bumper) {
                 scheduler.schedule(
-                        SHOOT(scheduler, robot, durationMs,false)
+                        SHOOT(scheduler, robot, DURATION_MS,false)
                 );
             }
 
-            scheduler.run();
+            try {
+                scheduler.run();
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
 
             if (gamepad1.right_trigger > 0) {
                 intakeStates.setWantedState(IntakeState.INTAKE_STATE.INTAKE);
@@ -73,7 +78,7 @@ public class Robot extends LinearOpMode {
                     Mouse.getX(), Mouse.getY(), Math.toDegrees(Mouse.getTheta()));
             telemetry.addData("Target RPM", shooterState.getTargetRPM());
             telemetry.addData("Is Detected", Limelight.isDetected());
-            telemetry.addData("Current Distance", Limelight.getDistance(tagHeight));
+            telemetry.addData("Current Distance", Limelight.getDistance(TAG_HEIGHT));
             telemetry.update();
 
             telemetry.update();

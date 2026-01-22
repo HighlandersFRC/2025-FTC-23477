@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
-import static org.firstinspires.ftc.teamcode.Tools.Constants.IntakeHoldPID;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.INTAKE_PID_HOLD;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -48,9 +48,9 @@ public class IntakeState extends Subsystem {
     }
 
     private void handleDefaultState() {
-//        IntakeHoldPID.setSetPoint(IntakeMotor.getCurrentPosition());
-//        IntakeHoldPID.updatePID(IntakeMotor.getCurrentPosition());;
-//        IntakeMotor.setPower(-IntakeHoldPID.getResult());
+//        INTAKE_PID_HOLD.setSetPoint(IntakeMotor.getCurrentPosition());
+//        INTAKE_PID_HOLD.updatePID(IntakeMotor.getCurrentPosition());;
+//        IntakeMotor.setPower(-INTAKE_PID_HOLD.getResult());
 
         IntakeMotor.setPower(0);
     }

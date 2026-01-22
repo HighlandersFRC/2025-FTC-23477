@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 import org.firstinspires.ftc.teamcode.Tools.Limelight;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
+import org.json.JSONException;
 
 @TeleOp
 public class Test extends LinearOpMode {
@@ -64,7 +65,11 @@ public class Test extends LinearOpMode {
                 );
             }
 
-            scheduler.run();
+            try {
+                scheduler.run();
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
 
             if (gamepad1.right_trigger > 0) {
                 intakeStates.setWantedState(IntakeState.INTAKE_STATE.INTAKE);

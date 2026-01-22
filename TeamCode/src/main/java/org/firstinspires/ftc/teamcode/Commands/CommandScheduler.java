@@ -7,6 +7,7 @@ import java.util.*;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
+import org.json.JSONException;
 
 public class CommandScheduler {
     private static CommandScheduler instance;
@@ -60,7 +61,7 @@ public class CommandScheduler {
         return activeSubsystemCommands.containsKey(subsystem);
     }
 
-    public void run() {
+    public void run() throws JSONException {
         List<Command> finishedCommands = new ArrayList<>();
 
         // Execute scheduled commands and handle completion

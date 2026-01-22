@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.teamcode.Tools.Constants.SHOOT;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.durationMsAuto;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.DURATION_MS_AUTO;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -24,6 +24,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
 import org.firstinspires.ftc.teamcode.Tools.Parameters;
+import org.json.JSONException;
 
 @Autonomous
 public class ShootAutoRed extends LinearOpMode {
@@ -76,7 +77,7 @@ public class ShootAutoRed extends LinearOpMode {
                         new CommandDrive(robot.driveStates, -0.6), //Tune This
                         new Wait(0),
                         new CommandTurnAuto(robot.driveStates),
-                        SHOOT(scheduler, robot, durationMsAuto, true),
+                        SHOOT(scheduler, robot, DURATION_MS_AUTO, true),
                         new CommandTurnLeft(robot.driveStates, -45),
                         new Wait(0),
                         new CommandStrafe(robot.driveStates, 0.36),
@@ -90,7 +91,7 @@ public class ShootAutoRed extends LinearOpMode {
                         new CommandTurnAuto(robot.driveStates),
                         new Wait(0),
                         new CommandDrive(robot.driveStates, 0.3),
-                        SHOOT(scheduler, robot, durationMsAuto,true),
+                        SHOOT(scheduler, robot, DURATION_MS_AUTO,true),
                         new CommandStrafe(robot.driveStates, 0.4)
                 )
         );
@@ -99,7 +100,11 @@ public class ShootAutoRed extends LinearOpMode {
         while (opModeIsActive()) {
             Mouse.update();
 
-            scheduler.run();
+            try {
+                scheduler.run();
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
 
             drive.periodic();
             intakeState.periodic();

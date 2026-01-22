@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 
 
 
-import static org.firstinspires.ftc.teamcode.Tools.Constants.IndexerPID;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.IndexerPos;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.INDEXER_PID;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.INDEXER_POS;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -20,8 +20,8 @@ public class IndexerState extends Subsystem {
     public void init(HardwareMap hardwareMap) {
         Indexer = hardwareMap.dcMotor.get("IndexerMotor");
 
-        IndexerPID.setMaxOutput(1);
-        IndexerPID.setMinOutput(-1);
+        INDEXER_PID.setMaxOutput(1);
+        INDEXER_PID.setMinOutput(-1);
     }
 
     public void setWantedState(INDEXER_STATE indexerState){
@@ -70,14 +70,14 @@ public class IndexerState extends Subsystem {
     }
 
     private void setPosition(double position) {
-        IndexerPos = position;
+        INDEXER_POS = position;
     }
 
     private void runToPosition() {
         double currentPos = Indexer.getCurrentPosition();
-        IndexerPID.setSetPoint(IndexerPos);
-        IndexerPID.updatePID(currentPos);
-        Indexer.setPower(IndexerPID.getResult());
+        INDEXER_PID.setSetPoint(INDEXER_POS);
+        INDEXER_PID.updatePID(currentPos);
+        Indexer.setPower(INDEXER_PID.getResult());
 
     }
 
