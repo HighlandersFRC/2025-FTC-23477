@@ -44,12 +44,12 @@ public class Constants {
     public static final double MAX_TURN = 0.45;
     public static final double MIN_TURN = 0.08;
 
-        //Calibrations
+    //Calibrations
 
     public static final double CAMERA_HEIGHT_INCHES = 12;
     public static final double CAMERA_ANGLE_DEGREES = 30;
 
-        //Real Constants
+    //Real Constants
 
     public static final double TAG_HEIGHT = 0.762;
     public static final double MAX_ANGLE_2 = 180;
@@ -80,8 +80,8 @@ public class Constants {
 
 
 
-//Mouse
-public static final double METERS_TO_INCHES = 39.3701;
+    //Mouse
+    public static final double METERS_TO_INCHES = 39.3701;
 
 
 
@@ -162,7 +162,7 @@ public static final double METERS_TO_INCHES = 39.3701;
     public static SequentialCommandGroup IndexTest(CommandScheduler scheduler, NewRobot robot, long duration) {
         double distance = 0;
         duration = STABLE_DURATION_S * 1000;
-          return new SequentialCommandGroup(
+        return new SequentialCommandGroup(
                 scheduler,
                 new ConditionalCommand(
                         new ParallelCommandGroup(
@@ -172,7 +172,7 @@ public static final double METERS_TO_INCHES = 39.3701;
                         ),
                         new CommandWaitToShoot(robot.shooterStates, distance),
                         () -> robot.shooterStates.isAtTargetVelocity()
-                    )
+                )
 //                    ,new CommandIndex(robot.indexerState, duration),
 //                    new ConditionalCommand(
 //                            new ParallelCommandGroup(
@@ -195,7 +195,7 @@ public static final double METERS_TO_INCHES = 39.3701;
 //                    )
 
 
-            );
+        );
 
     }
 

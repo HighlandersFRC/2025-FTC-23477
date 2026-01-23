@@ -1,16 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.Tools.Constants.xPIDP;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.yPIDP;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.yawPIDP;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.X_PID_P;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.YAW_PID_P;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.Y_PID_P;
 
 import org.firstinspires.ftc.teamcode.Commands.Command;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
-import org.firstinspires.ftc.teamcode.Commands.ConditionalCommand;
-import org.firstinspires.ftc.teamcode.Commands.ParallelCommandGroup;
-import org.firstinspires.ftc.teamcode.Commands.SequentialCommandGroup;
+import org.firstinspires.ftc.teamcode.Commands.CommandGroups.ConditionalCommand;
+import org.firstinspires.ftc.teamcode.Commands.CommandGroups.ParallelCommandGroup;
+import org.firstinspires.ftc.teamcode.Commands.CommandGroups.SequentialCommandGroup;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
-import org.firstinspires.ftc.teamcode.Subsystems.Drive;
+import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
 import org.firstinspires.ftc.teamcode.Tools.FinalPose;
 import org.firstinspires.ftc.teamcode.Tools.Parameters;
 import org.firstinspires.ftc.teamcode.Tools.Vector;
@@ -92,17 +92,17 @@ public class AveryPathing implements Command {
             double currentY = FinalPose.y;
             double currentTheta = Math.toRadians(FinalPose.yaw);
 
-            xPIDP.setSetPoint(nextX);
-            xPIDP.updatePID(currentX);
+            X_PID_P.setSetPoint(nextX);
+            X_PID_P.updatePID(currentX);
 
-            yPIDP.setSetPoint(nextY);
-            yPIDP.updatePID(currentY);
+            Y_PID_P.setSetPoint(nextY);
+            Y_PID_P.updatePID(currentY);
 
-            yawPIDP.setSetPoint(nextTheta);
-            yawPIDP.updatePID(currentTheta);
+            YAW_PID_P.setSetPoint(nextTheta);
+            YAW_PID_P.updatePID(currentTheta);
 
-            Vector relativePos = new Vector(xPIDP.getResult(), yPIDP.getResult());
-            drive.autoDrive(relativePos, yawPIDP.getResult());
+            Vector relativePos = new Vector(X_PID_P.getResult(), Y_PID_P.getResult());
+            drive.autoDrive(relativePos, YAW_PID_P.getResult());
 
             JSONArray commands = points.getJSONObject(index).optJSONArray("commands");
             if (commands != null) {
