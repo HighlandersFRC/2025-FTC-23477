@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.Commands.CommandGroups.SequentialCommandGr
 import org.firstinspires.ftc.teamcode.PathingTool.PathLoading;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake.IntakeState;
-import org.firstinspires.ftc.teamcode.Subsystems.Queuer.SequencerState;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter.ShooterState;
 import org.firstinspires.ftc.teamcode.Tools.Constants;
 import org.firstinspires.ftc.teamcode.Tools.FieldOfMerit;
@@ -21,7 +20,6 @@ import org.json.JSONException;
 public class AveryAuto extends LinearOpMode {
 
    ShooterState shooterState = new ShooterState("shooterStates");
-   SequencerState sequencerState = new SequencerState("sequencerStates");
    IntakeState intakeState = new IntakeState("intakeStates");
 
     @Override
@@ -32,27 +30,25 @@ public class AveryAuto extends LinearOpMode {
 
         Mouse.configureOtos();
 
-        PathLoading pathLoading = new PathLoading(hardwareMap.appContext, "Yipee.polarpath");
+        PathLoading pathLoading = new PathLoading(hardwareMap.appContext, "StraightLine.polarpath");
         CommandScheduler scheduler = new CommandScheduler();
         Drive drive = new Drive("drive", hardwareMap);
         AveryPathing moveToPosition;
         drive.setPosition(0,0,0);
         NewRobot robot = new NewRobot(hardwareMap);
         robot.shooterStates = shooterState;
-        robot.sequencerState = sequencerState;
         robot.intakeStates = intakeState;
         scheduler.setNewRobot(robot);
 
         shooterState.init(hardwareMap);
-        sequencerState.init(hardwareMap);
         intakeState.init(hardwareMap);
 
         try {
             moveToPosition = new AveryPathing(drive, Constants.conditionMap, Constants.commandMap, PathLoading.getJsonPathData());
+            scheduler.schedule(new SequentialCommandGroup(scheduler, moveToPosition));
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        scheduler.schedule(new SequentialCommandGroup(scheduler, moveToPosition));
 
         waitForStart();
 

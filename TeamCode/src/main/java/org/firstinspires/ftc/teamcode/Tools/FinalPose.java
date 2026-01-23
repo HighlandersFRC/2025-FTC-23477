@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Tools;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Peripherals;
-
 public class FinalPose {
     public static double x;
     public static double y;

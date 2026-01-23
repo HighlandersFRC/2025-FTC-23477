@@ -342,7 +342,7 @@ public class Drive extends Subsystem {
 
 //        rotX *= 1.1;
 
-        double denominator = Math.max(0.3, Math.abs(rotY) + Math.abs(rotX) + Math.abs(rotationFactor));
+        double denominator = 1;
 
         double frontLeftPower = (-rotY - rotX - rotationFactor) / denominator;
         double backLeftPower = (rotY - rotX + rotationFactor) / denominator;
