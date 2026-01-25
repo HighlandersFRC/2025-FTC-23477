@@ -7,11 +7,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
-import org.firstinspires.ftc.teamcode.Subsystems.Indexer.IndexerState;
-import org.firstinspires.ftc.teamcode.Subsystems.Intake.IntakeState;
-import org.firstinspires.ftc.teamcode.Subsystems.Queuer.QueueState;
+import org.firstinspires.ftc.teamcode.Subsystems.IndexerState;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
+import org.firstinspires.ftc.teamcode.Subsystems.QueueState;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Shooter.ShooterState;
+import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
 import org.json.JSONException;
 
@@ -53,11 +53,7 @@ public class TestIndexerCode extends LinearOpMode {
                 );
             }
 
-            try {
                 scheduler.run();
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
             if (!scheduler.isSubsystemBusy(indexerState)) {
                 if (gamepad1.right_trigger > 0) {
                     intakeStates.setWantedState(IntakeState.INTAKE_STATE.INTAKE);
@@ -74,7 +70,7 @@ public class TestIndexerCode extends LinearOpMode {
 
 
 
-            telemetry.update();
+
 
             telemetry.update();
         }

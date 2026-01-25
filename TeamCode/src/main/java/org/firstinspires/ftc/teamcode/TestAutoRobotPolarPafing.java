@@ -3,15 +3,15 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Commands.Intake.CommandIntake;
+import org.firstinspires.ftc.teamcode.Commands.CommandIntake;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
-import org.firstinspires.ftc.teamcode.Commands.CommandGroups.SequentialCommandGroup;
+import org.firstinspires.ftc.teamcode.Commands.SequentialCommandGroup;
 import org.firstinspires.ftc.teamcode.PathingTool.PathLoading;
 import org.firstinspires.ftc.teamcode.PathingTool.PolarPathFollower;
-import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
-import org.firstinspires.ftc.teamcode.Subsystems.Intake.IntakeState;
-import org.firstinspires.ftc.teamcode.Subsystems.Queuer.SequencerState;
-import org.firstinspires.ftc.teamcode.Subsystems.Shooter.ShooterState;
+import org.firstinspires.ftc.teamcode.Subsystems.Drive;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
+import org.firstinspires.ftc.teamcode.Subsystems.SequencerState;
+import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 import org.firstinspires.ftc.teamcode.Tools.Constants;
 import org.firstinspires.ftc.teamcode.Tools.FieldOfMerit;
 import org.firstinspires.ftc.teamcode.Tools.FinalPose;
@@ -59,11 +59,7 @@ public class TestAutoRobotPolarPafing extends LinearOpMode {
         while (opModeIsActive()) {
             FinalPose.poseUpdate();
 
-            try {
                 scheduler.run();
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
 
 
             double robotX = FinalPose.x;

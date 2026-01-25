@@ -1,14 +1,21 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import static org.firstinspires.ftc.teamcode.Tools.Constants.TAG_HEIGHT;
+
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
-import org.firstinspires.ftc.teamcode.Subsystems.Indexer.IndexerState;
-import org.firstinspires.ftc.teamcode.Subsystems.Intake.IntakeState;
-import org.firstinspires.ftc.teamcode.Subsystems.Queuer.QueueState;
-import org.firstinspires.ftc.teamcode.Subsystems.Shooter.ShooterState;
+import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
+import org.firstinspires.ftc.teamcode.Subsystems.Drive;
+import org.firstinspires.ftc.teamcode.Subsystems.IndexerState;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
+import org.firstinspires.ftc.teamcode.Subsystems.QueueState;
+import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
+import org.firstinspires.ftc.teamcode.Tools.Limelight;
+import org.firstinspires.ftc.teamcode.Tools.Mouse;
 
 
 @TeleOp
@@ -28,6 +35,7 @@ public class NewTestVot extends LinearOpMode {
         shooterState.init(hardwareMap);
         queueState.init(hardwareMap);
         intakeState.init(hardwareMap);
+        Mouse.init(hardwareMap);
 
         waitForStart();
         while (opModeIsActive()) {
@@ -58,8 +66,10 @@ public class NewTestVot extends LinearOpMode {
 
 
            if (gamepad1.right_bumper) {
-               shooterState.setTargetRPMFromDistance(0);
-               shooterState.setWantedState(ShooterState.SHOOTER_STATE.SHOOT);
+              shooterState.setTargetRPMFromDistance(Limelight.getDistance(TAG_HEIGHT));
+              shooterState.setWantedState(ShooterState.SHOOTER_STATE.SHOOT);
+           } else if (gamepad1.left_bumper) {
+               shooterState.setWantedState(ShooterState.SHOOTER_STATE.REMOVE);
            } else {
                shooterState.setWantedState(ShooterState.SHOOTER_STATE.IDLE);
            }
@@ -73,7 +83,16 @@ public class NewTestVot extends LinearOpMode {
            }
 
 
-            drive.teleopDrive(gamepad1);
+            drive.FieldCentric(gamepad1);
+
+
+            TelemetryPacket packet = new TelemetryPacket();
+            packet.put("Target RPM", shooterState.getTargetRPM());
+            packet.put("Current Distance", Limelight.getDistance(TAG_HEIGHT));
+            packet.put("CurrentRPM", shooterState.computeRPM());
+            packet.put("Feeding", shooterState.isAtTargetVelocity());
+            packet.put("FeedingStable", shooterState.isAtTargetVelocityStable());
+            FtcDashboard.getInstance().sendTelemetryPacket(packet);
 
         }
     }

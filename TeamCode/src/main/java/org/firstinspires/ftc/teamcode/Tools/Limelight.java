@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import static org.firstinspires.ftc.teamcode.Tools.Constants.CAMERA_ANGLE_DEGREES;
 import static org.firstinspires.ftc.teamcode.Tools.Constants.CAMERA_HEIGHT_INCHES;
 
+import java.util.Objects;
+
 public final class Limelight {
 
     private static Limelight3A limelight;
@@ -82,6 +84,19 @@ public final class Limelight {
     public static boolean isDetected() {
         LLResult result = getResult();
         return result != null && result.isValid() && result.getBotpose() != null;
+    }
+
+    public static double poseX() {
+
+     return Objects.requireNonNull(getResult()).getBotpose().getPosition().x;
+    }
+
+    public static double poseY() {
+        return Objects.requireNonNull(getResult()).getBotpose().getPosition().y;
+    }
+
+    public static double poseTheta() {
+        return Objects.requireNonNull(getResult()).getBotpose().getOrientation().getYaw();
     }
 
 
