@@ -36,18 +36,13 @@ public class CommandScheduler {
         if (requiredSubsystem != null) {
             Command activeCommand = activeSubsystemCommands.get(requiredSubsystem);
 
-            // Prevent duplicate scheduling of the same command
-            if (activeCommand == command) {
-                RobotLog.d("Command already active, not rescheduling: " + command.getClass().getSimpleName());
-                return;
+            if (activeCommand != null && activeCommand != command) {
+                cancel(activeCommand);   // 🔥 THIS WAS MISSING
             }
 
-            // Cancel the currently active command if it's not a default command
-
-
-            // Associate the new command with the subsystem
             activeSubsystemCommands.put(requiredSubsystem, command);
         }
+
 
         // Schedule and start the new command if not already in the list
         if (!scheduledCommands.contains(command)) {

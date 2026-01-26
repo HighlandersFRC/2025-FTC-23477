@@ -72,15 +72,7 @@ double distance = Limelight.getDistance(TAG_HEIGHT);
 long duration = 1000;
             if (gamepad1.right_bumper) {
                 scheduler.schedule(
-                        new ConditionalCommand(
-                                new ParallelCommandGroup(
-                                        scheduler, Parameters.ANY,
-                                        new CommandShoot(robot.shooterStates, distance, duration),
-                                        new CommandQueue(robot.queueState, duration)
-                                ),
-                                new CommandWaitToShoot(robot.shooterStates, distance),
-                                () -> robot.shooterStates.isAtTargetVelocity()
-                        )
+                        IndexTest(scheduler, robot, duration)
                 );
 
             }

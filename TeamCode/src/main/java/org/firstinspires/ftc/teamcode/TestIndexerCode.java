@@ -47,25 +47,13 @@ public class TestIndexerCode extends LinearOpMode {
             shooterState.periodic();
 
 
-            if (gamepad1.right_bumper) {
+           
                 scheduler.schedule(
                         IndexTest(scheduler, robot, 1000)
                 );
-            }
 
                 scheduler.run();
-            if (!scheduler.isSubsystemBusy(indexerState)) {
-                if (gamepad1.right_trigger > 0) {
-                    intakeStates.setWantedState(IntakeState.INTAKE_STATE.INTAKE);
-                    indexerState.setWantedState(IndexerState.INDEXER_STATE.INDEX);
-                } else if (gamepad1.left_trigger > 0) {
-                    intakeStates.setWantedState(IntakeState.INTAKE_STATE.OUTTAKE);
-                    indexerState.setWantedState(IndexerState.INDEXER_STATE.REMOVE);
-                } else {
-                    intakeStates.setWantedState(IntakeState.INTAKE_STATE.DEFAULT);
-                    indexerState.setWantedState(IndexerState.INDEXER_STATE.DEFAULT);
-                }
-            }
+
 
 
 
