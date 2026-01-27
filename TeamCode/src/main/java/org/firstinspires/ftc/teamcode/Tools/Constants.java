@@ -38,6 +38,8 @@ public class Constants {
 
 
 
+
+
     // Limelight
     public static final PID THETA_PID_LIMELIGHT = new PID(0.04, 0.0, 0.01);
     public static double LAST_TX = 0;
@@ -64,14 +66,8 @@ public class Constants {
 
 
 
-
-
     // Intake
     public static final PID INTAKE_PID_HOLD = new PID(0.5, 0, 0);
-
-
-
-
 
 
 
@@ -80,10 +76,8 @@ public class Constants {
     public static final PID INDEXER_PID = new PID(0.5, 0, 0);
 
 
-
-//Mouse
-public static final double METERS_TO_INCHES = 39.3701;
-
+    //Mouse
+    public static final double METERS_TO_INCHES = 39.3701;
 
 
     // Shooter
@@ -182,8 +176,6 @@ public static final double METERS_TO_INCHES = 39.3701;
                 ));
 
     }
-
-
 
 
 

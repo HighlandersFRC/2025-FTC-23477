@@ -64,20 +64,16 @@ public final class Limelight {
         return limelight.isConnected();
     }
 
-    public static double getDistance(
-            double tagHeight
-    ) {
-       // double cameraAngle = adjust.getDegrees();
+    public static double getDistance(double TAG_HEIGHT) {
+        double ty = getTy();
 
-        double cameraHeightM = CAMERA_HEIGHT_INCHES / 39.37;
+        double LL_ANGLE_DEG = 10;
+        double LL_HEIGHT_INCH = 12;
 
-        LLResult result = getResult();
-        if (result == null) return 0.0;
+        double GOAL_DEG = LL_ANGLE_DEG + ty;
+        double GOAL_RAD = GOAL_DEG * (Math.PI / 180);
 
-        double ty = result.getTy();
-        double angleRad = Math.toRadians(CAMERA_ANGLE_DEGREES + ty);
-
-        return (tagHeight - cameraHeightM) / Math.tan(angleRad);
+        return (TAG_HEIGHT - LL_HEIGHT_INCH) / Math.tan(GOAL_RAD);
     }
 
 
@@ -126,4 +122,3 @@ public final class Limelight {
         return getResult() != null;
     }
 }
-

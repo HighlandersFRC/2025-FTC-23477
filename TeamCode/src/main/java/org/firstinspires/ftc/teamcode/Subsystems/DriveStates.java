@@ -29,6 +29,8 @@ public class DriveStates extends Subsystem {
     private double distanceY;
     private double targetTheta;
 
+    private double timeX;
+
     public DriveStates(String name) {
         super(name);
     }
@@ -63,7 +65,13 @@ public class DriveStates extends Subsystem {
         DRIVE_TURN_RIGHT,
         DRIVE_TURN_LEFT,
         DRIVE_STRAFE,
-        AUTO_TURN
+        AUTO_TURN,
+        DRIVE_FORWARD_TIME,
+        DRIVE_TURN_LEFT_TIME,
+        DRIVE_TURN_RIGHT_TIME,
+        DRIVE_STRAFE_TIME,
+        DRIVE_BACK_TIME,
+        DRIVE_STRAFE_BACK_TIME
     }
 
     private DRIVE_STATE handleStateTransitions() {
@@ -75,6 +83,12 @@ public class DriveStates extends Subsystem {
             case DRIVE_TURN_LEFT: currentSuperState = DRIVE_STATE.DRIVE_TURN_LEFT; break;
             case DRIVE_STRAFE: currentSuperState = DRIVE_STATE.DRIVE_STRAFE; break;
             case AUTO_TURN: currentSuperState = DRIVE_STATE.AUTO_TURN; break;
+            case DRIVE_FORWARD_TIME: currentSuperState = DRIVE_STATE.DRIVE_FORWARD_TIME; break;
+            case DRIVE_STRAFE_TIME: currentSuperState = DRIVE_STATE.DRIVE_STRAFE_TIME; break;
+            case DRIVE_TURN_LEFT_TIME: currentSuperState = DRIVE_STATE.DRIVE_TURN_LEFT_TIME; break;
+            case DRIVE_TURN_RIGHT_TIME: currentSuperState = DRIVE_STATE.DRIVE_TURN_RIGHT_TIME; break;
+            case DRIVE_BACK_TIME: currentSuperState = DRIVE_STATE.DRIVE_BACK_TIME; break;
+            case DRIVE_STRAFE_BACK_TIME: currentSuperState = DRIVE_STATE.DRIVE_STRAFE_BACK_TIME; break;
         }
         return currentSuperState;
     }
@@ -86,7 +100,7 @@ public class DriveStates extends Subsystem {
 
 
     private void handleIdleState() {}
-
+// DRIVE WITH MOUSE SENSOR
     public void driveForwardDriveDistanceX(double distanceMeters) {
         Mouse.configureOtos();
         this.distanceX = distanceMeters;
@@ -131,7 +145,7 @@ public class DriveStates extends Subsystem {
         handleDriveTurn(false);
     }
 
-    // Unified turning logic
+
     private void handleDriveTurn (boolean turnRight) {
         double currentTheta = Mouse.getTheta();
         double error = angleError(targetTheta, currentTheta);
@@ -206,6 +220,29 @@ public class DriveStates extends Subsystem {
         return Math.abs(error) <= THETA_TOLERANCE;
     }
 
+    // DRIVE WITH TIME
+
+    private void handleDriveTimeState() {
+        drive.drive(0.5,0.5,-0.5,0.5);
+    }
+
+    private void handleDriveBackTimeState() {
+        drive.drive(-0.5,-0.5,0.5,-0.5);
+    }
+    private void handleStrafeTimeState() {
+        drive.drive(0.5,-0.5,0.5,0.5);
+    }
+    private void handleStrafeBackTimeState() {
+        drive.drive(-0.5,0.5,-0.5,-0.5);
+    }
+    private void handleTurnRightState() {
+        drive.drive(0.5,-0.5, -0.5,-0.5);
+    }
+    private void handleTurnLeftState() {
+        drive.drive(0.5,-0.5, -0.5,-0.5);
+    }
+
+
     @Override
     public void periodic() {
         Mouse.update();
@@ -218,6 +255,12 @@ public class DriveStates extends Subsystem {
             case DRIVE_TURN_LEFT: handleDriveTurnLeftState(); break;
             case DRIVE_STRAFE: handleStrafeState(); break;
             case AUTO_TURN: handleAutoTurnState(); break;
+            case DRIVE_FORWARD_TIME: handleDriveTimeState(); break;
+            case DRIVE_STRAFE_TIME: handleStrafeTimeState(); break;
+            case DRIVE_TURN_RIGHT_TIME: handleTurnRightState(); break;
+            case DRIVE_TURN_LEFT_TIME: handleTurnLeftState(); break;
+            case DRIVE_BACK_TIME: handleDriveBackTimeState(); break;
+            case DRIVE_STRAFE_BACK_TIME: handleStrafeBackTimeState(); break;
         }
     }
 
