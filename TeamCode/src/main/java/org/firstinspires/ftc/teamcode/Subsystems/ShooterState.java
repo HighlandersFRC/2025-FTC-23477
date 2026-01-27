@@ -50,7 +50,7 @@ public class ShooterState extends Subsystem {
     }
 
     public boolean isAtTargetVelocity() {
-        return Math.abs(VELOCITY_PID.getSetPoint() - computeRPM()) < 500;
+        return Math.abs(VELOCITY_PID.getSetPoint() - computeRPM()) < 250;
     }
 
 
@@ -107,7 +107,7 @@ public class ShooterState extends Subsystem {
     }
 
     private void idleLoop() {
-        shooterMotor.setPower(0);
+        shooterMotor.setPower(-0.5);
     }
 
     @SuppressLint("DefaultLocale")

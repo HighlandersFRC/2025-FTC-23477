@@ -52,7 +52,7 @@ public class QueueState extends Subsystem {
     }
 
     private void handleIdleState() {
-        Queuer.setPower(0);
+        Queuer.setPower(-0.3);
     }
 
     private void handleQueueState() {

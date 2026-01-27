@@ -68,8 +68,7 @@ public class NewVot extends LinearOpMode {
             queueState.periodic();
 
 
-double distance = Limelight.getDistance(TAG_HEIGHT);
-long duration = 1000;
+            long duration = 1000;
             if (gamepad1.right_bumper) {
                 scheduler.schedule(
                         IndexTest(scheduler, robot, duration)
@@ -99,7 +98,7 @@ long duration = 1000;
             }
             drive.FieldCentric(gamepad1);
 
-            boolean isFeeding = robot.queueState.getPower() != 0;
+            boolean isFeeding = robot.queueState.getPower() > 0;
             TelemetryPacket packet = new TelemetryPacket();
             packet.put("Target RPM", shooterState.getTargetRPM());
             packet.put("Current Distance", Limelight.getDistance(TAG_HEIGHT));

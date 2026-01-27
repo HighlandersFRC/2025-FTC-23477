@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Commands.ConditionalCommand;
 import org.firstinspires.ftc.teamcode.Commands.CommandWaitToShoot;
 import org.firstinspires.ftc.teamcode.Commands.ParallelCommandGroup;
 import org.firstinspires.ftc.teamcode.Commands.SequentialCommandGroup;
+import org.firstinspires.ftc.teamcode.Commands.Wait;
 
 import java.util.HashMap;
 import java.util.function.BooleanSupplier;
@@ -89,7 +90,7 @@ public static final double METERS_TO_INCHES = 39.3701;
     public static double TARGET_RPM = 0;
 
     private static final float MOTOR_SPEED = 1;
-    private static final float MOTOR_RPM = (float) -6000;
+    private static final float MOTOR_RPM = (float) -8000;
 
     private static final float FEED_FORWARD = MOTOR_SPEED / MOTOR_RPM ;
     public static final PIDF VELOCITY_PID = new PIDF(0.01, 0, 0, FEED_FORWARD);
@@ -171,7 +172,10 @@ public static final double METERS_TO_INCHES = 39.3701;
                         new ParallelCommandGroup(
                                 scheduler, Parameters.ANY,
                                 new CommandShoot(robot.shooterStates, distance, duration),
+                                new SequentialCommandGroup(scheduler,
+                                new Wait(100),
                                 new CommandQueue(robot.queueState, duration)
+                )
                         ),
                         new CommandWaitToShoot(robot.shooterStates, distance),
                         () -> robot.shooterStates.isAtTargetVelocity()
