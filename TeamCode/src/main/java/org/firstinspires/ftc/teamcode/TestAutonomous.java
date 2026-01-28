@@ -16,6 +16,8 @@ import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
 import org.firstinspires.ftc.teamcode.Commands.CommandStrafeLeft;
 import org.firstinspires.ftc.teamcode.Commands.CommandStrafeRight;
+import org.firstinspires.ftc.teamcode.Commands.CommandTurnLeftTime;
+import org.firstinspires.ftc.teamcode.Commands.CommandTurnRightTime;
 import org.firstinspires.ftc.teamcode.Commands.SequentialCommandGroup;
 import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
 import org.firstinspires.ftc.teamcode.Subsystems.IndexerState;
@@ -28,7 +30,7 @@ import org.firstinspires.ftc.teamcode.Tools.NewRobot;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
 
 @Autonomous
-public class ShootThreeAuto extends LinearOpMode {
+public class TestAutonomous extends LinearOpMode {
 
     DriveStates drive = new DriveStates("drive");
     ShooterState shooterState = new ShooterState("shooterStates");
@@ -61,18 +63,7 @@ public class ShootThreeAuto extends LinearOpMode {
 
 
         scheduler.schedule(
-                new SequentialCommandGroup(
-                    scheduler,
-                        new CommandDriveBackTime(drive, 2000),
-                        IndexTest(scheduler, robot, 1000),
-                        new CommandIndex(robot.indexerState, 1000),
-                        IndexTest(scheduler, robot, 1000),
-                        new CommandIndex(robot.indexerState, 1000),
-                        IndexTest(scheduler, robot, 2000),
-                        new CommandIndex(robot.indexerState, 1000),
-                        IndexTest(scheduler, robot, 2000),
-                        new CommandStrafeLeft(robot.driveStates, 1000)
-                )
+                 new CommandTurnRightTime(robot.driveStates, 45)
         );
 
 

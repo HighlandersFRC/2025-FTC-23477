@@ -17,9 +17,12 @@ import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 
 import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
 import org.firstinspires.ftc.teamcode.Commands.CommandStrafeRight;
+import org.firstinspires.ftc.teamcode.Commands.CommandTurnLeft;
+import org.firstinspires.ftc.teamcode.Commands.CommandTurnLeftTime;
 import org.firstinspires.ftc.teamcode.Commands.CommandTurnRightTime;
 import org.firstinspires.ftc.teamcode.Commands.ParallelCommandGroup;
 import org.firstinspires.ftc.teamcode.Commands.SequentialCommandGroup;
+import org.firstinspires.ftc.teamcode.Commands.Wait;
 import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
 import org.firstinspires.ftc.teamcode.Subsystems.IndexerState;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
@@ -73,7 +76,8 @@ public class ShootSixAuto extends LinearOpMode {
                         IndexTest(scheduler, robot, 1000),
                         new CommandIndex(robot.indexerState, 1000),
                         IndexTest(scheduler, robot, 1000),
-                        new CommandTurnRightTime(robot.driveStates, 100), // Tune
+                        new CommandTurnRightTime(robot.driveStates, 45), // Tune
+                        new Wait(0),
                         new ParallelCommandGroup( // Tune
                                 scheduler,
                                 Parameters.ANY,
@@ -81,6 +85,8 @@ public class ShootSixAuto extends LinearOpMode {
                                 new CommandIntake(robot.intakeStates, 500),
                                 new CommandIndex(robot.indexerState, 500)
                         ),
+                        new Wait(0),
+                        new CommandTurnLeftTime(robot.driveStates, 45), // Tune
                         new CommandDriveBackTime(robot.driveStates, 500), // Tune
                         IndexTest(scheduler, robot, 1000),
                         new CommandIndex(robot.indexerState, 1000),

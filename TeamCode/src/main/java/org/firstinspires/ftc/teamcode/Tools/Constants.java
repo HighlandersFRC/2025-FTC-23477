@@ -34,6 +34,8 @@ public class Constants {
     public static final double DISTANCE_TOLERANCE = 0.1;
     public static final double THETA_TOLERANCE = 2.0;
 
+    public static final long MillisToDegrees = 500;
+
 
 
 
@@ -159,7 +161,6 @@ public class Constants {
     @NonNull
     public static SequentialCommandGroup IndexTest(CommandScheduler scheduler, NewRobot robot, long duration) {
         double distance = Limelight.getDistance(TAG_HEIGHT);
-
         return new SequentialCommandGroup(
                 scheduler,
                 new ConditionalCommand(

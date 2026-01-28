@@ -14,8 +14,6 @@ import static org.firstinspires.ftc.teamcode.Tools.Constants.Y_PID;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Subsystems.Drive;
-import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 import org.firstinspires.ftc.teamcode.Tools.Limelight;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
 
@@ -29,6 +27,7 @@ public class DriveStates extends Subsystem {
     private double distanceY;
     private double targetTheta;
 
+
     private double timeX;
 
     public DriveStates(String name) {
@@ -39,6 +38,11 @@ public class DriveStates extends Subsystem {
         this.drive = new Drive("drive", hardwareMap);
         Mouse.init(hardwareMap);
         Mouse.configureOtos();
+
+
+
+
+
 
         Limelight.init(hardwareMap);
 
@@ -195,7 +199,12 @@ public class DriveStates extends Subsystem {
 
             turnPower = Math.max(-MAX_TURN, Math.min(MAX_TURN, turnPower));
 
-            drive.drive(-turnPower, -turnPower, turnPower, -turnPower);
+            drive.drive(turnPower, -turnPower, -turnPower, -turnPower);
+
+//            double frontLeftPower = (-rotY + rotX + rx);
+//            double frontRightPower = (-rotY - rotX - rx);
+//            double backLeftPower = (rotY + rotX - rx);
+//            double backRightPower = (-rotY + rotX - rx);
 
         }
     }
@@ -225,7 +234,6 @@ public class DriveStates extends Subsystem {
     private void handleDriveTimeState() {
         drive.drive(0.5,0.5,-0.5,0.5);
     }
-
     private void handleDriveBackTimeState() {
         drive.drive(-0.5,-0.5,0.5,-0.5);
     }
@@ -235,12 +243,12 @@ public class DriveStates extends Subsystem {
     private void handleStrafeBackTimeState() {
         drive.drive(-0.5,0.5,-0.5,-0.5);
     }
-    private void handleTurnRightState() {
-        drive.drive(0.5,-0.5, -0.5,-0.5);
-    }
-    private void handleTurnLeftState() {
-        drive.drive(0.5,-0.5, -0.5,-0.5);
-    }
+
+
+//    double frontLeftPower = (-rotY + rotX + rx);
+//    double frontRightPower = (-rotY - rotX - rx);
+//    double backLeftPower = (rotY + rotX - rx);
+//    double backRightPower = (-rotY + rotX - rx);
 
 
     @Override
@@ -257,8 +265,6 @@ public class DriveStates extends Subsystem {
             case AUTO_TURN: handleAutoTurnState(); break;
             case DRIVE_FORWARD_TIME: handleDriveTimeState(); break;
             case DRIVE_STRAFE_TIME: handleStrafeTimeState(); break;
-            case DRIVE_TURN_RIGHT_TIME: handleTurnRightState(); break;
-            case DRIVE_TURN_LEFT_TIME: handleTurnLeftState(); break;
             case DRIVE_BACK_TIME: handleDriveBackTimeState(); break;
             case DRIVE_STRAFE_BACK_TIME: handleStrafeBackTimeState(); break;
         }

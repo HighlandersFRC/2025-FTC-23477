@@ -96,6 +96,9 @@ public class NewVot extends LinearOpMode {
             } else {
                 gamepad1.stopRumble();
             }
+
+
+
             drive.FieldCentric(gamepad1);
 
             boolean isFeeding = robot.queueState.getPower() > 0;

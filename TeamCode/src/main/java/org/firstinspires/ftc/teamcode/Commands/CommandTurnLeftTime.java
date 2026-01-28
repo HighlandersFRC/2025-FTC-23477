@@ -7,18 +7,16 @@ import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 public class CommandTurnLeftTime implements Command {
     DriveStates driveStates;
-    long startTime;
-    long duration;
+    double degrees;
 
-    public CommandTurnLeftTime(DriveStates driveStates, long millis){
+    public CommandTurnLeftTime(DriveStates driveStates, double degrees) {
         this.driveStates = driveStates;
-        this.duration = millis;
+        this.degrees = degrees;
     }
-
 
     @Override
     public void start() {
-        startTime = System.currentTimeMillis();
+        driveStates.driveTurnDriveDistanceThetaIMU(degrees);
         driveStates.setWantedState(DriveStates.DRIVE_STATE.DRIVE_TURN_LEFT_TIME);
     }
 
@@ -28,20 +26,17 @@ public class CommandTurnLeftTime implements Command {
     }
 
     @Override
-    public void end() {
-        driveStates.setWantedState(DriveStates.DRIVE_STATE.DEFAULT);
+    public boolean isFinished() {
+        return driveStates.isFinishedThetaIMU();
     }
 
     @Override
-    public boolean isFinished() {
-        return System.currentTimeMillis() - startTime >= duration;
+    public void end() {
+        driveStates.setWantedState(DriveStates.DRIVE_STATE.DEFAULT);
     }
 
     @Override
     public Subsystem getRequiredSubsystem() {
         return driveStates;
     }
-
-
-
 }
