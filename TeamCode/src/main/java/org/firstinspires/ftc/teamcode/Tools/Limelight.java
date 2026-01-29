@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import static org.firstinspires.ftc.teamcode.Tools.Constants.CAMERA_ANGLE_DEGREES;
 import static org.firstinspires.ftc.teamcode.Tools.Constants.CAMERA_HEIGHT_INCHES;
 
+import java.util.Objects;
+
 public final class Limelight {
 
     private static Limelight3A limelight;
@@ -62,26 +64,35 @@ public final class Limelight {
         return limelight.isConnected();
     }
 
-    public static double getDistance(
-            double tagHeight
-    ) {
-       // double cameraAngle = adjust.getDegrees();
+    public static double getDistance(double TAG_HEIGHT) {
+        double ty = getTy();
 
-        double cameraHeightM = CAMERA_HEIGHT_INCHES / 39.37;
+        double LL_ANGLE_DEG = 10;
+        double LL_HEIGHT_INCH = 12;
 
-        LLResult result = getResult();
-        if (result == null) return 0.0;
+        double GOAL_DEG = LL_ANGLE_DEG + ty;
+        double GOAL_RAD = GOAL_DEG * (Math.PI / 180);
 
-        double ty = result.getTy();
-        double angleRad = Math.toRadians(CAMERA_ANGLE_DEGREES + ty);
-
-        return (tagHeight - cameraHeightM) / Math.tan(angleRad);
+        return (TAG_HEIGHT - LL_HEIGHT_INCH) / Math.tan(GOAL_RAD);
     }
 
 
     public static boolean isDetected() {
         LLResult result = getResult();
         return result != null && result.isValid() && result.getBotpose() != null;
+    }
+
+    public static double poseX() {
+
+     return Objects.requireNonNull(getResult()).getBotpose().getPosition().x;
+    }
+
+    public static double poseY() {
+        return Objects.requireNonNull(getResult()).getBotpose().getPosition().y;
+    }
+
+    public static double poseTheta() {
+        return Objects.requireNonNull(getResult()).getBotpose().getOrientation().getYaw();
     }
 
 
@@ -111,4 +122,3 @@ public final class Limelight {
         return getResult() != null;
     }
 }
-

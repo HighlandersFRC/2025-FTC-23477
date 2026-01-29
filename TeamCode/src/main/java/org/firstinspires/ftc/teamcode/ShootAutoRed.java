@@ -6,20 +6,20 @@ import static org.firstinspires.ftc.teamcode.Tools.Constants.DURATION_MS_AUTO;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Commands.Drive.CommandDrive;
-import org.firstinspires.ftc.teamcode.Commands.Intake.CommandIntake;
+import org.firstinspires.ftc.teamcode.Commands.CommandDrive;
+import org.firstinspires.ftc.teamcode.Commands.CommandIntake;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
-import org.firstinspires.ftc.teamcode.Commands.Drive.CommandStrafe;
-import org.firstinspires.ftc.teamcode.Commands.Drive.CommandTurnAuto;
-import org.firstinspires.ftc.teamcode.Commands.Drive.CommandTurnLeft;
-import org.firstinspires.ftc.teamcode.Commands.Drive.CommandTurnRight;
-import org.firstinspires.ftc.teamcode.Commands.CommandGroups.ParallelCommandGroup;
-import org.firstinspires.ftc.teamcode.Commands.CommandGroups.SequentialCommandGroup;
+import org.firstinspires.ftc.teamcode.Commands.CommandStrafe;
+import org.firstinspires.ftc.teamcode.Commands.CommandTurnAuto;
+import org.firstinspires.ftc.teamcode.Commands.CommandTurnLeft;
+import org.firstinspires.ftc.teamcode.Commands.CommandTurnRight;
+import org.firstinspires.ftc.teamcode.Commands.ParallelCommandGroup;
+import org.firstinspires.ftc.teamcode.Commands.SequentialCommandGroup;
 import org.firstinspires.ftc.teamcode.Commands.Wait;
-import org.firstinspires.ftc.teamcode.Subsystems.Drive.DriveStates;
-import org.firstinspires.ftc.teamcode.Subsystems.Intake.IntakeState;
-import org.firstinspires.ftc.teamcode.Subsystems.Queuer.SequencerState;
-import org.firstinspires.ftc.teamcode.Subsystems.Shooter.ShooterState;
+import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
+import org.firstinspires.ftc.teamcode.Subsystems.SequencerState;
+import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
@@ -100,11 +100,7 @@ public class ShootAutoRed extends LinearOpMode {
         while (opModeIsActive()) {
             Mouse.update();
 
-            try {
                 scheduler.run();
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
 
             drive.periodic();
             intakeState.periodic();

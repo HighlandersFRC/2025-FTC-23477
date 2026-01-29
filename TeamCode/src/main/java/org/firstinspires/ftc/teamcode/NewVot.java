@@ -10,17 +10,24 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Commands.ConditionalCommand;
+import org.firstinspires.ftc.teamcode.Commands.ParallelCommandGroup;
+import org.firstinspires.ftc.teamcode.Commands.SequentialCommandGroup;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
-import org.firstinspires.ftc.teamcode.Commands.Shooter.CommandShoot;
-import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
-import org.firstinspires.ftc.teamcode.Subsystems.Indexer.IndexerState;
-import org.firstinspires.ftc.teamcode.Subsystems.Intake.IntakeState;
-import org.firstinspires.ftc.teamcode.Subsystems.Queuer.QueueState;
-import org.firstinspires.ftc.teamcode.Subsystems.Shooter.ShooterState;
+import org.firstinspires.ftc.teamcode.Commands.CommandQueue;
+import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
+import org.firstinspires.ftc.teamcode.Commands.CommandFeedWhenAtVelocity;
+import org.firstinspires.ftc.teamcode.Commands.CommandWaitToShoot;
+import org.firstinspires.ftc.teamcode.Subsystems.Drive;
+import org.firstinspires.ftc.teamcode.Subsystems.IndexerState;
+import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
+import org.firstinspires.ftc.teamcode.Subsystems.QueueState;
+import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 
 import org.firstinspires.ftc.teamcode.Tools.Limelight;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
+import org.firstinspires.ftc.teamcode.Tools.Parameters;
 import org.json.JSONException;
 
 @TeleOp
@@ -48,6 +55,7 @@ public class NewVot extends LinearOpMode {
         scheduler.setNewRobot(robot);
 
 
+
         Drive drive = new Drive("drive", hardwareMap);
 
 
@@ -60,17 +68,17 @@ public class NewVot extends LinearOpMode {
             queueState.periodic();
 
 
+            long duration = 1000;
             if (gamepad1.right_bumper) {
                 scheduler.schedule(
-                        IndexTest(scheduler, robot, DURATION_MS)
+                        IndexTest(scheduler, robot, duration)
                 );
+
             }
 
-            try {
+
+
                 scheduler.run();
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
 
             if (gamepad1.right_trigger > 0) {
                 intakeStates.setWantedState(IntakeState.INTAKE_STATE.INTAKE);
@@ -83,9 +91,17 @@ public class NewVot extends LinearOpMode {
                 indexerState.setWantedState(IndexerState.INDEXER_STATE.DEFAULT);
             }
 
+            if (robot.shooterStates.isAtTargetVelocity()) {
+                gamepad1.rumble(1000);
+            } else {
+                gamepad1.stopRumble();
+            }
+
+
+
             drive.FieldCentric(gamepad1);
 
-boolean isFeeding = robot.queueState.getPower() < 0;
+            boolean isFeeding = robot.queueState.getPower() > 0;
             TelemetryPacket packet = new TelemetryPacket();
             packet.put("Target RPM", shooterState.getTargetRPM());
             packet.put("Current Distance", Limelight.getDistance(TAG_HEIGHT));
@@ -95,15 +111,9 @@ boolean isFeeding = robot.queueState.getPower() < 0;
             packet.put("WhyFeed?", new CommandShoot(robot.shooterStates, Limelight.getDistance(TAG_HEIGHT), 1000).isFinished());
             packet.put("QueuerPower", isFeeding);
             packet.put("distance", Limelight.getDistance(TAG_HEIGHT));
+            packet.put("Ticks", robot.shooterStates.getTicks());
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
 
-            telemetry.addData("Position", "(%.2f, %.2f, %.1f°)",
-                    Mouse.getX(), Mouse.getY(), Math.toDegrees(Mouse.getTheta()));
-            telemetry.addData("Target RPM", shooterState.getTargetRPM());
-            telemetry.addData("Is Detected", Limelight.isDetected());
-            telemetry.addData("Current Distance", Limelight.getDistance(TAG_HEIGHT));
-            telemetry.addData("CurrentRPM", shooterState.computeRPM());
-            telemetry.update();
 
             telemetry.update();
         }

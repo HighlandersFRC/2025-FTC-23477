@@ -7,7 +7,6 @@ import java.util.*;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
-import org.json.JSONException;
 
 public class CommandScheduler {
     private static CommandScheduler instance;
@@ -37,18 +36,13 @@ public class CommandScheduler {
         if (requiredSubsystem != null) {
             Command activeCommand = activeSubsystemCommands.get(requiredSubsystem);
 
-            // Prevent duplicate scheduling of the same command
-            if (activeCommand == command) {
-                RobotLog.d("Command already active, not rescheduling: " + command.getClass().getSimpleName());
-                return;
+            if (activeCommand != null && activeCommand != command) {
+                cancel(activeCommand);   // 🔥 THIS WAS MISSING
             }
 
-            // Cancel the currently active command if it's not a default command
-
-
-            // Associate the new command with the subsystem
             activeSubsystemCommands.put(requiredSubsystem, command);
         }
+
 
         // Schedule and start the new command if not already in the list
         if (!scheduledCommands.contains(command)) {
@@ -61,7 +55,7 @@ public class CommandScheduler {
         return activeSubsystemCommands.containsKey(subsystem);
     }
 
-    public void run() throws JSONException {
+    public void run() {
         List<Command> finishedCommands = new ArrayList<>();
 
         // Execute scheduled commands and handle completion
@@ -112,7 +106,6 @@ public class CommandScheduler {
         Set<Subsystem> subsystems = new HashSet<>();
         if (newRobot != null) {
            // subsystems.add(newRobot.arm); UPDATE
-            subsystems.add(newRobot.drive);
            // subsystems.add(newRobot.intakeSubsystem); UPDATE
            // subsystems.add(newRobot.wrist);  UPDATE
         }
