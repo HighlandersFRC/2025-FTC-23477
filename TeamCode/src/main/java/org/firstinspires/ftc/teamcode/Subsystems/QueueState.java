@@ -56,7 +56,7 @@ public class QueueState extends Subsystem {
     }
 
     private void handleQueueState() {
-        Queuer.setPower(0.7);
+        Queuer.setPower(0.5);
     }
 
     private void handleRemoveState() {

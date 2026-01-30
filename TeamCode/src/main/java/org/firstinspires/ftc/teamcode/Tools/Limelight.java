@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import static org.firstinspires.ftc.teamcode.Tools.Constants.CAMERA_ANGLE_DEGREES;
 import static org.firstinspires.ftc.teamcode.Tools.Constants.CAMERA_HEIGHT_INCHES;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.TAG_HEIGHT;
 
 import java.util.Objects;
 
@@ -64,11 +65,11 @@ public final class Limelight {
         return limelight.isConnected();
     }
 
-    public static double getDistance(double TAG_HEIGHT) {
+    public static double getDistance() {
         double ty = getTy();
 
-        double LL_ANGLE_DEG = 10;
-        double LL_HEIGHT_INCH = 12;
+        double LL_ANGLE_DEG = 20;
+        double LL_HEIGHT_INCH = 0.3048;
 
         double GOAL_DEG = LL_ANGLE_DEG + ty;
         double GOAL_RAD = GOAL_DEG * (Math.PI / 180);

@@ -12,8 +12,11 @@ import static org.firstinspires.ftc.teamcode.Tools.Constants.X_PID;
 import static org.firstinspires.ftc.teamcode.Tools.Constants.Y_PID;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Tools.Limelight;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
 
@@ -22,13 +25,13 @@ public class DriveStates extends Subsystem {
     private DRIVE_STATE currentSuperState = DRIVE_STATE.IDLE;
     private Drive drive;
 
+    public IMU imu;
+
 
     private double distanceX;
     private double distanceY;
     private double targetTheta;
 
-
-    private double timeX;
 
     public DriveStates(String name) {
         super(name);
@@ -40,6 +43,15 @@ public class DriveStates extends Subsystem {
         Mouse.configureOtos();
 
 
+        imu = hardwareMap.get(IMU.class, "imu");
+
+        IMU.Parameters params = new IMU.Parameters(
+                new RevHubOrientationOnRobot(
+                        RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+                        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+                )
+        );
+        imu.initialize(params);
 
 
 
@@ -78,7 +90,7 @@ public class DriveStates extends Subsystem {
         DRIVE_STRAFE_BACK_TIME
     }
 
-    private DRIVE_STATE handleStateTransitions() {
+    private void handleStateTransitions() {
         switch (wantedSuperState) {
             case DEFAULT: currentSuperState = DRIVE_STATE.DEFAULT; break;
             case IDLE: currentSuperState = DRIVE_STATE.IDLE; break;
@@ -94,7 +106,6 @@ public class DriveStates extends Subsystem {
             case DRIVE_BACK_TIME: currentSuperState = DRIVE_STATE.DRIVE_BACK_TIME; break;
             case DRIVE_STRAFE_BACK_TIME: currentSuperState = DRIVE_STATE.DRIVE_STRAFE_BACK_TIME; break;
         }
-        return currentSuperState;
     }
 
     private void handleDefaultState() {
@@ -141,13 +152,6 @@ public class DriveStates extends Subsystem {
         targetTheta = normalizeAngle(Mouse.getTheta() + degrees);
     }
 
-    private void handleDriveTurnRightState() {
-        handleDriveTurn(true);
-    }
-
-    private void handleDriveTurnLeftState() {
-        handleDriveTurn(false);
-    }
 
 
     private void handleDriveTurn (boolean turnRight) {
@@ -166,19 +170,13 @@ public class DriveStates extends Subsystem {
         double scale = Math.min(1.0, Math.abs(error) / 45.0);
         power *= scale;
 
-        power = clamp(power, -0.6, 0.6);
+        power = clamp(power);
         if (Math.abs(power) < 0.1) power = Math.signum(power) * 0.1;
         if (turnRight) {
             drive.drive(-power, -power, power, -power);
         } else {
             drive.drive(power, power, -power, power);
         }
-
-
-//        double frontLeftPower = (-rotY - rotX - rx);
-//        double frontRightPower = (rotY - rotX - rx);
-//        double backLeftPower = (rotY - rotX + rx);
-//        double backRightPower = (-rotY - rotX + rx);
     }
 
     private void handleAutoTurnState() {
@@ -200,11 +198,6 @@ public class DriveStates extends Subsystem {
             turnPower = Math.max(-MAX_TURN, Math.min(MAX_TURN, turnPower));
 
             drive.drive(turnPower, -turnPower, -turnPower, -turnPower);
-
-//            double frontLeftPower = (-rotY + rotX + rx);
-//            double frontRightPower = (-rotY - rotX - rx);
-//            double backLeftPower = (rotY + rotX - rx);
-//            double backRightPower = (-rotY + rotX - rx);
 
         }
     }
@@ -245,10 +238,55 @@ public class DriveStates extends Subsystem {
     }
 
 
-//    double frontLeftPower = (-rotY + rotX + rx);
-//    double frontRightPower = (-rotY - rotX - rx);
-//    double backLeftPower = (rotY + rotX - rx);
-//    double backRightPower = (-rotY + rotX - rx);
+
+    private double getHeading() {
+        return normalizeAngle(
+                imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)
+        );
+    }
+
+    public void driveTurnDriveDistanceThetaIMU(double degrees) {
+        targetTheta = getHeading() + degrees;
+    }
+    private void handleDriveTurnIMU() {
+        double currentTheta = getHeading();
+        double error = angleError(targetTheta, currentTheta);
+
+        // Stop if we're close enough
+        if (Math.abs(error) <= THETA_TOLERANCE) {
+            drive.stop();
+            return;
+        }
+
+        THETA_PID.setSetPoint(targetTheta);
+        THETA_PID.updatePID(currentTheta);
+
+        double power = THETA_PID.getResult();
+
+        // Scale power as we get close (prevents overshoot)
+        double scale = Math.min(1.0, Math.abs(error) / 45.0);
+        power *= scale;
+
+        // Clamp + minimum power
+        power = clamp(power);
+        if (Math.abs(power) < 0.1) {
+            power = Math.signum(power) * 0.1;
+        }
+
+        // Tank-style turn
+        drive.drive(
+                -power,  // FL
+                -power,  // FR
+                power,  // BL
+                -power   // BR (adjust if motors flipped)
+        );
+    }
+
+
+    public boolean isFinishedThetaIMU() {
+        double error = angleError(targetTheta, getHeading());
+        return Math.abs(error) <= THETA_TOLERANCE;
+    }
 
 
     @Override
@@ -259,14 +297,17 @@ public class DriveStates extends Subsystem {
             case DEFAULT: handleDefaultState(); break;
             case IDLE: handleIdleState(); break;
             case DRIVE_FORWARD: handleDriveForwardState(); break;
-            case DRIVE_TURN_RIGHT: handleDriveTurnRightState(); break;
-            case DRIVE_TURN_LEFT: handleDriveTurnLeftState(); break;
+            case DRIVE_TURN_RIGHT: handleDriveTurn(true); break;
+            case DRIVE_TURN_LEFT: handleDriveTurn(false); break;
             case DRIVE_STRAFE: handleStrafeState(); break;
             case AUTO_TURN: handleAutoTurnState(); break;
             case DRIVE_FORWARD_TIME: handleDriveTimeState(); break;
             case DRIVE_STRAFE_TIME: handleStrafeTimeState(); break;
             case DRIVE_BACK_TIME: handleDriveBackTimeState(); break;
             case DRIVE_STRAFE_BACK_TIME: handleStrafeBackTimeState(); break;
+            case DRIVE_TURN_LEFT_TIME:
+            case DRIVE_TURN_RIGHT_TIME:
+                handleDriveTurnIMU(); break;
         }
     }
 
@@ -282,7 +323,7 @@ public class DriveStates extends Subsystem {
         return error;
     }
 
-    private double clamp(double val, double min, double max) {
-        return Math.max(min, Math.min(max, val));
+    private double clamp(double val) {
+        return Math.max(-0.6, Math.min(0.6, val));
     }
 }

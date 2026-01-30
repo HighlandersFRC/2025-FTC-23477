@@ -30,7 +30,7 @@ public class CommandIntake implements Command {
 
     @Override
     public void end() {
-        intakeStates.setWantedState(IntakeState.INTAKE_STATE.DEFAULT);
+        intakeStates.setWantedState(IntakeState.INTAKE_STATE.IDLE);
     }
 
     @Override

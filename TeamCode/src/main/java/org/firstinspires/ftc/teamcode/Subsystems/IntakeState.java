@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import static org.firstinspires.ftc.teamcode.Tools.Constants.INTAKE_PID_HOLD;
+import static org.firstinspires.ftc.teamcode.Tools.Constants.INTAKE_POS;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -12,7 +13,7 @@ public class IntakeState extends Subsystem {
 
     private INTAKE_STATE wantedSuperState = INTAKE_STATE.IDLE;
     private INTAKE_STATE currentSuperState = INTAKE_STATE.IDLE;
-    private DcMotor IntakeMotor;
+    public DcMotor IntakeMotor;
     public IntakeState(String name) {
         super(name);
     }
@@ -58,7 +59,8 @@ public class IntakeState extends Subsystem {
     }
 
     private void handleIdleState() {
-
+        setPosition(IntakeMotor.getCurrentPosition());
+        runToPosition();
     }
 
     private void handleOuttakeState() {
@@ -67,6 +69,18 @@ public class IntakeState extends Subsystem {
 
     private void handleIntakeState() {
         IntakeMotor.setPower(-1);
+    }
+
+    private void setPosition(double position) {
+        INTAKE_POS = position;
+    }
+
+    private void runToPosition() {
+        double currentPos = IntakeMotor.getCurrentPosition();
+        INTAKE_PID_HOLD.setSetPoint(INTAKE_POS);
+        INTAKE_PID_HOLD.updatePID(currentPos);
+        IntakeMotor.setPower(INTAKE_PID_HOLD.getResult());
+
     }
 
     @Override

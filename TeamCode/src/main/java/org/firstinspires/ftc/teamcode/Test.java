@@ -16,7 +16,6 @@ import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 import org.firstinspires.ftc.teamcode.Tools.Limelight;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
-import org.json.JSONException;
 
 @TeleOp
 public class Test extends LinearOpMode {
@@ -94,7 +93,6 @@ public class Test extends LinearOpMode {
                     Mouse.getX(), Mouse.getY(), Math.toDegrees(Mouse.getTheta()));
             telemetry.addData("Target RPM", shooterState.getTargetRPM());
             telemetry.addData("Distance", Limelight.getDistance(
-                    0.762
             ));
             telemetry.addData("Port LL", Limelight.isConnected());
             telemetry.addData("Is Detected", Limelight.isDetected());

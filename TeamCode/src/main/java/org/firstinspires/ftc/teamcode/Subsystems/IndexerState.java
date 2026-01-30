@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 public class IndexerState extends Subsystem {
     private INDEXER_STATE wantedSuperState = INDEXER_STATE.IDLE;
     private INDEXER_STATE currentSuperState = INDEXER_STATE.IDLE;
-    DcMotor Indexer;
+    public DcMotor Indexer;
 
     public IndexerState(String name) {
         super(name);

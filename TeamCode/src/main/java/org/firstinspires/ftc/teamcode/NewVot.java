@@ -1,23 +1,19 @@
 package org.firstinspires.ftc.teamcode;
 
 
-import static org.firstinspires.ftc.teamcode.Tools.Constants.IndexTest;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.DURATION_MS;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.TAG_HEIGHT;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Commands.CommandIndex;
+import org.firstinspires.ftc.teamcode.Commands.CommandIntake;
+import org.firstinspires.ftc.teamcode.Commands.CommandQueue;
+import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
+import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
+import org.firstinspires.ftc.teamcode.Commands.CommandWaitToShoot;
 import org.firstinspires.ftc.teamcode.Commands.ConditionalCommand;
 import org.firstinspires.ftc.teamcode.Commands.ParallelCommandGroup;
-import org.firstinspires.ftc.teamcode.Commands.SequentialCommandGroup;
-import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
-import org.firstinspires.ftc.teamcode.Commands.CommandQueue;
-import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
-import org.firstinspires.ftc.teamcode.Commands.CommandFeedWhenAtVelocity;
-import org.firstinspires.ftc.teamcode.Commands.CommandWaitToShoot;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.IndexerState;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
@@ -28,7 +24,6 @@ import org.firstinspires.ftc.teamcode.Tools.Limelight;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
 import org.firstinspires.ftc.teamcode.Tools.Parameters;
-import org.json.JSONException;
 
 @TeleOp
 public class NewVot extends LinearOpMode {
@@ -67,19 +62,37 @@ public class NewVot extends LinearOpMode {
             indexerState.periodic();
             queueState.periodic();
 
-
-            long duration = 1000;
+            double distance = Limelight.getDistance();
+            long duration = 5000;
             if (gamepad1.right_bumper) {
                 scheduler.schedule(
-                        IndexTest(scheduler, robot, duration)
+                        new ConditionalCommand(
+                                new ParallelCommandGroup(
+                                        scheduler,
+                                        Parameters.ANY,
+                                        new CommandShoot(robot.shooterStates, distance, duration),
+                                        new CommandQueue(robot.queueState, duration)
+                                ),
+                                new CommandWaitToShoot(robot.shooterStates, distance),
+                                () -> robot.shooterStates.isAtTargetVelocity()
+                        )
                 );
-
             }
-
-
 
                 scheduler.run();
 
+//            if (gamepad1.right_trigger > 0) {
+//                intakeStates.setWantedState(IntakeState.INTAKE_STATE.INTAKE);
+//                indexerState.setWantedState(IndexerState.INDEXER_STATE.INDEX);
+//            } else if (gamepad1.left_trigger > 0) {
+//                intakeStates.setWantedState(IntakeState.INTAKE_STATE.OUTTAKE);
+//                indexerState.setWantedState(IndexerState.INDEXER_STATE.REMOVE);
+//            }
+//            } else {
+//                intakeStates.setWantedState(IntakeState.INTAKE_STATE.DEFAULT);
+//                indexerState.setWantedState(IndexerState.INDEXER_STATE.DEFAULT);
+//            }
+        if (!scheduler.isSubsystemBusy(indexerState)) {
             if (gamepad1.right_trigger > 0) {
                 intakeStates.setWantedState(IntakeState.INTAKE_STATE.INTAKE);
                 indexerState.setWantedState(IndexerState.INDEXER_STATE.INDEX);
@@ -90,12 +103,9 @@ public class NewVot extends LinearOpMode {
                 intakeStates.setWantedState(IntakeState.INTAKE_STATE.DEFAULT);
                 indexerState.setWantedState(IndexerState.INDEXER_STATE.DEFAULT);
             }
+        }
 
-            if (robot.shooterStates.isAtTargetVelocity()) {
-                gamepad1.rumble(1000);
-            } else {
-                gamepad1.stopRumble();
-            }
+
 
 
 
@@ -104,13 +114,13 @@ public class NewVot extends LinearOpMode {
             boolean isFeeding = robot.queueState.getPower() > 0;
             TelemetryPacket packet = new TelemetryPacket();
             packet.put("Target RPM", shooterState.getTargetRPM());
-            packet.put("Current Distance", Limelight.getDistance(TAG_HEIGHT));
+            packet.put("Current Distance", Limelight.getDistance());
             packet.put("CurrentRPM", shooterState.computeRPM());
             packet.put("Feeding", robot.shooterStates.isAtTargetVelocity());
             packet.put("FeedingStable", robot.shooterStates.isAtTargetVelocityStable());
-            packet.put("WhyFeed?", new CommandShoot(robot.shooterStates, Limelight.getDistance(TAG_HEIGHT), 1000).isFinished());
+            packet.put("WhyFeed?", new CommandShoot(robot.shooterStates, Limelight.getDistance(), 1000).isFinished());
             packet.put("QueuerPower", isFeeding);
-            packet.put("distance", Limelight.getDistance(TAG_HEIGHT));
+            packet.put("distance", Limelight.getDistance());
             packet.put("Ticks", robot.shooterStates.getTicks());
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
 

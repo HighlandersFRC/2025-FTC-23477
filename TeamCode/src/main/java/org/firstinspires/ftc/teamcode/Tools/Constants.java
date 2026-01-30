@@ -70,6 +70,7 @@ public class Constants {
 
     // Intake
     public static final PID INTAKE_PID_HOLD = new PID(0.5, 0, 0);
+    public static double INTAKE_POS;
 
 
 
@@ -86,17 +87,23 @@ public class Constants {
     public static double TARGET_RPM = 0;
 
     private static final float MOTOR_SPEED = 1;
-    private static final float MOTOR_RPM = (float) -8000;
+    private static final float MOTOR_RPM = (float) -6000;
 
     private static final float FEED_FORWARD = MOTOR_SPEED / MOTOR_RPM ;
-    public static final PIDF VELOCITY_PID = new PIDF(0.01, 0, 0, FEED_FORWARD);
+    public static final PIDF VELOCITY_PID = new PIDF(1000, 0, 0, FEED_FORWARD);
 
     public static final double[][] SHOOTER_LOOKUP = {
-            // 3100 is good for 0.0
-            {0.0, -2500},
-            {1.341, -3000.0},
-            {1.6378, -4000.0},
-            {2.571, -8000}
+//            {0.0, -1750},
+//            {1.341, -2250},
+//            {1.6378, -3250},
+//            {2.571, -5250}
+
+            {0.0, -1750},
+            {1.25, -2300},
+            // 4-1
+            {1.5, -2500},
+            {2, -3000},
+            {3, -4000}
     };
 
     public static final long DURATION_MS = 3600;
@@ -114,7 +121,6 @@ public class Constants {
     @NonNull
     public static SequentialCommandGroup SHOOT(CommandScheduler scheduler, NewRobot robot, long duration, boolean isAuto) {
         double distance = Limelight.getDistance(
-                TAG_HEIGHT
         );
         if (isAuto) {
             return new SequentialCommandGroup(
@@ -160,17 +166,19 @@ public class Constants {
 
     @NonNull
     public static SequentialCommandGroup IndexTest(CommandScheduler scheduler, NewRobot robot, long duration) {
-        double distance = Limelight.getDistance(TAG_HEIGHT);
+        double distance = Limelight.getDistance();
         return new SequentialCommandGroup(
                 scheduler,
                 new ConditionalCommand(
                         new ParallelCommandGroup(
-                                scheduler, Parameters.ANY,
+                                scheduler,
+                                Parameters.ANY,
                                 new CommandShoot(robot.shooterStates, distance, duration),
-                                new SequentialCommandGroup(scheduler,
-                                new Wait(100),
+                                new SequentialCommandGroup(
+                                        scheduler,
+                                        new Wait(100),
                                 new CommandQueue(robot.queueState, duration)
-                )
+                                )
                         ),
                         new CommandWaitToShoot(robot.shooterStates, distance),
                         () -> robot.shooterStates.isAtTargetVelocity()

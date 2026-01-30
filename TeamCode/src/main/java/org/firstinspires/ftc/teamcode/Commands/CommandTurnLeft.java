@@ -5,16 +5,16 @@ import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 public class CommandTurnLeft implements Command {
-    DriveStates drive;
-    double degrees;
+    final DriveStates drive;
+    private final double degrees;
     public CommandTurnLeft(DriveStates drive, double degrees) {
         this.drive = drive;
-        this.degrees = degrees;
+        this.degrees = -Math.abs(degrees);
     }
 
     @Override
     public void start() {
-        drive.driveTurnDriveDistanceTheta(degrees);
+        drive.driveTurnDriveDistanceThetaIMU(degrees);
         drive.setWantedState(DriveStates.DRIVE_STATE.DRIVE_TURN_LEFT);
     }
 
@@ -30,7 +30,7 @@ public class CommandTurnLeft implements Command {
 
     @Override
     public boolean isFinished() {
-        return drive.isFinishedTheta();
+        return drive.isFinishedThetaIMU();
     }
 
     @Override

@@ -1,41 +1,30 @@
 package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.teamcode.Tools.Constants.IndexTest;
-import static org.firstinspires.ftc.teamcode.Tools.Constants.TAG_HEIGHT;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.Commands.CommandDrive;
 import org.firstinspires.ftc.teamcode.Commands.CommandDriveBackTime;
-import org.firstinspires.ftc.teamcode.Commands.CommandDriveTime;
 import org.firstinspires.ftc.teamcode.Commands.CommandIndex;
-import org.firstinspires.ftc.teamcode.Commands.CommandIntake;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 
-import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
+import org.firstinspires.ftc.teamcode.Commands.CommandStrafeLeft;
 import org.firstinspires.ftc.teamcode.Commands.CommandStrafeRight;
-import org.firstinspires.ftc.teamcode.Commands.CommandTurnLeft;
-import org.firstinspires.ftc.teamcode.Commands.CommandTurnLeftTime;
-import org.firstinspires.ftc.teamcode.Commands.CommandTurnRightTime;
-import org.firstinspires.ftc.teamcode.Commands.ParallelCommandGroup;
 import org.firstinspires.ftc.teamcode.Commands.SequentialCommandGroup;
-import org.firstinspires.ftc.teamcode.Commands.Wait;
 import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
 import org.firstinspires.ftc.teamcode.Subsystems.IndexerState;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
 import org.firstinspires.ftc.teamcode.Subsystems.QueueState;
 import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 
-import org.firstinspires.ftc.teamcode.Tools.Limelight;
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
-import org.firstinspires.ftc.teamcode.Tools.Parameters;
 
 @Autonomous
-public class ShootSixAuto extends LinearOpMode {
+public class ShootThreeAutoCloseRed extends LinearOpMode {
 
     DriveStates drive = new DriveStates("drive");
     ShooterState shooterState = new ShooterState("shooterStates");
@@ -49,6 +38,7 @@ public class ShootSixAuto extends LinearOpMode {
         intakeState.init(hardwareMap);
         indexer.init(hardwareMap);
         queueState.init(hardwareMap);
+        Mouse.init(hardwareMap);
 
         CommandScheduler scheduler = new CommandScheduler();
 
@@ -70,30 +60,13 @@ public class ShootSixAuto extends LinearOpMode {
         scheduler.schedule(
                 new SequentialCommandGroup(
                         scheduler,
-                        new CommandDriveBackTime(drive, 1600),
+                        new CommandDriveBackTime(drive, 2000),
                         IndexTest(scheduler, robot, 1000),
                         new CommandIndex(robot.indexerState, 1000),
                         IndexTest(scheduler, robot, 1000),
-                        new CommandIndex(robot.indexerState, 1000),
+                        new CommandIndex(robot.indexerState, 1500),
                         IndexTest(scheduler, robot, 1000),
-                        new CommandTurnRightTime(robot.driveStates, 45), // Tune
-                        new Wait(0),
-                        new ParallelCommandGroup( // Tune
-                                scheduler,
-                                Parameters.ANY,
-                                new CommandDriveTime(robot.driveStates, 500),
-                                new CommandIntake(robot.intakeStates, 500),
-                                new CommandIndex(robot.indexerState, 500)
-                        ),
-                        new Wait(0),
-                        new CommandTurnLeftTime(robot.driveStates, 45), // Tune
-                        new CommandDriveBackTime(robot.driveStates, 500), // Tune
-                        IndexTest(scheduler, robot, 1000),
-                        new CommandIndex(robot.indexerState, 1000),
-                        IndexTest(scheduler, robot, 1000),
-                        new CommandIndex(robot.indexerState, 1000),
-                        IndexTest(scheduler, robot, 1000),
-                        new CommandStrafeRight(robot.driveStates, 1000)
+                        new CommandStrafeLeft(robot.driveStates, 1000)
                 )
         );
 

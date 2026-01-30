@@ -1,14 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
 
-import static org.firstinspires.ftc.teamcode.Tools.Constants.TAG_HEIGHT;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Commands.CommandShoot;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.IndexerState;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
@@ -66,7 +63,7 @@ public class NewTestVot extends LinearOpMode {
 
 
            if (gamepad1.right_bumper) {
-              shooterState.setTargetRPMFromDistance(Limelight.getDistance(TAG_HEIGHT));
+              shooterState.setTargetRPMFromDistance(Limelight.getDistance());
               shooterState.setWantedState(ShooterState.SHOOTER_STATE.SHOOT);
            } else if (gamepad1.left_bumper) {
                shooterState.setWantedState(ShooterState.SHOOTER_STATE.REMOVE);
@@ -88,7 +85,7 @@ public class NewTestVot extends LinearOpMode {
 
             TelemetryPacket packet = new TelemetryPacket();
             packet.put("Target RPM", shooterState.getTargetRPM());
-            packet.put("Current Distance", Limelight.getDistance(TAG_HEIGHT));
+            packet.put("Current Distance", Limelight.getDistance());
             packet.put("CurrentRPM", shooterState.computeRPM());
             packet.put("Feeding", shooterState.isAtTargetVelocity());
             packet.put("FeedingStable", shooterState.isAtTargetVelocityStable());
