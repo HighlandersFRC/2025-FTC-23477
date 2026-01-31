@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Commands.CommandDrive;
+import org.firstinspires.ftc.teamcode.Commands.CommandDriveTime;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 
 import org.firstinspires.ftc.teamcode.Commands.CommandTurnAuto;
@@ -47,7 +48,7 @@ public class LeaveAuto extends LinearOpMode {
 
 
         scheduler.schedule(
-                new CommandDrive(robot.driveStates, 1)
+                new CommandDriveTime(robot.driveStates, 1000)
         );
 
 
