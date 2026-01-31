@@ -197,7 +197,12 @@ public class DriveStates extends Subsystem {
 
             turnPower = Math.max(-MAX_TURN, Math.min(MAX_TURN, turnPower));
 
-            drive.drive(turnPower, -turnPower, -turnPower, -turnPower);
+            drive.drive(turnPower, -turnPower, turnPower, turnPower);
+
+//        double frontLeftPower = (-rotY + rotX + rx);
+//        double frontRightPower = (-rotY - rotX - rx);
+//        double backLeftPower = (-rotY - rotX + rx);
+//        double backRightPower = (rotY - rotX + rx);
 
         }
     }
@@ -225,16 +230,18 @@ public class DriveStates extends Subsystem {
     // DRIVE WITH TIME
 
     private void handleDriveTimeState() {
-        drive.drive(0.5,0.5,-0.5,0.5);
+        drive.drive(0.5,0.5,0.5,-0.5);
     }
     private void handleDriveBackTimeState() {
-        drive.drive(-0.5,-0.5,0.5,-0.5);
+        drive.drive(-0.5,-0.5,-0.5,0.5);
     }
     private void handleStrafeTimeState() {
-        drive.drive(0.5,-0.5,0.5,0.5);
+        drive.drive(0.5,-0.5,-0.5,-0.5);
     }
     private void handleStrafeBackTimeState() {
-        drive.drive(-0.5,0.5,-0.5,-0.5);
+        drive.drive(-0.5,0.5,0.5,0.5);
+
+
     }
 
 

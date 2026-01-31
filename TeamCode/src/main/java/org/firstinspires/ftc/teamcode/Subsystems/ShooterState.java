@@ -107,12 +107,11 @@ public class ShooterState extends Subsystem {
     }
 
     private void idleLoop() {
-        shooterMotor.setPower(-0.5);
+        shooterMotor.setPower(-0.6);
     }
 
     @SuppressLint("DefaultLocale")
     private void shootLoop() {
-        double currentRPM = computeRPM();
        runVelocityPID();
     }
 
@@ -189,7 +188,7 @@ public double getTicks() {
 
     public enum SHOOTER_STATE {
         IDLE,
-        SHOOT,
+         SHOOT,
         DEFAULT,
         REMOVE
     }

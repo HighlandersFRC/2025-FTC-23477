@@ -90,7 +90,7 @@ public class Constants {
     private static final float MOTOR_RPM = (float) -6000;
 
     private static final float FEED_FORWARD = MOTOR_SPEED / MOTOR_RPM ;
-    public static final PIDF VELOCITY_PID = new PIDF(1000, 0, 0, FEED_FORWARD);
+    public static final PIDF VELOCITY_PID = new PIDF(1, 0, 0, FEED_FORWARD);
 
     public static final double[][] SHOOTER_LOOKUP = {
 //            {0.0, -1750},
@@ -99,11 +99,10 @@ public class Constants {
 //            {2.571, -5250}
 
             {0.0, -1750},
-            {1.25, -2300},
-            // 4-1
+            {1.25, -2400},
             {1.5, -2500},
             {2, -3000},
-            {3, -4000}
+            {3, -3700}
     };
 
     public static final long DURATION_MS = 3600;

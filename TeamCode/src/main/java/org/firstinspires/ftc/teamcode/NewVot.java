@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.Commands.CommandWaitToShoot;
 import org.firstinspires.ftc.teamcode.Commands.ConditionalCommand;
 import org.firstinspires.ftc.teamcode.Commands.ParallelCommandGroup;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
+import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
 import org.firstinspires.ftc.teamcode.Subsystems.IndexerState;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
 import org.firstinspires.ftc.teamcode.Subsystems.QueueState;
@@ -31,7 +32,11 @@ public class NewVot extends LinearOpMode {
     ShooterState shooterState = new ShooterState("shooterState");
     IndexerState indexerState = new IndexerState("indexer");
     QueueState queueState = new QueueState("queue");
+    DriveStates driveStates = new DriveStates("drive");
     CommandScheduler scheduler = new CommandScheduler();
+
+    private boolean autoTurnActive = false;
+    private boolean xPreviouslyPressed = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -39,6 +44,7 @@ public class NewVot extends LinearOpMode {
         shooterState.init(hardwareMap);
         indexerState.init(hardwareMap);
         queueState.init(hardwareMap);
+        driveStates.init(hardwareMap);
         Limelight.init(hardwareMap);
         Mouse.init(hardwareMap);
 
@@ -47,6 +53,7 @@ public class NewVot extends LinearOpMode {
         robot.shooterStates = shooterState;
         robot.queueState = queueState;
         robot.indexerState = indexerState;
+        robot.driveStates = driveStates;
         scheduler.setNewRobot(robot);
 
 
@@ -61,6 +68,7 @@ public class NewVot extends LinearOpMode {
             shooterState.periodic();
             indexerState.periodic();
             queueState.periodic();
+            driveStates.periodic();
 
             double distance = Limelight.getDistance();
             long duration = 5000;
@@ -105,11 +113,18 @@ public class NewVot extends LinearOpMode {
             }
         }
 
+            if (gamepad1.x && !xPreviouslyPressed) {
+                autoTurnActive = !autoTurnActive;
+            }
+            xPreviouslyPressed = gamepad1.x;
 
 
 
-
-            drive.FieldCentric(gamepad1);
+            if (autoTurnActive) {
+                driveStates.setWantedState(DriveStates.DRIVE_STATE.AUTO_TURN);
+            } else {
+                drive.FieldCentric(gamepad1);
+            }
 
             boolean isFeeding = robot.queueState.getPower() > 0;
             TelemetryPacket packet = new TelemetryPacket();
