@@ -29,7 +29,7 @@ public class CommandIndex implements Command {
 
     @Override
     public void end() {
-       indexerState.setWantedState(IndexerState.INDEXER_STATE.IDLE);
+       indexerState.setWantedState(IndexerState.INDEXER_STATE.DEFAULT);
     }
 
     @Override

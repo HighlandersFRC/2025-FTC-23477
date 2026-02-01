@@ -65,10 +65,12 @@ public class ShootThreeAutoCloseRed extends LinearOpMode {
         scheduler.schedule(
                 new SequentialCommandGroup(
                         scheduler,
-                        new CommandDriveBackTime(drive, 2000),
+                        new CommandDriveBackTime(drive, 1500),
                         IndexTest(scheduler, robot, 1000),
                         new CommandIndex(robot.indexerState, 1000),
                         IndexTest(scheduler, robot, 1000),
+                        new CommandIndex(robot.indexerState, 2000),
+                        IndexTest(scheduler, robot, 3000),
                         new CommandIndex(robot.indexerState, 1500),
                         IndexTest(scheduler, robot, 1000),
                         new CommandStrafeLeft(robot.driveStates, 1000)

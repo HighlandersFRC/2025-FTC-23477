@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.Commands.CommandTurnAuto;
 import org.firstinspires.ftc.teamcode.Commands.CommandTurnLeft;
 import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
-import org.firstinspires.ftc.teamcode.Subsystems.SequencerState;
 import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
@@ -23,20 +22,17 @@ public class LeaveAuto extends LinearOpMode {
 
     DriveStates drive = new DriveStates("drive");
     ShooterState shooterState = new ShooterState("shooterStates");
-    SequencerState sequencerState = new SequencerState("sequncer");
     IntakeState intakeState = new IntakeState("intake");
     @Override
     public void runOpMode() throws InterruptedException {
         drive.init(hardwareMap);
         shooterState.init(hardwareMap);
-        sequencerState.init(hardwareMap);
         intakeState.init(hardwareMap);
         CommandScheduler scheduler = new CommandScheduler();
 
         NewRobot robot = new NewRobot(hardwareMap);
         robot.driveStates = drive;
         robot.shooterStates = shooterState;
-        robot.sequencerState = sequencerState;
         robot.intakeStates = intakeState;
         scheduler.setNewRobot(robot);
 
@@ -60,7 +56,6 @@ public class LeaveAuto extends LinearOpMode {
 
             drive.periodic();
             intakeState.periodic();
-            sequencerState.periodic();
             shooterState.periodic();
 
             telemetry.addData("MOuseX", Mouse.getX());

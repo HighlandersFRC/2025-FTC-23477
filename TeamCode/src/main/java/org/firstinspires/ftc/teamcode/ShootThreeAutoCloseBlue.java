@@ -9,11 +9,15 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Commands.CommandDriveBackTime;
 import org.firstinspires.ftc.teamcode.Commands.CommandIndex;
+import org.firstinspires.ftc.teamcode.Commands.CommandIntake;
 import org.firstinspires.ftc.teamcode.Commands.CommandScheduler;
 
 import org.firstinspires.ftc.teamcode.Commands.CommandStrafeLeft;
 import org.firstinspires.ftc.teamcode.Commands.CommandStrafeRight;
+import org.firstinspires.ftc.teamcode.Commands.CommandTurnAuto;
+import org.firstinspires.ftc.teamcode.Commands.ParallelCommandGroup;
 import org.firstinspires.ftc.teamcode.Commands.SequentialCommandGroup;
+import org.firstinspires.ftc.teamcode.Commands.Wait;
 import org.firstinspires.ftc.teamcode.Subsystems.DriveStates;
 import org.firstinspires.ftc.teamcode.Subsystems.IndexerState;
 import org.firstinspires.ftc.teamcode.Subsystems.IntakeState;
@@ -22,6 +26,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.ShooterState;
 
 import org.firstinspires.ftc.teamcode.Tools.NewRobot;
 import org.firstinspires.ftc.teamcode.Tools.Mouse;
+import org.firstinspires.ftc.teamcode.Tools.Parameters;
 
 @Autonomous
 public class ShootThreeAutoCloseBlue extends LinearOpMode {
@@ -60,10 +65,12 @@ public class ShootThreeAutoCloseBlue extends LinearOpMode {
         scheduler.schedule(
                 new SequentialCommandGroup(
                         scheduler,
-                        new CommandDriveBackTime(drive, 1600),
+                        new CommandDriveBackTime(drive, 1500),
                         IndexTest(scheduler, robot, 1000),
                         new CommandIndex(robot.indexerState, 1000),
                         IndexTest(scheduler, robot, 1000),
+                        new CommandIndex(robot.indexerState, 2000),
+                        IndexTest(scheduler, robot, 3000),
                         new CommandIndex(robot.indexerState, 1500),
                         IndexTest(scheduler, robot, 1000),
                         new CommandStrafeRight(robot.driveStates, 1000)
