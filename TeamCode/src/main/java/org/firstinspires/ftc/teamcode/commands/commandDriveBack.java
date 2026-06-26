@@ -6,18 +6,23 @@ import org.firstinspires.ftc.teamcode.Command;
 import org.firstinspires.ftc.teamcode.Subsystem;
 import org.firstinspires.ftc.teamcode.subsystems.rotateSubsystem;
 
-public class commandClockwise implements Command {
+public class commandDriveBack implements Command {
 
-    rotateSubsystem subsystem;
+    double drive_distance;
+    HardwareMap hardwareMap;
 
-    public commandClockwise(HardwareMap hardwareMap) {
-        subsystem = new rotateSubsystem("turn");
-        subsystem.init(hardwareMap);
+    rotateSubsystem subsystem = new rotateSubsystem("subsystem");
+
+    public commandDriveBack(double distance_inches, HardwareMap hardwareMap) {
+        this.drive_distance = distance_inches;
+        this.hardwareMap = hardwareMap;
     }
 
     @Override
     public void start() {
-        subsystem.setWantedState(rotateSubsystem.rotateStates.CLOCKWISE_TURN);
+      subsystem.init(hardwareMap);
+      subsystem.setBackwardDistance(drive_distance);
+      subsystem.setWantedState(rotateSubsystem.rotateStates.DRIVE_BACKWARD_INCHES);
     }
 
     @Override
@@ -32,7 +37,7 @@ public class commandClockwise implements Command {
 
     @Override
     public boolean isFinished() {
-        return subsystem.isFinishedClockwise();
+        return subsystem.isFinishedBackward();
     }
 
     @Override
