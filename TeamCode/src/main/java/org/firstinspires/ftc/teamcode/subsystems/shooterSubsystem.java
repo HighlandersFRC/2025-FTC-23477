@@ -14,7 +14,7 @@ public class shooterSubsystem extends Subsystem {
 
     DcMotor shooter;
     long shooting_duration;
-    boolean isFinished = false;
+    double time_passed;
 
     public shooterSubsystem (String name) {
         super(name);
@@ -22,6 +22,7 @@ public class shooterSubsystem extends Subsystem {
 
     public enum shooter_states {
         SHOOTING,
+        TELEOP,
         IDLE
     }
 
@@ -40,6 +41,8 @@ public class shooterSubsystem extends Subsystem {
             case SHOOTING:
                 setWantedState(shooter_states.SHOOTING);
                 break;
+            case TELEOP:
+                setWantedState(shooter_states.TELEOP);
         }
 
         currentState = wantedState;
@@ -49,11 +52,8 @@ public class shooterSubsystem extends Subsystem {
         shooter.setPower(0);
     }
 
-    private void handleShootingState(long duration_seconds) {
+    private void handleShootingState() {
         shooter.setPower(0.8);
-        sleep(duration_seconds * 1000);
-        shooter.setPower(0);
-        isFinished = true;
     }
 
     public void setShootingDuration(long duration) {
@@ -61,7 +61,11 @@ public class shooterSubsystem extends Subsystem {
     }
 
     public boolean isFinishedShooting() {
-        return isFinished;
+        for (int time = 0; time <= shooting_duration; time++ ) {
+            sleep(1000);
+            time_passed = time;
+        }
+        return time_passed == shooting_duration;
     }
 
     public void periodic() {
@@ -71,7 +75,7 @@ public class shooterSubsystem extends Subsystem {
                 handleIdleState();
                 break;
             case SHOOTING:
-                handleShootingState(shooting_duration);
+                handleShootingState();
                 break;
 
         }

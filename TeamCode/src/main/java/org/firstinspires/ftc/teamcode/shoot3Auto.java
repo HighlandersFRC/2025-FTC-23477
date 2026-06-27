@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.commands.commandDriveBack;
+import org.firstinspires.ftc.teamcode.commands.commandIndex;
 import org.firstinspires.ftc.teamcode.commands.commandScheduler;
 import org.firstinspires.ftc.teamcode.commands.commandShoot;
 import org.firstinspires.ftc.teamcode.subsystems.rotateSubsystem;
@@ -22,11 +23,14 @@ public class shoot3Auto extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-            scheduler.schedule(new commandDriveBack(48, hardwareMap));
-            scheduler.schedule(new commandShoot(hardwareMap, 7));
+            scheduler.schedule(new commandDriveBack(30, hardwareMap));
+            scheduler.schedule(new commandIndex(hardwareMap, 15));
+            scheduler.schedule(new commandShoot(hardwareMap, 15));
             scheduler.run();
 
-            telemetry.addData("Coordinates from start (x, y, h): (", String.valueOf(current_x), ", " , String.valueOf(current_y), ", ", String.valueOf(heading), ")");
+            telemetry.addData("X:", current_x);
+            telemetry.addData("Y:", current_y);
+            telemetry.addData("Heading:", heading);
             telemetry.update();
         }
     }

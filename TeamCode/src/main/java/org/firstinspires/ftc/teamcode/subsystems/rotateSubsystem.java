@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
+
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -160,6 +163,26 @@ public class rotateSubsystem extends Subsystem {
 
     public void setBackwardDistance(double distance) {
         this.backward_distance = distance;
+    }
+
+    public void botCentricDrive(Gamepad gamepad) {
+        double y = gamepad.left_stick_y;
+        double rx = -gamepad.left_stick_x * 1.1;
+        double x = gamepad.right_stick_x;
+
+        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+
+        double flp = (-y + x - rx) / denominator;
+        double blp = (-y + x + rx) / denominator;
+        double frp = (y + x - rx) / denominator;
+        double brp = (-y - x - rx) / denominator;
+
+        leftBack.setPower(blp);
+        leftFront.setPower(flp);
+        rightFront.setPower(frp);
+        rightBack.setPower(brp);
+
+
     }
 
     public double get_x_traveled() {
