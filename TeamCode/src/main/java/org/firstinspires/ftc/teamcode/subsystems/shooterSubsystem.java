@@ -1,22 +1,20 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static android.os.SystemClock.sleep;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Subsystem;
 
 public class shooterSubsystem extends Subsystem {
-
     private shooter_states wantedState = shooter_states.IDLE;
     private shooter_states currentState = shooter_states.IDLE;
 
-    DcMotor shooter;
-    long shooting_duration;
-    double time_passed;
+    private DcMotor shooter;
+    private final ElapsedTime timer = new ElapsedTime();
+    private double shootingDurationSeconds;
 
-    public shooterSubsystem (String name) {
+    public shooterSubsystem(String name) {
         super(name);
     }
 
@@ -28,56 +26,39 @@ public class shooterSubsystem extends Subsystem {
 
     public void init(HardwareMap hardwareMap) {
         shooter = hardwareMap.dcMotor.get("ShooterMotor");
-        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
-    public void setWantedState(shooter_states shooterState) {this.wantedState = shooterState;}
-
-    private void handleStateTransitions() {
-        switch (wantedState) {
-            case IDLE:
-                setWantedState(shooter_states.IDLE);
-                break;
-            case SHOOTING:
-                setWantedState(shooter_states.SHOOTING);
-                break;
-            case TELEOP:
-                setWantedState(shooter_states.TELEOP);
+    public void setWantedState(shooter_states shooterState) {
+        if (shooterState != wantedState) {
+            timer.reset();
         }
 
-        currentState = wantedState;
+        wantedState = shooterState;
     }
 
-    private void handleIdleState() {
-        shooter.setPower(0);
-    }
-
-    private void handleShootingState() {
-        shooter.setPower(0.8);
-    }
-
-    public void setShootingDuration(long duration) {
-        this.shooting_duration = duration;
+    public void setShootingDuration(double durationSeconds) {
+        shootingDurationSeconds = durationSeconds;
     }
 
     public boolean isFinishedShooting() {
-        for (int time = 0; time <= shooting_duration; time++ ) {
-            sleep(1000);
-            time_passed = time;
-        }
-        return time_passed == shooting_duration;
+        return currentState == shooter_states.SHOOTING
+                && timer.seconds() >= shootingDurationSeconds;
     }
 
     public void periodic() {
-        handleStateTransitions();
-        switch (currentState) {
-            case IDLE:
-                handleIdleState();
-                break;
-            case SHOOTING:
-                handleShootingState();
-                break;
+        currentState = wantedState;
 
+        switch (currentState) {
+            case SHOOTING:
+            case TELEOP:
+                shooter.setPower(-0.8);
+                break;
+            case IDLE:
+            default:
+                shooter.setPower(0.0);
+                break;
         }
     }
 }

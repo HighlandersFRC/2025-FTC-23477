@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.commands.ParallelCommandGroup;
 import org.firstinspires.ftc.teamcode.commands.commandIndex;
 import org.firstinspires.ftc.teamcode.commands.commandScheduler;
 import org.firstinspires.ftc.teamcode.commands.commandShoot;
-import org.firstinspires.ftc.teamcode.subsystems.indexerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.intakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.rotateSubsystem;
 
@@ -16,16 +15,21 @@ import org.firstinspires.ftc.teamcode.subsystems.rotateSubsystem;
 public class drive extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        rotateSubsystem drive = new rotateSubsystem("subsystem");
-        drive.init(hardwareMap);
+        rotateSubsystem drivetrain = new rotateSubsystem("drive");
+        drivetrain.init(hardwareMap);
+
         intakeSubsystem intake = new intakeSubsystem("intake");
         intake.init(hardwareMap);
+
         commandScheduler scheduler = new commandScheduler();
+        boolean wasShootPressed = false;
 
         waitForStart();
-        while (opModeIsActive()) {
 
-            if (gamepad1.left_bumper) {
+        while (opModeIsActive()) {
+            boolean shootPressed = gamepad1.left_bumper;
+
+            if (shootPressed && !wasShootPressed) {
                 scheduler.schedule(
                         new ParallelCommandGroup(
                                 scheduler,
@@ -35,18 +39,19 @@ public class drive extends LinearOpMode {
                         )
                 );
             }
-            else if (gamepad1.right_trigger != 1) {
-                intake.setWantedState(intakeSubsystem.states.INTAKE);
-            }
-            else if (gamepad1.right_bumper) {
-                intake.setWantedState(intakeSubsystem.states.OUTAKE);
-            }
+            wasShootPressed = shootPressed;
 
-            else {
+            if (gamepad1.right_bumper) {
+                intake.setWantedState(intakeSubsystem.states.OUTAKE);
+            } else if (gamepad1.right_trigger > 0.1) {
+                intake.setWantedState(intakeSubsystem.states.INTAKE);
+            } else {
                 intake.setWantedState(intakeSubsystem.states.IDLE);
             }
 
-            drive.botCentricDrive(gamepad1);
+            drivetrain.botCentricDrive(gamepad1);
+            intake.periodic();
+            scheduler.run();
         }
     }
 }

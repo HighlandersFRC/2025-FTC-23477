@@ -7,21 +7,20 @@ import org.firstinspires.ftc.teamcode.Subsystem;
 import org.firstinspires.ftc.teamcode.subsystems.shooterSubsystem;
 
 public class commandShoot implements Command {
+    private final HardwareMap hardwareMap;
+    private final double durationSeconds;
+    private final shooterSubsystem subsystem = new shooterSubsystem("shooter");
 
-    HardwareMap hardwaremap;
-    long duration;
-    shooterSubsystem subsystem = new shooterSubsystem("subsystem");
-
-    public commandShoot(HardwareMap hardwareMap, long duration) {
-        this.hardwaremap = hardwareMap;
-        this.duration = duration;
+    public commandShoot(HardwareMap hardwareMap, double timeSeconds) {
+        this.hardwareMap = hardwareMap;
+        durationSeconds = timeSeconds;
     }
 
     @Override
     public void start() {
-       subsystem.init(hardwaremap);
-       subsystem.setShootingDuration(duration);
-       subsystem.setWantedState(shooterSubsystem.shooter_states.SHOOTING);
+        subsystem.init(hardwareMap);
+        subsystem.setShootingDuration(durationSeconds);
+        subsystem.setWantedState(shooterSubsystem.shooter_states.SHOOTING);
     }
 
     @Override
@@ -32,6 +31,7 @@ public class commandShoot implements Command {
     @Override
     public void end() {
         subsystem.setWantedState(shooterSubsystem.shooter_states.IDLE);
+        subsystem.periodic();
     }
 
     @Override

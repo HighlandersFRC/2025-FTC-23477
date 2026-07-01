@@ -1,27 +1,22 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static android.os.SystemClock.sleep;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Subsystem;
 
 public class indexerSubsystem extends Subsystem {
-
     private states wantedState = states.IDLE;
     private states currentState = states.IDLE;
 
-    DcMotor indexer;
-    DcMotor queuer;
-    long index_duration;
-    long time_passed;
+    private DcMotor indexer;
+    private DcMotor queuer;
+    private final ElapsedTime timer = new ElapsedTime();
+    private double indexDurationSeconds;
 
-    public indexerSubsystem(String name) {super(name);}
-
-    public void init(HardwareMap hardwareMap) {
-        indexer = hardwareMap.get(DcMotor.class, "IndexerMotor");
-        queuer = hardwareMap.get(DcMotor.class, "QueueMotor");
+    public indexerSubsystem(String name) {
+        super(name);
     }
 
     public enum states {
@@ -29,56 +24,46 @@ public class indexerSubsystem extends Subsystem {
         INDEXING
     }
 
-    public void setWantedState(states state) {
-        this.wantedState = state;
+    public void init(HardwareMap hardwareMap) {
+        indexer = hardwareMap.get(DcMotor.class, "IndexerMotor");
+        queuer = hardwareMap.get(DcMotor.class, "QueueMotor");
+
+        indexer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        queuer.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        indexer.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        queuer.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    private void handleStateTransitions() {
-        switch (wantedState) {
-            case IDLE:
-                setWantedState(states.IDLE);
-                break;
-            case INDEXING:
-                setWantedState(states.INDEXING);
-                break;
+    public void setWantedState(states state) {
+        if (state != wantedState) {
+            timer.reset();
         }
 
-        currentState = wantedState;
+        wantedState = state;
     }
 
-    private void handleIdleState() {
-        indexer.setPower(0);
-    }
-
-    private void handleIndexState() {
-        indexer.setPower(1);
-        queuer.setPower(1);
-    }
-
-    public void setIndexDuration(long duration) {
-        this.index_duration = duration;
+    public void setIndexDuration(double durationSeconds) {
+        indexDurationSeconds = durationSeconds;
     }
 
     public boolean isFinished() {
-       for (int time = 0; time <= index_duration; time++) {
-           time_passed = time;
-           sleep(1000);
-       }
-
-       return time_passed == index_duration;
+        return currentState == states.INDEXING
+                && timer.seconds() >= indexDurationSeconds;
     }
 
     public void periodic() {
-        handleStateTransitions();
+        currentState = wantedState;
+
         switch (currentState) {
-            case IDLE:
-                handleIdleState();
-                break;
             case INDEXING:
-                handleIndexState();
+                indexer.setPower(1.0);
+                queuer.setPower(1.0);
+                break;
+            case IDLE:
+            default:
+                indexer.setPower(0.0);
+                queuer.setPower(0.0);
                 break;
         }
     }
-
-
 }

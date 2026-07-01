@@ -5,19 +5,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Subsystem;
 
-public class intakeSubsystem  extends Subsystem {
+public class intakeSubsystem extends Subsystem {
+    private states currentState = states.IDLE;
+    private states wantedState = states.IDLE;
 
-    states currentState = states.IDLE;
-    states wantedState = states.IDLE;
-
-    DcMotor intake;
+    private DcMotor intake;
 
     public intakeSubsystem(String name) {
         super(name);
-    }
-
-    public void init(HardwareMap hardwareMap) {
-        intake = hardwareMap.get(DcMotor.class, "IntakeMotor");
     }
 
     public enum states {
@@ -26,44 +21,29 @@ public class intakeSubsystem  extends Subsystem {
         OUTAKE
     }
 
-    public void setWantedState(states state) {this.wantedState = state;}
-
-    private void handleStateTransitions() {
-        switch (wantedState) {
-            case IDLE:
-               setWantedState(states.IDLE);
-               break;
-            case INTAKE:
-                setWantedState(states.INTAKE);
-                break;
-            case OUTAKE:
-                setWantedState(states.OUTAKE);
-        }
+    public void init(HardwareMap hardwareMap) {
+        intake = hardwareMap.get(DcMotor.class, "IntakeMotor");
+        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
     }
 
-    private void handleIdleState() {
-        intake.setPower(0);
-    }
-
-    private void handleIntakeState() {
-        intake.setPower(-1);
-    }
-
-    private void handleOutakeState() {
-        intake.setPower(1);
+    public void setWantedState(states state) {
+        wantedState = state;
     }
 
     public void periodic() {
-        handleStateTransitions();
+        currentState = wantedState;
+
         switch (currentState) {
-            case IDLE:
-                handleIdleState();
-                break;
             case INTAKE:
-                handleIntakeState();
+                intake.setPower(-1.0);
                 break;
             case OUTAKE:
-                handleOutakeState();
+                intake.setPower(1.0);
+                break;
+            case IDLE:
+            default:
+                intake.setPower(0.0);
                 break;
         }
     }

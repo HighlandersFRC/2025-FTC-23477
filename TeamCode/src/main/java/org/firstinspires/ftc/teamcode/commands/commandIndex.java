@@ -7,20 +7,19 @@ import org.firstinspires.ftc.teamcode.Subsystem;
 import org.firstinspires.ftc.teamcode.subsystems.indexerSubsystem;
 
 public class commandIndex implements Command {
+    private final HardwareMap hardwareMap;
+    private final double durationSeconds;
+    private final indexerSubsystem subsystem = new indexerSubsystem("indexer");
 
-    HardwareMap hardwaremap;
-    long duration;
-    indexerSubsystem subsystem = new indexerSubsystem("subsystem");
-
-    public commandIndex(HardwareMap hardwareMap, long time) {
-        this.hardwaremap = hardwareMap;
-        this.duration = time;
+    public commandIndex(HardwareMap hardwareMap, double timeSeconds) {
+        this.hardwareMap = hardwareMap;
+        durationSeconds = timeSeconds;
     }
 
     @Override
     public void start() {
-        subsystem.init(hardwaremap);
-        subsystem.setIndexDuration(duration);
+        subsystem.init(hardwareMap);
+        subsystem.setIndexDuration(durationSeconds);
         subsystem.setWantedState(indexerSubsystem.states.INDEXING);
     }
 
@@ -32,6 +31,7 @@ public class commandIndex implements Command {
     @Override
     public void end() {
         subsystem.setWantedState(indexerSubsystem.states.IDLE);
+        subsystem.periodic();
     }
 
     @Override
