@@ -32,7 +32,7 @@ public class commandAutoTarget implements Command {
 
     @Override
     public boolean isFinished() {
-        return false;
+        return camera.isFinished();
     }
 
     @Override

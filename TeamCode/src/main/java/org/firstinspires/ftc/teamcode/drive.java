@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -8,8 +9,10 @@ import org.firstinspires.ftc.teamcode.commands.ParallelCommandGroup;
 import org.firstinspires.ftc.teamcode.commands.commandIndex;
 import org.firstinspires.ftc.teamcode.commands.commandScheduler;
 import org.firstinspires.ftc.teamcode.commands.commandShoot;
+import org.firstinspires.ftc.teamcode.subsystems.cameraSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.intakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.rotateSubsystem;
+import org.firstinspires.ftc.teamcode.commands.commandAutoTarget;
 
 @TeleOp
 public class drive extends LinearOpMode {
@@ -20,6 +23,9 @@ public class drive extends LinearOpMode {
 
         intakeSubsystem intake = new intakeSubsystem("intake");
         intake.init(hardwareMap);
+
+        cameraSubsystem camera = new cameraSubsystem("camera");
+        camera.init(hardwareMap);
 
         commandScheduler scheduler = new commandScheduler();
         boolean wasShootPressed = false;
@@ -49,9 +55,17 @@ public class drive extends LinearOpMode {
                 intake.setWantedState(intakeSubsystem.states.IDLE);
             }
 
+            if (gamepad1.a) {
+                scheduler.schedule(new commandAutoTarget(hardwareMap));
+            }
+
             drivetrain.botCentricDrive(gamepad1);
             intake.periodic();
             scheduler.run();
+
+            telemetry.addData("Tx", camera.getTx());
+            telemetry.addData("Timestamp", camera.getResult().getTimestamp());
+            telemetry.update();
         }
     }
 }

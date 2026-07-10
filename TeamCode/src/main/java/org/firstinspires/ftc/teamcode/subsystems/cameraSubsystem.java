@@ -15,12 +15,12 @@ public class cameraSubsystem extends Subsystem {
 
     DcMotor leftFront, leftBack, rightFront, rightBack;
 
-
-
     Limelight3A camera;
     PID pid = new PID(0.05, 0, 0.02);
 
     LLResult result;
+
+    double tx;
 
     public cameraSubsystem(String name) {super(name);}
 
@@ -36,8 +36,8 @@ public class cameraSubsystem extends Subsystem {
         rightFront = hardwareMap.get(DcMotor.class, "right_front");
 
         camera = hardwareMap.get(Limelight3A.class, "limelight");
-
-        result = camera.getLatestResult();
+        camera.pipelineSwitch(0);
+        camera.start();
     }
 
     public void setWantedState(states state) {wanted_state = state;}
@@ -52,7 +52,7 @@ public class cameraSubsystem extends Subsystem {
                 break;
         }
 
-        wanted_state = current_state;
+        current_state = wanted_state;
     }
 
     private void handleIdleState() {
@@ -60,8 +60,9 @@ public class cameraSubsystem extends Subsystem {
     }
 
     private void handleAutoTargetState() {
+        result = camera.getLatestResult();
         if (result.isValid() && result != null) {
-            double tx = result.getTx();
+            tx = result.getTx();
 
             double motor_power = pid.updatePID(tx);
 
@@ -81,10 +82,12 @@ public class cameraSubsystem extends Subsystem {
     }
 
     public LLResult getResult() {
-        return result;
+        return camera.getLatestResult();
     }
 
-    public double getTx(LLResult new_result) {
+    public double getTx() {
+        LLResult new_result = camera.getLatestResult();
+
         return new_result.getTx();
     }
 
@@ -98,6 +101,10 @@ public class cameraSubsystem extends Subsystem {
 
     public double getDistanceFromTag(double ta) {
         return 27.6763 + (294304700 - 27.6763)/(1 + Math.pow(ta/9.277728e-10,0.6980128));
+    }
+
+    public boolean isFinished() {
+        return tx < 1 && tx > -1;
     }
 
     @Override
