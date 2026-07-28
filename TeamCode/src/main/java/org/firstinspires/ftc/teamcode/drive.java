@@ -25,7 +25,7 @@ public class drive extends LinearOpMode {
         intake.init(hardwareMap);
 
         cameraSubsystem camera = new cameraSubsystem("camera");
-        camera.init(hardwareMap);
+        camera.init(hardwareMap, telemetry);
 
         commandScheduler scheduler = new commandScheduler();
         boolean wasShootPressed = false;
@@ -56,16 +56,13 @@ public class drive extends LinearOpMode {
             }
 
             if (gamepad1.a) {
-                scheduler.schedule(new commandAutoTarget(hardwareMap));
+                scheduler.schedule(new commandAutoTarget(hardwareMap, telemetry));
             }
 
             drivetrain.botCentricDrive(gamepad1);
+            camera.periodic();
             intake.periodic();
             scheduler.run();
-
-            telemetry.addData("Tx", camera.getTx());
-            telemetry.addData("Timestamp", camera.getResult().getTimestamp());
-            telemetry.update();
         }
     }
 }

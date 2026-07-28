@@ -11,7 +11,7 @@ public class limelightData extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         cameraSubsystem camera = new cameraSubsystem("camera");
-        camera.init(hardwareMap);
+        camera.init(hardwareMap, telemetry);
 
         waitForStart();
         while (opModeIsActive()) {

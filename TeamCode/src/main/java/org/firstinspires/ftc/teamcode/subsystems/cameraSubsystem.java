@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Subsystem;
 import org.firstinspires.ftc.teamcode.Tools.PID;
 
@@ -29,15 +32,19 @@ public class cameraSubsystem extends Subsystem {
         AUTO_TARGET
     }
 
-    public void init (HardwareMap hardwareMap) {
+    public void init (HardwareMap hardwareMap, Telemetry telemetry) {
         leftBack = hardwareMap.get(DcMotor.class, "left_back");
         leftFront = hardwareMap.get(DcMotor.class, "left_front");
         rightBack = hardwareMap.get(DcMotor.class, "right_back");
         rightFront = hardwareMap.get(DcMotor.class, "right_front");
 
         camera = hardwareMap.get(Limelight3A.class, "limelight");
-        camera.pipelineSwitch(0);
-        camera.start();
+        try {
+            camera.pipelineSwitch(0);
+            camera.start();
+        } catch (Exception e) {
+            telemetry.addData("Exception", e.getMessage());
+        }
     }
 
     public void setWantedState(states state) {wanted_state = state;}
@@ -61,7 +68,7 @@ public class cameraSubsystem extends Subsystem {
 
     private void handleAutoTargetState() {
         result = camera.getLatestResult();
-        if (result.isValid() && result != null) {
+        if (result != null && result.isValid()) {
             tx = result.getTx();
 
             double motor_power = pid.updatePID(tx);
@@ -83,6 +90,12 @@ public class cameraSubsystem extends Subsystem {
 
     public LLResult getResult() {
         return camera.getLatestResult();
+    }
+
+    public double getId(HardwareMap hardwareMap, Telemetry telemetry) {
+        init(hardwareMap, telemetry);
+
+        return result.getFiducialResults().get(0).getFiducialId();
     }
 
     public double getTx() {
