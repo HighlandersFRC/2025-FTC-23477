@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -56,7 +55,7 @@ public class drive extends LinearOpMode {
             }
 
             if (gamepad1.a) {
-                scheduler.schedule(new commandAutoTarget(hardwareMap, telemetry));
+                scheduler.schedule(new commandAutoTarget(hardwareMap, telemetry, camera));
             }
 
             drivetrain.botCentricDrive(gamepad1);

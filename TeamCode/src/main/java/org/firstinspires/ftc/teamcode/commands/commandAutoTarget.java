@@ -12,9 +12,9 @@ public class commandAutoTarget implements Command {
     HardwareMap hardwareMap;
     Telemetry telemetry;
 
-    cameraSubsystem camera = new cameraSubsystem("camera");
+    cameraSubsystem camera;
 
-    public commandAutoTarget(HardwareMap hardwaremap, Telemetry telemetry) {this.hardwareMap = hardwaremap; this.telemetry = telemetry;}
+    public commandAutoTarget(HardwareMap hardwaremap, Telemetry telemetry, cameraSubsystem subsystem) {this.hardwareMap = hardwaremap; this.telemetry = telemetry; this.camera = subsystem;}
 
     @Override
     public void start() {
