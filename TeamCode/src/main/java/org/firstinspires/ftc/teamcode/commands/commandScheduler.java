@@ -92,7 +92,7 @@ public class commandScheduler {
         RobotLog.d("============================");
     }
 
-    private void cancel(Command command) {
+    public void cancel(Command command) {
         Subsystem requiredSubsystem = command.getRequiredSubsystem();
         if (requiredSubsystem != null) {
             activeSubsystemCommands.remove(requiredSubsystem);

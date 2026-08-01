@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.Subsystem;
 import org.firstinspires.ftc.teamcode.Tools.PID;
 
-public class rotateSubsystem extends Subsystem {
+public class driveSubsystem extends Subsystem {
     private static final double HEADING_TOLERANCE_DEGREES = 1.0;
     private static final double DISTANCE_TOLERANCE_INCHES = 0.25;
     private static final double MAX_TURN_POWER = 0.6;
@@ -47,12 +47,10 @@ public class rotateSubsystem extends Subsystem {
     private double xInches;
     private double yInches;
     private double headingDegrees;
-    private double teleopHeadingTargetDegrees;
-    private boolean teleopHeadingHoldEnabled;
     private double headingErrorDegrees;
     private double distanceErrorInches;
 
-    public rotateSubsystem(String name) {
+    public driveSubsystem(String name) {
         super(name);
     }
 
@@ -83,7 +81,6 @@ public class rotateSubsystem extends Subsystem {
         odometry = hardwareMap.get(SparkFunOTOS.class, "mouse");
         updatePose();
         resetMotionStart();
-        teleopHeadingTargetDegrees = headingDegrees;
 
         clockwisePid = createClockwisePid();
         counterClockwisePid = createCounterClockwisePid();

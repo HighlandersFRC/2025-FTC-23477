@@ -10,14 +10,14 @@ import org.firstinspires.ftc.teamcode.commands.commandScheduler;
 import org.firstinspires.ftc.teamcode.commands.commandShoot;
 import org.firstinspires.ftc.teamcode.subsystems.cameraSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.intakeSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.rotateSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.driveSubsystem;
 import org.firstinspires.ftc.teamcode.commands.commandAutoTarget;
 
 @TeleOp
 public class drive extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        rotateSubsystem drivetrain = new rotateSubsystem("drive");
+        driveSubsystem drivetrain = new driveSubsystem("drive");
         drivetrain.init(hardwareMap);
 
         intakeSubsystem intake = new intakeSubsystem("intake");
@@ -28,10 +28,13 @@ public class drive extends LinearOpMode {
 
         commandScheduler scheduler = new commandScheduler();
         boolean wasShootPressed = false;
+        boolean isAutoTargeting = false;
 
         waitForStart();
 
         while (opModeIsActive()) {
+            camera.periodic();
+
             boolean shootPressed = gamepad1.left_bumper;
 
             if (shootPressed && !wasShootPressed) {
@@ -54,13 +57,22 @@ public class drive extends LinearOpMode {
                 intake.setWantedState(intakeSubsystem.states.IDLE);
             }
 
-            if (gamepad1.a) {
-                scheduler.schedule(new commandAutoTarget(hardwareMap, telemetry, camera));
+            commandAutoTarget new_command = new commandAutoTarget(hardwareMap, telemetry, camera);
+            if (gamepad1.a && !isAutoTargeting) {
+                scheduler.schedule(new_command);
+                isAutoTargeting = true;
+            } else if (gamepad1.a && isAutoTargeting) {
+                scheduler.cancel(new_command);
+                isAutoTargeting = false;
             }
+
+            telemetry.addData("Tx", camera.getTx());
+            telemetry.update();
 
             drivetrain.botCentricDrive(gamepad1);
             camera.periodic();
             intake.periodic();
+            scheduler.printCurrentCommands();
             scheduler.run();
         }
     }

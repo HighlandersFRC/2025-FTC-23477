@@ -2,19 +2,19 @@ package org.firstinspires.ftc.teamcode.Tools;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.subsystems.rotateSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.driveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.shooterSubsystem;
 
 
 public class robot {
 
     // Instance variables for subsystems
-    public rotateSubsystem rotate;
+    public driveSubsystem rotate;
     public shooterSubsystem shooter;
 
     public robot(HardwareMap hardwareMap) {
 
-        this.rotate = new rotateSubsystem("rotate");
+        this.rotate = new driveSubsystem("rotate");
         this.shooter = new shooterSubsystem("shooter");
     }
 

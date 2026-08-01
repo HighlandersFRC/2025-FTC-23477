@@ -3,18 +3,18 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.subsystems.rotateSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.driveSubsystem;
 
 @Autonomous
 public class ninetyDegreeSubsystemTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        rotateSubsystem subsystem = new rotateSubsystem("subsystem");
+        driveSubsystem subsystem = new driveSubsystem("subsystem");
         subsystem.init(hardwareMap);
 
         waitForStart();
         while (opModeIsActive()) {
-            subsystem.setWantedState(rotateSubsystem.rotateStates.CLOCKWISE_TURN);
+            subsystem.setWantedState(driveSubsystem.rotateStates.CLOCKWISE_TURN);
             subsystem.periodic();
         }
     }

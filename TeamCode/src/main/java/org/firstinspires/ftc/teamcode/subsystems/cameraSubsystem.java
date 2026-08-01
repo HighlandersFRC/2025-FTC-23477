@@ -93,24 +93,29 @@ public class cameraSubsystem extends Subsystem {
         return camera.getLatestResult();
     }
 
-    public double getId(HardwareMap hardwareMap, Telemetry telemetry) {
-        init(hardwareMap, telemetry);
-
-        return result.getFiducialResults().get(0).getFiducialId();
+    public double getId(HardwareMap hardwareMap) {
+        if (result != null) {
+            return result.getFiducialResults().get(0).getFiducialId();
+        } else {
+            return -1;
+        }
     }
 
     public double getTx() {
-        LLResult new_result = camera.getLatestResult();
-
-        return new_result.getTx();
+        if (result != null) {
+            return result.getTx();
+        }
+        else {
+            return 361;
+        }
     }
 
-    public double getTy(LLResult new_result) {
-        return new_result.getTy();
+    public double getTy() {
+        return result.getTy();
     }
 
-    public double getTa(LLResult new_result) {
-        return new_result.getTa();
+    public double getTa() {
+        return result.getTa();
     }
 
     public double getDistanceFromTag(double ta) {
@@ -123,6 +128,8 @@ public class cameraSubsystem extends Subsystem {
 
     @Override
     public void periodic() {
+        result = camera.getLatestResult();
+
         handleStateTransitions();
         switch (current_state) {
             case AUTO_TARGET:

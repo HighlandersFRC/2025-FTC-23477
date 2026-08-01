@@ -15,13 +15,14 @@ public class limelightData extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-            LLResult result = camera.getResult();
+            camera.periodic();
 
-            double ta = camera.getTa(result);
+            double ta = camera.getTa();
             double distance = camera.getDistanceFromTag(ta);
 
             telemetry.addData("Target Area", ta);
             telemetry.addData("Distance From Tag", distance);
+            telemetry.addData("ID", camera.getId(hardwareMap));
             telemetry.update();
         }
     }

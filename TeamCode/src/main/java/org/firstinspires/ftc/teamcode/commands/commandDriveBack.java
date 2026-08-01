@@ -4,14 +4,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Command;
 import org.firstinspires.ftc.teamcode.Subsystem;
-import org.firstinspires.ftc.teamcode.subsystems.rotateSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.driveSubsystem;
 
 public class commandDriveBack implements Command {
 
     double drive_distance;
     HardwareMap hardwareMap;
 
-    rotateSubsystem subsystem = new rotateSubsystem("subsystem");
+    driveSubsystem subsystem = new driveSubsystem("subsystem");
 
     public commandDriveBack(double distance_inches, HardwareMap hardwareMap) {
         this.drive_distance = distance_inches;
@@ -22,7 +22,7 @@ public class commandDriveBack implements Command {
     public void start() {
       subsystem.init(hardwareMap);
       subsystem.setBackwardDistance(drive_distance);
-      subsystem.setWantedState(rotateSubsystem.rotateStates.DRIVE_BACKWARD_INCHES);
+      subsystem.setWantedState(driveSubsystem.rotateStates.DRIVE_BACKWARD_INCHES);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class commandDriveBack implements Command {
 
     @Override
     public void end() {
-        subsystem.setWantedState(rotateSubsystem.rotateStates.IDLE);
+        subsystem.setWantedState(driveSubsystem.rotateStates.IDLE);
     }
 
     @Override

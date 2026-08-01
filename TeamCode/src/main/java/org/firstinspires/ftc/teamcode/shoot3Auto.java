@@ -9,14 +9,14 @@ import org.firstinspires.ftc.teamcode.commands.commandDriveBack;
 import org.firstinspires.ftc.teamcode.commands.commandIndex;
 import org.firstinspires.ftc.teamcode.commands.commandScheduler;
 import org.firstinspires.ftc.teamcode.commands.commandShoot;
-import org.firstinspires.ftc.teamcode.subsystems.rotateSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.driveSubsystem;
 
 @Autonomous
 public class shoot3Auto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        rotateSubsystem rotate = new rotateSubsystem("rotate");
+        driveSubsystem rotate = new driveSubsystem("rotate");
         commandScheduler scheduler = new commandScheduler();
 
         double current_x = rotate.getXTraveled();
