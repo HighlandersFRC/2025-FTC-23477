@@ -16,6 +16,7 @@ public class Constants {
         public static class Shooter {
             public static final String SHOOTER_NAME = "ShooterMotor";
             public static final String HOOD_NAME = "HoodServo";
+            public static final String LIMELIGHT_NAME = "limelight";
         }
         public static class Intake {
             public static final String INTAKE_NAME = "IntakeMotor";

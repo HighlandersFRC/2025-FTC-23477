@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Subsystems.Drive;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 import org.firstinspires.ftc.teamcode.Tools.Vector;
@@ -13,13 +14,16 @@ public class Drive extends Subsystem {
     DcMotor frontLeftMotor;
     DcMotor backRightMotor;
     DcMotor backLeftMotor;
-    public Drive(String name, Peripherals peripherals) {
+    Limelight limelight;
+    public Drive(String name, Peripherals peripherals, Limelight limelight) {
         super(name);
         this.peripherals = peripherals;
+        this.limelight = limelight;
     }
 
     public void init(HardwareMap hardwareMap) {
         peripherals.init(hardwareMap);
+        limelight.init(hardwareMap);
         frontRightMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.FRONT_RIGHT_NAME);
         frontLeftMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.FRONT_LEFT_NAME);
         backRightMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Drive.BACK_RIGHT_NAME);
@@ -57,7 +61,7 @@ public class Drive extends Subsystem {
         backRightMotor.setPower(backRight);
     }
     public void teleopFieldCentric(double oiRX, double oiLX, double oiLY) {
-        peripherals.updateMouse();
+        updateOdometry();
 
         Vector translation = new Vector(
                 oiLX * Constants.Physical.TOP_SPEED,
@@ -78,5 +82,22 @@ public class Drive extends Subsystem {
 
     }
 
+    private void updateOdometry() {
+        peripherals.updateMouse();
 
+        Pose2D cameraPose = limelight.getPose();
+
+        if (cameraPose != null) {
+            peripherals.fuseCameraOdometry(cameraPose);
+        }
+    }
+
+    public Pose2D getPose() {
+        return peripherals.getPose();
+    }
+
+    @Override
+    public void periodic() {
+        updateOdometry();
+    }
 }

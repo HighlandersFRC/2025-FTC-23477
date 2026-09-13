@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.Indexer.Indexer;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter.Shooter;
@@ -10,14 +11,16 @@ public class Superstructure extends Subsystem{
     private final Intake intake;
     private final Shooter shooter;
     private final Indexer indexer;
+    private final Drive drive;
     private Superstates wantedState = Superstates.IDLE;
     private Superstates systemState = Superstates.IDLE;
 
-    public Superstructure (String name, Intake intake, Shooter shooter, Indexer indexer) {
+    public Superstructure (String name, Intake intake, Shooter shooter, Indexer indexer, Drive drive) {
         super(name);
         this.intake = intake;
         this.shooter = shooter;
         this.indexer = indexer;
+        this.drive = drive;
     }
 
     public void init(HardwareMap hardwareMap) {
@@ -47,6 +50,7 @@ public class Superstructure extends Subsystem{
             case DEFAULT:
                 intake.setWantedState(Intake.IntakeStates.DEFAULT);
                 shooter.setWantedState(Shooter.ShooterState.DEFAULT);
+                indexer.setWantedState(Indexer.IndexerStates.DEFAULT);
                 break;
             case IDLE:
                 intake.setWantedState(Intake.IntakeStates.IDLE);

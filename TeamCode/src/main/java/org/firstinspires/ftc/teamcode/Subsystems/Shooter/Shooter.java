@@ -4,14 +4,17 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.Subsystem;
 
 public class Shooter extends Subsystem {
     DcMotor shooterMotor;
     private ShooterState wantedState = ShooterState.IDLE;
     private ShooterState systemState = ShooterState.IDLE;
-    public Shooter(String name) {
+    private Drive drive;
+    public Shooter(String name, Drive drive) {
         super(name);
+        this.drive = drive;
     }
 
     public void setWantedState(ShooterState state) {
