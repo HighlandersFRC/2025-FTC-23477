@@ -16,7 +16,7 @@ public class Intake extends Subsystem {
         super(name);
     }
     public void init(HardwareMap hardwareMap) {
-        intakeMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Intake.intakeName);
+        intakeMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Intake.INTAKE_NAME);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 

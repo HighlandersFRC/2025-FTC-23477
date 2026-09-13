@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Subsystems.Drive.Drive;
+import org.firstinspires.ftc.teamcode.Subsystems.Drive.Peripherals;
 import org.firstinspires.ftc.teamcode.Subsystems.Indexer.Indexer;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter.Shooter;
@@ -16,6 +18,8 @@ public class Robot extends LinearOpMode {
         Indexer indexer = new Indexer("Indexer");
         Intake intake = new Intake("Intake");
         Shooter shooter = new Shooter("Shooter");
+        Peripherals peripherals = new Peripherals("Peripherals");
+        Drive drive = new Drive("Drive", peripherals);
         Superstructure superstructure = new Superstructure("System", intake, shooter, indexer);
         superstructure.init(hardwareMap);
 
@@ -34,6 +38,8 @@ public class Robot extends LinearOpMode {
             if (gamepad1.left_bumper) {
                 superstructure.setWantedState(Superstates.OUTTAKE);
             }
+
+            drive.teleopFieldCentric(gamepad1.right_stick_x, gamepad1.left_stick_x, gamepad1.left_stick_y);
         }
     }
 }

@@ -15,7 +15,7 @@ public class Indexer extends Subsystem {
         super(name);
     }
     public void init(HardwareMap hardwareMap) {
-        indexerMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Indexer.indexerName);
+        indexerMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Indexer.INDEXER_NAME);
         indexerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 

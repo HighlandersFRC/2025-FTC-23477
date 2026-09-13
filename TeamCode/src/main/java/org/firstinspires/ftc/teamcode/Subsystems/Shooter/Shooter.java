@@ -19,7 +19,7 @@ public class Shooter extends Subsystem {
     }
 
     public void init(HardwareMap hardwareMap) {
-        shooterMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Shooter.shooterName);
+        shooterMotor = hardwareMap.dcMotor.get(Constants.InitInfo.Shooter.SHOOTER_NAME);
     }
 
 
