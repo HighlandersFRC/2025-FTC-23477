@@ -32,7 +32,7 @@ public class CommandScheduler {
             Command activeCommand = activeSubsystemCommands.get(requiredSubsystem);
 
             if (activeCommand != null && activeCommand != command) {
-                cancel(activeCommand);   // 🔥 THIS WAS MISSING
+                cancel(activeCommand);
             }
 
             activeSubsystemCommands.put(requiredSubsystem, command);
