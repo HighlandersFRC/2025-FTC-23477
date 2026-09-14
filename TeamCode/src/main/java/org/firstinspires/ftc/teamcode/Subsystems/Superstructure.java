@@ -46,6 +46,10 @@ public class Superstructure extends Subsystem{
     public void periodic() {
         systemState = wantedState;
 
+        drive.periodic();
+        indexer.periodic();
+        intake.periodic();
+        shooter.periodic();
         switch (systemState) {
             case DEFAULT:
                 intake.setWantedState(Intake.IntakeStates.DEFAULT);

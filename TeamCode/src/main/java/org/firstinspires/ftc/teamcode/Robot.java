@@ -31,6 +31,7 @@ public class Robot extends LinearOpMode {
 
 
         while(opModeIsActive()) {
+            superstructure.periodic();
             superstructure.setWantedState(Superstates.DEFAULT);
             // Shooter
             if (gamepad1.right_trigger > 0) superstructure.setWantedState(Superstates.SHOOT);

@@ -36,5 +36,10 @@ public class Constants {
        public static final double MOUSE_SENSOR_ANGULAR_SCALAR = 0.0;
     }
 
+    public static class Drive {
+        public static final double DISTANCE_TOLERANCE = 0.1;
+        public static final double ANGLE_TOLERANCE = 0.1;
+    }
+
 
 }
